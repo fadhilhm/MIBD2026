@@ -54,7 +54,7 @@ async function connectMS_SQL() {
 connectMS_SQL();
 
 // register
-app.post('/api/register', async (req, res) => {
+const register = app.post('/api/register', async (req, res) => {
     const { nama, jenisKelamin, tanggalLahir, email, phone, noSIM, password } = req.body;
 
     const transaction = new sql.Transaction(pool);
@@ -70,7 +70,7 @@ app.post('/api/register', async (req, res) => {
         userRequest.input('UserPassword', sql.VarChar, password);
 
         const userQuery = `
-            INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, UserPassword)
+            INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, password_user)
             VALUES (@Nama, @TanggalLahir, @JenisKelamin, @UserPassword);
             SELECT SCOPE_IDENTITY() AS NewUserID;
         `   
