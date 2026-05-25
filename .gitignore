@@ -1,2 +1,5 @@
 pnpm-lock.yaml
+# module
 node_modules/
+server.js
+package.json
