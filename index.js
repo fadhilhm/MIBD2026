@@ -2,7 +2,6 @@ const express = require('express');
 const path = require('path');
 const app = express();
 const port = 3000;
-
 const PATHS = {
     html: path.join(__dirname, 'HTML'),
     css: path.join(__dirname, 'CSS'),
