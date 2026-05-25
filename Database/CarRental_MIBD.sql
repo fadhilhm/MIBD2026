@@ -10,10 +10,7 @@ GO
 USE CarRentalDB;
 GO
 
--- ==========================================
--- 1. BASE INDEPENDENT TABLES (LEVEL 1)
--- ==========================================
-
+-- Entity
 CREATE TABLE TIPE_MOBIL (
     IDTipe INT IDENTITY(1,1) PRIMARY KEY,
     NamaTipe VARCHAR(255) NOT NULL, -- e.g., 'SUV', 'Sedan', 'MPV'
@@ -37,10 +34,6 @@ CREATE TABLE CABANG (
     NamaCabang VARCHAR(255) NOT NULL, -- e.g., 'Cabang Bandung', 'Cabang Jakarta'
     NamaJalan VARCHAR(255) NOT NULL   -- e.g., 'Jl. Ciumbuleuit No. 94'
 );
-
--- ==========================================
--- 2. WEAK ENTITIES & INHERITANCE (LEVEL 2)
--- ==========================================
 
 CREATE TABLE MOBIL (
     Nopol VARCHAR(20) PRIMARY KEY, -- e.g., 'D 1234 ABC'
@@ -97,10 +90,7 @@ CREATE TABLE NOTELP_CABANG (
     FOREIGN KEY (IDCabang) REFERENCES CABANG(IDCabang) ON DELETE CASCADE
 );
 
--- ==========================================
--- 3. TRANSACTIONAL & JCT TABLES (LEVEL 3)
--- ==========================================
-
+-- Relation
 CREATE TABLE PEMINJAMAN (
     IDMember INT,                          
     Nopol VARCHAR(20),
