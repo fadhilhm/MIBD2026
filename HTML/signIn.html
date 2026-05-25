@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Rental</title>
+    <link rel="stylesheet" href="/CSS/signIn.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <main>
+        <div class="main-container">
+
+            <div class="left">
+
+                <div class="title-container">
+
+                    <h2 id="brand-title">DW Car Rental</h2>
+
+                    <h1 id="slogan">Rental Mobil di AnimalLand</h1>
+
+                    <p id="desc">Silahkan isi formulir pendaftaran berikut</p>
+                </div>
+
+                <form class="form-field">
+
+                    <div class="container-item-form">
+                        <label for="name-field" class="item-label">Nama</label>
+                        <input 
+                            type="text"
+                            id="name-field"
+                            class="item-field"
+                            required
+                        >
+                    </div>
+
+                    <div class="container-item-form">
+                        <label for="radio-item">Jenis Kelamin</label>
+
+                        <div class="radio-item">
+                            <input 
+                                type="radio"
+                                id="pria-radio"
+                                name="jenis-kelamin"
+                                required
+                            >
+                            <label for="pria-radio" id="label-pria">Pria</label>
+    
+                            <input 
+                                type="radio" 
+                                id="wanita-radio"
+                                name="jenis-kelamin"
+                                required
+                            >
+                            <label for="wanita-radio">Wanita</label>
+                        </div>
+                    </div>
+
+                    <div class="container-item-form" onclick="document.getElementById('tgl-lahir').showPicker()">
+                        <label for="tgl-lahir" class="item-label">Tanggal Lahir</label>
+                        <input 
+                            type="date"
+                            id="tgl-lahir"
+                            class="item-field"
+                            required
+                        >
+                    </div>
+
+                    <div class="container-item-form">
+                        <label for="email" class="item-label">Email</label>
+                        <input 
+                            type="email"
+                            id="email"
+                            class="item-field"
+                            required
+                        >
+                    </div>
+
+                    <div class="container-item-form">
+                        <label for="phone" class="item-label">No Telephone</label>
+                        <input 
+                            type="tel"
+                            id="phone"
+                            pattern="[0-9]{10,13}"
+                            class="item-field"
+                            required
+                        >
+                    </div>
+                    
+
+                    <div class="container-item-form">
+                        <label for="no-sim" class="item-label">No SIM</label>
+                        <input 
+                            type="text"
+                            id="no-sim"
+                            class="item-field"
+                            pattern="[0-9]{16}"
+                            required
+                        >
+                    </div>
+
+                    <div class="container-item-form">
+                        <label for="password" class="item-label">Password</label>
+                        <input 
+                            type="password"
+                            id="password"
+                            class="item-field"
+                            required
+                        >
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit" id="signin-button">
+                            Sign In
+                        </button>
+                        <a href="/HTML/login.html">
+                            <button type="button" id="login-button">
+                                Login
+                            </button>
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="right">
+
+            </div>
+
+        </div>
+    </main>
+</body>
+</html>

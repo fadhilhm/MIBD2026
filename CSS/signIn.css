@@ -1,0 +1,184 @@
+html{
+    font-family: "Open Sans", sans-serif;
+}
+
+body{
+    margin: 0;
+    padding-left: 5%;
+
+    background-color: #e9e9e9;
+
+    height: 125vh;
+}
+
+.main-container{
+    width: 1100px;
+    height: 800px;
+
+    background-color: white;
+
+    display: flex;
+}
+
+.left{
+    width: 46%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.right{
+    width: 54%;
+    background-color: #d9d9dd;
+}
+
+.title-container{
+    padding-top: 40px;
+    padding-left: 60px;
+    padding-right: 60px;
+}
+
+#brand-title{
+    margin: 0;
+
+    color: #3751FE;
+
+    font-family: Roboto, sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+
+    margin-bottom: 20px;
+}
+
+#slogan{
+    margin: 0;
+
+    color: #3751FE;
+
+    font-size: 40px;
+    font-weight: 700;
+
+    line-height: 1.3;
+
+    width: 80%;
+
+    margin-bottom: 20px;
+}   
+
+#desc{
+    margin: 0;
+    color: #535353;
+    font-size: 15px;
+    line-height: 1.7;
+    width: 90%;
+}
+
+
+.form-field{
+    margin: 0;
+    padding-top: 20px;
+    padding-left: 60px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.container-item-form{
+    width: 80%;
+    background-color: white;
+    border: 1px solid #d4d4d4;
+    padding: 10px;
+    padding-top: 5px;
+
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.container-item-form:focus-within{
+    border: 1px solid #3751FE;
+    box-shadow: 0 0 4px rgba(55, 81, 254, 0.3);
+}
+
+.item-label{
+    margin-bottom: 5px;
+}
+
+.item-field{
+    border: none;
+    height: 100%;
+    outline: none;
+    width: 100%;
+}
+
+.radio-item{
+    padding-top: 5px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.radio-item label{
+    margin-right: 15px;
+}
+
+input[type="date"]{
+    color: #8a8a8a;
+}
+
+input[type="date"]:valid{
+    color: black;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator{
+    cursor: pointer;
+}
+
+.button-group{
+    display: flex;
+
+    gap: 15px;
+
+    margin-top: 10px;
+}
+
+#signin-button{
+    width: 120px;
+    height: 42px;
+
+    border: none;
+
+    background-color: #3751FE;
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+#login-button{
+    width: 120px;
+    height: 42px;
+
+    background-color: white;
+
+    border: 1px solid #3751FE;
+
+    color: #3751FE;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+#signin-button:hover{
+    background-color: #2642ff;
+}
+
+#login-button:hover{
+    background-color: #d1d4e3;
+}
