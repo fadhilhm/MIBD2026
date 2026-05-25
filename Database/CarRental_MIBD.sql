@@ -28,6 +28,8 @@ CREATE TABLE [USER] (
     TanggalLahir DATE NOT NULL,
     JenisKelamin VARCHAR(20) NOT NULL -- e.g., 'Pria', 'Wanita'
 );
+ALTER TABLE [USER]
+ADD [UserPassword] VARCHAR(50) NOT NULL
 
 CREATE TABLE CABANG (
     IDCabang INT IDENTITY(1,1) PRIMARY KEY,

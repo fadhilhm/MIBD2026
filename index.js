@@ -1,7 +1,7 @@
 const sql = require('mssql');
 const express = require('express');
 const path = require('path');
-const { json } = require('stream/consumers');
+// const { json } = require('stream/consumers');
 const port = 3000;
 
 const PATHS = {
@@ -9,6 +9,8 @@ const PATHS = {
     css: path.join(__dirname, 'CSS'),
     scripts: path.join(__dirname, 'Scripts')
 };
+
+console.log(PATHS);
 
 const sqlConfig = {
     user: 'adminTester',
