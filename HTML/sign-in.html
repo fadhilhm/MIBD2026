@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Car Rental</title>
-    <link rel="stylesheet" href="/CSS/signIn.css">
+    <link rel="stylesheet" href="/CSS/sign-in.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
@@ -32,6 +32,7 @@
                             type="text"
                             id="name-field"
                             class="item-field"
+                            value="TEST"
                             required
                         >
                     </div>
@@ -74,6 +75,7 @@
                             type="email"
                             id="email"
                             class="item-field"
+                            value="test@gmail.com"
                             required
                         >
                     </div>
@@ -85,6 +87,7 @@
                             id="phone"
                             pattern="[0-9]{10,13}"
                             class="item-field"
+                            value="0123456789"
                             required
                         >
                     </div>
@@ -97,6 +100,7 @@
                             id="no-sim"
                             class="item-field"
                             pattern="[0-9]{16}"
+                            value="0123456789123456"
                             required
                         >
                     </div>
@@ -107,6 +111,7 @@
                             type="password"
                             id="password"
                             class="item-field"
+                            value="test"
                             required
                         >
                     </div>
@@ -115,7 +120,7 @@
                         <button type="submit" id="signin-button">
                             Sign In
                         </button>
-                        <a href="/HTML/login.html">
+                        <a href="login">
                             <button type="button" id="login-button">
                                 Login
                             </button>
@@ -131,5 +136,6 @@
 
         </div>
     </main>
+    <script src="/Scripts/sign-in.js"></script>
 </body>
 </html>

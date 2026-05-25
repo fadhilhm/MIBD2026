@@ -1,6 +1,7 @@
 const sql = require('mssql');
 const express = require('express');
 const path = require('path');
+const { json } = require('stream/consumers');
 const port = 3000;
 
 const PATHS = {
@@ -22,24 +23,8 @@ const sqlConfig = {
 }
 
 const app = express();
-
-// connect ms sql
-async function connectMS_SQL() {
-    try {
-        console.log("Connecting to SQL Server...");
-        let pool = await sql.connect(sqlConfig);
-        console.log("Connected to SQL Server!");
-
-        let result = await pool.request().query("SELECT @@VERSION as SQL_Version");
-        console.log("\nQuery Test Result:");
-        console.table(result.recordset);
-
-        await sql.close();
-    } catch (error) {
-        console.error("Database connection failed :(\n", error);
-    }
-}
-connectMS_SQL();
+app.use(express.json());
+let pool;
 
 // serve static folder
 app.use(express.static(PATHS.html, { extensions: ['html'] }));
@@ -54,4 +39,78 @@ app.get('/', (req, res) => {
 // start
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
+});
+
+// connect ms sql
+async function connectMS_SQL() {
+    try {
+        console.log("Connecting to SQL Server...");
+        pool = await sql.connect(sqlConfig);
+        console.log("Connected to SQL Server!");
+    } catch (error) {
+        console.error("Database connection failed :(\n", error);
+    }
+}
+connectMS_SQL();
+
+// register
+app.post('/api/register', async (req, res) => {
+    const { nama, jenisKelamin, tanggalLahir, email, phone, noSIM, password } = req.body;
+
+    const transaction = new sql.Transaction(pool);
+
+    try {
+        await transaction.begin();
+
+        const userRequest = new sql.Request(transaction);
+
+        userRequest.input('Nama', sql.VarChar, nama);
+        userRequest.input('JenisKelamin', sql.Char, jenisKelamin);
+        userRequest.input('TanggalLahir', sql.Date, tanggalLahir);
+        userRequest.input('UserPassword', sql.VarChar, password);
+
+        const userQuery = `
+            INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, UserPassword)
+            VALUES (@Nama, @TanggalLahir, @JenisKelamin, @UserPassword);
+            SELECT SCOPE_IDENTITY() AS NewUserID;
+        `   
+
+        const userResult = await userRequest.query(userQuery); 
+        const newUserID = userResult.recordset[0].NewUserID;
+
+        const memberRequest = new sql.Request(transaction);
+        memberRequest.input('IDUser', sql.Int, newUserID);
+        memberRequest.input('NoSIM', sql.VarChar, noSIM);
+
+        const memberQuery = `
+            INSERT INTO MEMBER(IDUser, NoSIM)
+            VALUES (@IDUser, @NoSIM);
+        `;
+        
+        await memberRequest.query(memberQuery);
+
+        const emailRequest = new sql.Request(transaction);
+        emailRequest.input('IDUser', sql.Int, newUserID);
+        emailRequest.input('Email', sql.VarChar, email);
+
+        await emailRequest.query(`
+            INSERT INTO EMAIL_USER (IDUser, AlamatEmail)
+            VALUES (@IDUser, @Email);
+        `)
+
+        const phoneRequest = new sql.Request(transaction);
+        phoneRequest.input('IDUser', sql.Int, newUserID);
+        phoneRequest.input('Phone', sql.VarChar, phone);
+        await phoneRequest.query(`
+            INSERT INTO NOTELP_USER (IDUser, NomorTelp) 
+            VALUES (@IDUser, @Phone)
+        `);
+
+        await transaction.commit();
+        res.status(201).json({ message: 'Registration Success!' });
+    } catch (error) {
+        await transaction.rollback();
+        console.error('Error:', error);
+        res.status(500).json({ message: 'Registration Failed...' });
+    }
 });
