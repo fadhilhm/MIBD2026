@@ -1,0 +1,376 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: "Open Sans", sans-serif;
+    background-color: #efefef;
+}
+
+button{
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.main-container{
+    display: grid;
+
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 90px 1fr;
+
+    grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+
+    height: 100vh;
+}
+
+.sidebar{
+    grid-area: sidebar;
+
+    background-color: white;
+
+    border-right: 1px solid #d8d8d8;
+
+    padding: 30px 18px;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2{
+    color: #3751FE;
+
+    text-align: center;
+
+    margin-bottom: 60px;
+
+    font-size: 28px;
+}
+
+.menu{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu button,
+.exit button{
+    width: 100%;
+
+    border: none;
+    background-color: transparent;
+
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 16px 18px;
+
+    border-radius: 12px;
+
+    transition: 0.2s;
+}
+
+.menu button:hover,
+.exit button:hover{
+    background-color: #f3f3f3;
+}
+
+.menu button img,
+.exit button img{
+    width: 24px;
+    height: 24px;
+}
+
+.menu button span,
+.exit button span{
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.menu .active{
+    background-color: #e9edff;
+    color: #3751FE;
+}
+
+.exit{
+    margin-top: auto;
+}
+
+.header{
+    grid-area: header;
+
+    background-color: white;
+
+    border-bottom: 1px solid #d8d8d8;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 40px;
+}
+
+.header h1{
+    font-size: 42px;
+    font-weight: 700;
+}
+
+.main{
+    grid-area: main;
+
+    padding: 40px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 30px;
+}
+
+.product-container{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.item-card{
+    width: 320px;
+
+    background-color: white;
+
+    border-radius: 24px;
+    overflow: hidden;
+
+    border: 1px solid #e3e3e3;
+
+    display: flex;
+    flex-direction: column;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+
+    transition: 0.2s ease;
+}
+
+.item-card:hover{
+    transform: translateY(-4px);
+}
+
+.status-product-active{
+    margin: 18px 18px 0;
+
+    width: fit-content;
+
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    background-color: #e8f8ec;
+    color: #1f8f3f;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.status-product-unactive{
+    margin: 18px 18px 0;
+
+    width: fit-content;
+
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    background-color: #eb1717; 
+    color: #e8f8ec;
+
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.img-item-container{
+    width: 100%;
+    height: 200px;
+
+    margin-top: 12px;
+
+    padding: 0 18px;
+}
+
+.img-item-container img{
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    border-radius: 18px;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+
+    gap: 14px;
+
+    padding: 20px 22px;
+}
+
+.info h5{
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.location{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.location div{
+    width: 18px;
+    height: 18px;
+
+    flex-shrink: 0;
+}
+
+.location img{
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+.location p{
+    color: #7a7a7a;
+    font-size: 14px;
+}
+
+.info > p{
+    font-size: 26px;
+    font-weight: 700;
+    color: #3751FE;
+}
+
+.car-info{
+    display: flex;
+    gap: 24px;
+
+    margin-top: 4px;
+}
+
+.capacity,
+.year-production{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    width: fit-content;
+    height: auto;
+}
+
+.capacity img,
+.year-production img{
+    width: 18px;
+    height: 18px;
+
+    object-fit: contain;
+}
+
+.capacity p,
+.year-production p{
+    font-size: 14px;
+    color: #555;
+}
+
+.group-button{
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 20px;
+}
+
+.group-button button {
+    padding: 10px 22px;
+}
+
+.change-button{
+    width: 100%;
+
+    border: none;
+
+    padding: 14px;
+
+    border-radius: 14px;
+
+    background-color: #3751FE;
+    color: white;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    transition: 0.2s;
+}
+
+.change-button:hover{
+    background-color: #243edb;
+}
+
+.delete-button{
+    width: 100%;
+
+    border: none;
+
+    padding: 14px;
+
+    border-radius: 14px;
+
+    background-color: #f03131;
+    color: white;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    transition: 0.2s;
+}
+
+.delete-button:hover{
+    background-color: #881a1a;
+}
+
+
+#add-car{
+    width: 100px;
+
+    border: none;
+
+    padding: 12px;
+
+    border-radius: 14px;
+
+    background-color: #3751FE;
+    color: white;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    transition: 0.2s;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    position: fixed;
+
+    right: 24px;
+    bottom: 24px;
+
+    z-index: 999;
+}
+
+#add-car:hover{
+    background-color: #243edb;
+}
