@@ -66,6 +66,63 @@
                     <p>Keluar</p>
                 </a>
             </div>
+
+            
+        </div>
+        
+        <!-- POP UP Selesaikan -->
+        <!-- Enable dengan JS -->
+        <!-- Caranya timpa class css -->
+        <div class="popup-overlay" id="popupOverlay">
+
+            <div class="popup-container">
+
+                <div class="popup-header">
+                    <h2>Form Pengembalian</h2>
+                    <button id="closePopup">&times;</button>
+                </div>
+
+                <form class="popup-form">
+
+                    <div class="input-group">
+                        <label>Tanggal Sewa</label>
+                        <input type="date" id="tanggal-sewa" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Tanggal Kembali</label>
+                        <input type="date" id="tanggal-kemabli" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Jumlah Hari Terlambat</label>
+                        <input type="text" id="jumlah-terlambat" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Total Denda</label>
+                        <input type="text" id="total-denda" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Link Foto Setelah Pemakaian</label>
+                        <input type="text" required>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-cancel" id="cancelPopup">
+                            Batal
+                        </button>
+
+                        <button type="submit" class="btn-submit">
+                            Kembalikan
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
         </div>
     </main>
     <script></script>

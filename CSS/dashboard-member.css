@@ -4,6 +4,15 @@
     box-sizing: border-box;
 }
 
+*::-webkit-scrollbar{
+    width: 6px;
+}
+
+*::-webkit-scrollbar-thumb{
+    background-color: #cfcfcf;
+    border-radius: 10px;
+}
+
 body{
     font-family: "Open Sans", sans-serif;
     background-color: #efefef;
