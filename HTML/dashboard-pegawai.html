@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../CSS/dashboard-pegawai.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>Dashboard</title>
+</head>
+<body>
+    <main>
+        <div class="main-container">
+            <h2>DW Car Rental</h2>
+
+            <div class="header">
+                <div class="card-header">
+                    <h3>Rental Aktif</h3>
+                    <h4>0</h4>
+                </div>
+                <div class="card-header">
+                    <h3>Mobil Kembali Hari Ini</h3>
+                    <h4>0</h4>
+                </div>
+                <div class="card-header">
+                    <h3>Menuggu Verifikasi</h3>
+                    <h4>0</h4>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <h3>Data Penyewaan</h3>
+                <table class="table-penyewaan">
+                    <thead>
+                        <tr>
+                            <th scope="col">Pelanggan</th>
+                            <th scope="col">Mobil</th>
+                            <th scope="col">Nopol</th>
+                            <th scope="col">Tanggal</th>
+                            <th scope="col">Deadline</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Anton</td>
+                            <td>Toyota Avanza</td>
+                            <td>D 1234 AB</td>
+                            <td>20 Januari 2026</td>
+                            <td>25 Januari 2026</td>
+                            <td>
+                                <p id="running-status">Berjalan</p>
+                                <p id="done-status">Dikembalikan</p>
+                            </td>
+                            <td><button id="done-button">Selesaikan</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="exit-button-container">
+                <a href="http://">
+                    <img src="/image/exit.png" alt="">
+                    <p>Keluar</p>
+                </a>
+            </div>
+        </div>
+    </main>
+    <script></script>
+</body>
+</html>
