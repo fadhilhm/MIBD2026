@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/CSS/katalog-mobil.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
     <title>Dasboard</title>
 </head>
+
 <body>
     <main>
         <div class="main-container">
@@ -108,96 +111,103 @@
                             </div>
                         </div>
 
-                    <div class="rent-button">
-                        <button>Pinjam</button>
+                        <div class="rent-button">
+                            <button>Pinjam</button>
+                        </div>
+
                     </div>
 
                 </div>
 
             </div>
 
-        </div>
+            <!-- Pop up pinjam-->
 
-        <!-- Pop up pinjam-->
+            <div class="popup-overlay" id="popupOverlay">
 
-        <div class="popup-overlay" id="popupOverlay">
+                <div class="popup-container">
 
-            <div class="popup-container">
-
-                <div class="popup-header">
-                    <h2>Detail Peminjaman</h2>
-                    <button id="closePopup">&times;</button>
-                </div>
-
-                <div class="summary-container">
-                    <div class="img-car-summary">
-                        <img src="/image/avanza.png" alt="">
+                    <div class="popup-header">
+                        <h2>Detail Peminjaman</h2>
+                        <button id="closePopup">&times;</button>
                     </div>
 
-                    <h2>Toyota Avanza</h2>
-
-                    <div class="summary-location">
-                        <img src="/image/location.png" alt="">
-                        <p>Cabang: Jl Diponegoro No 22, Citarum</p>
-                    </div>
-
-                    <p>Harga sewa per hari: Rp750.000</p>
-
-                    <div class="summary-car-detail">
-                        <div class="summary-car-spec">
-                            <img src="/image/person.png" alt="">
-                            <p>7 Kursi</p>
+                    <div class="summary-container">
+                        <div class="img-car-summary">
+                            <img src="/image/avanza.png" alt="">
                         </div>
-                        
-                        <div class="summary-car-spec">
-                            <img src="/image/calender.png" alt="">
-                            <p>2022</p>
+
+                        <h2>Toyota Avanza</h2>
+
+                        <div class="summary-location">
+                            <img src="/image/location.png" alt="">
+                            <p>Cabang: Jl Diponegoro No 22, Citarum</p>
                         </div>
+
+                        <p>Harga sewa per hari: Rp750.000</p>
+
+                        <div class="summary-car-detail">
+                            <div class="summary-car-spec">
+                                <img src="/image/person.png" alt="">
+                                <p>7 Kursi</p>
+                            </div>
+
+                            <div class="summary-car-spec">
+                                <img src="/image/calender.png" alt="">
+                                <p>2022</p>
+                            </div>
+                        </div>
+
                     </div>
+
+                    <form class="popup-form" method="post">
+
+                        <div class="input-group">
+                            <label>Pilih Tanggal Mulai</label>
+                            <input type="date" id="tanggal-mulai" required
+                                onclick="document.getElementById('tanggal-mulai').showPicker()">
+                        </div>
+
+                        <div class="input-group">
+                            <label>Pilih Tanggal Kembali</label>
+                            <input type="date" id="tanggal-mulai" required
+                                onclick="document.getElementById('tanggal-mulai').showPicker()">
+                        </div>
+
+                        <div class="input-group">
+                            <label>Total Harga</label>
+                            <input type="text" id="total-harga" readonly>
+                        </div>
+
+                        <div class="button-group">
+                            <button type="button" class="btn-cancel" id="cancelPopup">
+                                Batal
+                            </button>
+
+                            <button type="submit" class="btn-submit">
+                                Booking
+                            </button>
+                        </div>
+
+                    </form>
 
                 </div>
-
-                <form class="popup-form" method="post">
-
-                    <div class="input-group">
-                        <label>Pilih Tanggal Mulai</label>
-                        <input 
-                            type="date" id="tanggal-mulai" required 
-                            onclick="document.getElementById('tanggal-mulai').showPicker()"
-                        >
-                    </div>
-
-                    <div class="input-group">
-                        <label>Pilih Tanggal Kembali</label>
-                        <input 
-                            type="date" 
-                            id="tanggal-mulai" required
-                            onclick="document.getElementById('tanggal-mulai').showPicker()"
-                        >
-                    </div>
-
-                    <div class="input-group">
-                        <label>Total Harga</label>
-                        <input type="text" id="total-harga" readonly>
-                    </div>
-
-                    <div class="button-group">
-                        <button type="button" class="btn-cancel" id="cancelPopup">
-                            Batal
-                        </button>
-
-                        <button type="submit" class="btn-submit">
-                            Booking
-                        </button>
-                    </div>
-
-                </form>
 
             </div>
-
-        </div>
 
     </main>
     <script src=""></script>
+    <script>
+        const dashboardButton = document.querySelector('.menu button:nth-child(1)');
+        const exitButton = document.querySelector('.exit button');
+
+        dashboardButton.addEventListener('click', () => {
+            window.location.href = '/dashboard-member';
+        });
+
+        exitButton.addEventListener('click', () => {
+            window.location.href = '/login';
+        })</script>
 </body>
+
 </html>

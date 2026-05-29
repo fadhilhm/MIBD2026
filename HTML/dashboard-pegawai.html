@@ -125,6 +125,14 @@
 
         </div>
     </main>
-    <script></script>
+    <script>
+        const exitButton = document.querySelector('.exit-button-container a');
+
+        exitButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            window.location.href = '/login';
+        })
+    </script>
 </body>
 </html>
