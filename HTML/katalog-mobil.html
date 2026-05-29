@@ -17,7 +17,7 @@
 
                 <div class="menu">
 
-                    <button>
+                    <button id="button-dashboard">
                         <img src="/image/dashboard.png" alt="">
                         <span>Dashboard</span>
                     </button>
@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="exit">
-                    <button>
+                    <button id="button-keluar">
                         <img src="/image/exit.png" alt="">
                         <span>Keluar</span>
                     </button>
@@ -198,6 +198,14 @@
         </div>
 
     </main>
-    <script src=""></script>
+    <script>
+        document.getElementById('button-dashboard').addEventListener('click', () => {
+            window.location.href = 'dashboard-member';
+        });
+        
+        document.getElementById('button-keluar').addEventListener('click', () => {
+            window.location.href = 'login';
+        });
+    </script>
 </body>
 </html>

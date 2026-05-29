@@ -1,7 +1,3 @@
 SELECT * FROM [USER]
 SELECT * FROM MEMBER
 SELECT * FROM EMAIL_USER
-
--- Delete rows from table 'TableName'
-DELETE FROM [USER]
-GO

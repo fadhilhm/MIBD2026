@@ -12,7 +12,22 @@ document.querySelector('.form-field').addEventListener('submit', async (e) => {
     const form = { nama, jenisKelamin, tanggalLahir, email, phone, noSIM, password };
 
     try {
-        const response = await fetch('api/register', {
+        const validationResponse = await fetch('/api/validate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: email })
+        });
+
+        const validationResult = await validationResponse.json();
+
+        if (validationResult.exists) {
+            alert(validationResult.message);    
+            return;
+        }
+
+        const signUpResponse = await fetch('/api/signup', {
             method: 'POST',
             headers: { 
                 'Content-Type': 'application/json'
@@ -20,13 +35,13 @@ document.querySelector('.form-field').addEventListener('submit', async (e) => {
             body: JSON.stringify(form)
         });
 
-        const result = await response.json();
+        const signUpResult = await signUpResponse.json();
 
-        if (response.ok) {
-            alert('Pendaftaran berhasil');
+        if (signUpResult.success) {
+            alert(signUpResult.message);
             window.location.href = '/login';
         } else {
-            alert('Gagal: ' + result.message);
+            alert(signUpResult.message);
         }
 
     } catch (error) {

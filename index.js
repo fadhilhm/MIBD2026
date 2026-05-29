@@ -55,8 +55,47 @@ async function connectMS_SQL() {
 }
 connectMS_SQL();
 
-// register
-app.post('/api/register', async (req, res) => {
+// validation, check if exist in DB
+app.post('/api/validate', async (req, res) => {
+    const { email } = req.body;
+    
+    const transaction = new sql.Transaction(pool);
+
+    try {
+        await transaction.begin();
+
+        const validation = new sql.Request(transaction);
+
+        validation.input('Email', sql.VarChar, email);
+
+        const validationQuery = `
+            SELECT IDEmail
+            FROM EMAIL_USER
+            WHERE AlamatEmail = @Email;
+        `;
+
+        const result = await validation.query(validationQuery);
+
+        if (result.recordset.length > 0) {
+            await transaction.commit();
+
+            return res.json({
+                exists: true,   
+                message: 'Email sudah dipakai...'
+            });
+        }
+
+        return res.json({
+            exists: false
+        });
+    } catch (error) {
+        console.error('Error ketika memvalidasi email:', error);
+        return res.json({ message: 'Something wrong happened...'});
+    }
+});
+
+// signup
+app.post('/api/signup', async (req, res) => {
     const { nama, jenisKelamin, tanggalLahir, email, phone, noSIM, password } = req.body;
 
     const transaction = new sql.Transaction(pool);
@@ -109,10 +148,50 @@ app.post('/api/register', async (req, res) => {
         `);
 
         await transaction.commit();
-        res.status(201).json({ message: 'Registration Success!' });
+        res.status(200).json({
+            success: true, 
+            message: 'Registrasi berhasil!'
+        });
     } catch (error) {
         await transaction.rollback();
         console.error('Error:', error);
-        res.status(500).json({ message: 'Registration Failed...' });
+        res.json({ 
+            success: false,
+            message: 'Registrasi gagal...' 
+        });
+    }
+});
+
+// login
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+
+    const transaction = new sql.Transaction(pool);
+
+    try {
+        await transaction.begin();
+
+        const userRequest = new sql.Request(transaction);
+
+        userRequest.input('Email', sql.VarChar, email);
+
+        const userResult = await userRequest.query(`
+            SELECT IDUser 
+            FROM EMAIL_USER 
+            WHERE AlamatEmail = @Email;
+        `)
+
+        if (userResult.recordset.length == 0) {
+            alert('Email atau Password salah...');
+            return null;
+        }
+
+        const memberID = userResult.recordset[0].IDUser;
+
+        console.log(memberID);
+
+        
+    } catch (error) {
+        
     }
 });

@@ -1,8 +1,7 @@
--- ============================================================================
--- SQL SCRIPT: CarRentalDB Schema Setup
+-- ========================================================
+-- SQL SCRIPT: CarRentalDB Schema
 -- Database Engine: Microsoft SQL Server (MS SQL Server)
--- Design Pattern: Relational Layout with Composite Primary Keys 
--- ============================================================================
+-- ========================================================
 
 CREATE DATABASE CarRentalDB;
 GO
@@ -13,43 +12,42 @@ GO
 -- Entity
 CREATE TABLE TIPE_MOBIL (
     IDTipe INT IDENTITY(1,1) PRIMARY KEY,
-    NamaTipe VARCHAR(255) NOT NULL, -- e.g., 'SUV', 'Sedan', 'MPV'
-    Kapasitas INT NOT NULL          -- Passenger capacity, e.g., 5, 7
+    NamaTipe VARCHAR(255) NOT NULL, 
+    Kapasitas INT NOT NULL       
 );
 
 CREATE TABLE MEREK_MOBIL (
     IDMerek INT IDENTITY(1,1) PRIMARY KEY,
-    NamaMerek VARCHAR(255) NOT NULL -- e.g., 'Toyota', 'Honda', 'Suzuki'
+    NamaMerek VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE [USER] (
     IDUser INT IDENTITY(1,1) PRIMARY KEY,
     Nama VARCHAR(255) NOT NULL,
     TanggalLahir DATE NOT NULL,
-    JenisKelamin VARCHAR(20) NOT NULL -- e.g., 'Pria', 'Wanita'
+    JenisKelamin CHAR(1) NOT NULL, -- F or M
+    UserPassword VARCHAR(255) NOT NULL
 );
-ALTER TABLE [USER]
-ADD [UserPassword] VARCHAR(50) NOT NULL
 
 CREATE TABLE CABANG (
     IDCabang INT IDENTITY(1,1) PRIMARY KEY,
-    NamaCabang VARCHAR(255) NOT NULL, -- e.g., 'Cabang Bandung', 'Cabang Jakarta'
-    NamaJalan VARCHAR(255) NOT NULL   -- e.g., 'Jl. Ciumbuleuit No. 94'
+    NamaCabang VARCHAR(255) NOT NULL, 
+    NamaJalan VARCHAR(255) NOT NULL  
 );
 
 CREATE TABLE MOBIL (
-    Nopol VARCHAR(20) PRIMARY KEY, -- e.g., 'D 1234 ABC'
+    Nopol VARCHAR(20) PRIMARY KEY,
     IDTipe INT NOT NULL,
     IDMerek INT NOT NULL,
-    HargaSewaMobil DECIMAL(12, 2) NOT NULL, -- Rental price per day, e.g., 500000.00
-    TahunPembuatan INT NOT NULL,            -- Manufacturing year, e.g., 2022
+    HargaSewaMobil DECIMAL(12, 2) NOT NULL,
+    TahunPembuatan INT NOT NULL,       
     FOREIGN KEY (IDTipe) REFERENCES TIPE_MOBIL(IDTipe),
     FOREIGN KEY (IDMerek) REFERENCES MEREK_MOBIL(IDMerek)
 );
 
 CREATE TABLE MEMBER (
     IDUser INT PRIMARY KEY,
-    NoSIM VARCHAR(50) NOT NULL, -- Driver's license number
+    NoSIM VARCHAR(50) NOT NULL, 
     FOREIGN KEY (IDUser) REFERENCES [USER](IDUser) ON DELETE CASCADE
 );
 
@@ -101,7 +99,7 @@ CREATE TABLE PEMINJAMAN (
     TanggalKembali DATETIME NULL,
     TanggalBatasPengembalian DATETIME NOT NULL,
     TotalBiaya DECIMAL(12, 2) NOT NULL,
-    PersentaseDenda DECIMAL(5, 2) NOT NULL, -- e.g., 10.50 for 10.5%
+    PersentaseDenda DECIMAL(5, 2) NOT NULL,
     PRIMARY KEY (IDMember, Nopol, IDPegawai, TanggalPeminjaman),
     FOREIGN KEY (IDMember) REFERENCES MEMBER(IDUser),   
     FOREIGN KEY (Nopol) REFERENCES MOBIL(Nopol),
@@ -113,8 +111,8 @@ CREATE TABLE FOTO (
     IDMember INT NOT NULL,                 
     IDPegawai INT NOT NULL,                
     Nopol VARCHAR(20) NOT NULL,
-    Gambar VARCHAR(2048) NOT NULL, -- URL link path string to hosted cloud image asset
-    Deskripsi TEXT NULL,           -- Condition notes or structural captions
+    Gambar VARCHAR(2048) NOT NULL, 
+    Deskripsi TEXT NULL,           
     FOREIGN KEY (IDMember) REFERENCES MEMBER(IDUser),   
     FOREIGN KEY (IDPegawai) REFERENCES PEGAWAI(IDUser),   
     FOREIGN KEY (Nopol) REFERENCES MOBIL(Nopol)
