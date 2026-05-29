@@ -31,6 +31,9 @@ CREATE TABLE [USER] (
 ALTER TABLE [USER]
 ADD [UserPassword] VARCHAR(50) NOT NULL
 
+ALTER TABLE [USER]
+ADD [Role] INT NOT NULL
+
 CREATE TABLE CABANG (
     IDCabang INT IDENTITY(1,1) PRIMARY KEY,
     NamaCabang VARCHAR(255) NOT NULL, -- e.g., 'Cabang Bandung', 'Cabang Jakarta'

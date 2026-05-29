@@ -70,10 +70,11 @@ app.post('/api/register', async (req, res) => {
         userRequest.input('JenisKelamin', sql.Char, jenisKelamin);
         userRequest.input('TanggalLahir', sql.Date, tanggalLahir);
         userRequest.input('UserPassword', sql.VarChar, password);
+        userRequest.input('Role', sql.Int, 1);
 
         const userQuery = `
-            INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, UserPassword)
-            VALUES (@Nama, @TanggalLahir, @JenisKelamin, @UserPassword);
+            INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, UserPassword, [Role])
+            VALUES (@Nama, @TanggalLahir, @JenisKelamin, @UserPassword, @Role);
             SELECT SCOPE_IDENTITY() AS NewUserID;
         `   
 
