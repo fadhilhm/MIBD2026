@@ -28,6 +28,18 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
+// cek apakah pegawai
+const cekPegawai = (req, res, next) => {
+    if (!req.session.role || req.session.role !== 'pegawai') {
+        return res.status(403).json({ 
+            success: false, 
+            message: 'Akses ditolak. Hanya pegawai yang boleh menambahkan data Mobil!' 
+        });
+    }
+    
+    next(); 
+};
+
 // mengambil data mobil
 router.get('/get-data-mobil', async (req, res) => {
     try {
@@ -48,15 +60,8 @@ router.get('/get-data-mobil', async (req, res) => {
 });
 
 // menambahhkan data mobil yang baru
-router.post('/add-data-mobil', upload.single('fotoMobil'), async (req, res) => {
+router.post('/add-data-mobil', cekPegawai, upload.single('fotoMobil'), async (req, res) => {
     const { nopol, tipe, merek, kapasitas, tahunPembuatan, hargaSewa } = req.body;
-    
-    if (!req.session.role || req.session.role !== 'pegawai') {
-        return res.status(403).json({ 
-            success: false, 
-            message: 'Akses ditolak. Hanya pegawai yang boleh menambahkan data Mobil!' 
-        });
-    }
 
     const pool = getPool();
     const transaction = new sql.Transaction(pool);
