@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "msnodesqlv8": "^5.2.0",
     "mssql": "^12.5.4",
     "multer": "^2.1.1"

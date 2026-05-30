@@ -1,6 +1,6 @@
 export async function getDaftarMobil() {
     try {
-        const response = await fetch('/api/get-data-mobil');
+        const response = await fetch('/api/mobil/get-data-mobil');
 
         if (!response.ok) {
             throw new Error(`Gagal mengambil data. Status: ${response.status}`);
@@ -16,7 +16,7 @@ export async function getDaftarMobil() {
 // mengirim data mobil beserta file gambar ke db
 export async function addDataMobil(formData) {
     try {
-        const response = await fetch('/api/add-data-mobil', {
+        const response = await fetch('/api/mobil/add-data-mobil', {
             method: "POST",
             body: formData
         });

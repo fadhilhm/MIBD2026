@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const { getPool } = require('../server-config/db');
+const { getPool, sql } = require('../server-config/db');
 
 // multer untuk upload foto mobil
 const storage = multer.diskStorage({
@@ -26,19 +26,7 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({
-    storage: storage,
-    // perbolehkan .png saja
-    fileFilter: function (req, file, cb) {
-        const ekstensi = path.extname(file.originalname).toLowerCase();
-        
-        if (ekstensi !== '.png' || file.mimetype !== 'image/png') {
-            return cb(null, false); 
-        }
-        
-        cb(null, true);
-    }
-});
+const upload = multer({ storage: storage });
 
 // mengambil data mobil
 router.get('/get-data-mobil', async (req, res) => {
@@ -60,9 +48,18 @@ router.get('/get-data-mobil', async (req, res) => {
 });
 
 // menambahhkan data mobil yang baru
-router.post('/add-data-mobil', async (req, res) => {
+router.post('/add-data-mobil', upload.single('fotoMobil'), async (req, res) => {
     const { nopol, tipe, merek, kapasitas, tahunPembuatan, hargaSewa } = req.body;
     
+    if (!req.session.role || req.session.role !== 'pegawai') {
+        return res.status(403).json({ 
+            success: false, 
+            message: 'Akses ditolak. Hanya pegawai yang boleh menambahkan data Mobil!' 
+        });
+    }
+
+    const idCabangPegawai = req.session.idCabang;
+
     try {
         const hargaSewaClean = parseFloat(hargaSewa.replace(/\./g, ''));
 
@@ -76,6 +73,7 @@ router.post('/add-data-mobil', async (req, res) => {
         request.input('Kapasitas', sql.Int, parseInt(kapasitas));
         request.input('TahunPembuatan', sql.Int, tahunPembuatan);
         request.input('HargaSewa', sql.Decimal(12, 2), hargaSewaClean);
+        request.input('IDCabang', sql.Int, idCabangPegawai);
 
         const queryDataMobil = `
             -- Cari atau buat ID Merek
@@ -96,7 +94,7 @@ router.post('/add-data-mobil', async (req, res) => {
 
             SELECT @RealIDTipe = IDTipe
             FROM TIPE_MOBIL
-            WHERE NamaTipe = @Tipe;
+            WHERE NamaTipe = @Tipe AND Kapasitas = @Kapasitas;
 
             IF @RealIDTipe IS NULL
             BEGIN
@@ -106,14 +104,14 @@ router.post('/add-data-mobil', async (req, res) => {
 
             -- Masukkan data mobil
             INSERT INTO MOBIL (Nopol, IDTipe, IDMerek, HargaSewaMobil, TahunPembuatan, IDCabang)
-            VALUES (@Nopol, @RealIDTipe, @RealIDMerek, @HargaSewa, @TahunPembuatan, 1);
+            VALUES (@Nopol, @RealIDTipe, @RealIDMerek, @HargaSewa, @TahunPembuatan, @IDCabang);
         `;
 
         await request.query(queryDataMobil);
 
         return res.status(201).json({ 
             success: true,
-            message: 'Mobil berhasil disimpan!'
+            message: 'Mobil baru sukses didaftarkan di cabang Anda!'
         })
     } catch (error) {
         console.error(error);

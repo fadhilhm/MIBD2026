@@ -18,11 +18,7 @@ document.getElementById('form-field').addEventListener('submit', async (e) => {
         const data = await response.json()
 
         if (response.ok) {
-            if (data.user.role === 'Member') {
-                window.location.href = '/dashboard-member';
-            } else {
-                window.location.href = '/dashboard-pegawai';
-            }
+            window.location.href = data.redirectUrl;
         } else {
             alert('Login Gagal: ' + data.message);
         }

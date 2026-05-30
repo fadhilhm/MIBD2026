@@ -12,11 +12,13 @@ async function verifyUserLogin(emailInput, passwordInput) {
     request.input('PasswordParam', sql.VarChar, passwordInput);
 
     const queryText = `
-        SELECT u.IDUser, u.Nama, e.AlamatEmail, u.UserPassword, u.[Role]
+        SELECT u.IDUser, u.Nama, e.AlamatEmail, u.UserPassword, u.[Role], p.IDCabang
         FROM [USER] AS u
         INNER JOIN EMAIL_USER AS e ON u.IDUser = e.IDUser
+        LEFT JOIN PEGAWAI AS p ON u.IDUser = p.IDUser
         WHERE e.AlamatEmail = @EmailParam AND u.UserPassword = @PasswordParam;
     `;
+
     const result = await request.query(queryText);
     return result.recordset;
 }
@@ -82,6 +84,7 @@ router.post('/register', async (req, res) => {
 // login
 router.post('/login', async (req, res) => {
     const { emailInput, passwordInput } = req.body;
+
     if (!emailInput || !passwordInput) {
         return res.status(400).json({ success: false, message: 'Email and password are required.' });
     }
@@ -94,12 +97,20 @@ router.post('/login', async (req, res) => {
 
         const user = records[0];
         let userRole = 
-                    user.Role === 1 ? 'Member' : 
-                    user.Role === 2 ? 'Pegawai' : 'User';
+                    user.Role === 1 ? 'member' : 
+                    user.Role === 2 ? 'pegawai' : 'user';
+
+        req.session.idUser = user.IDUser;
+        req.session.role = userRole;
+        req.session.nama = user.Nama
+
+        if (userRole == 'pegawai') req.session.idCabang = user.IDCabang;
+        else req.session.idCabang = '-';
 
         return res.status(200).json({
             success: true,
             message: `Login berhasil! Selamat datang kembali, ${user.Nama}.`,
+            redirectUrl: userRole === 'pegawai' ? 'kelola-mobil' : 'dashboard-member',
             user: { id: user.IDUser, name: user.Nama, role: userRole }
         });
     } catch (error) {
