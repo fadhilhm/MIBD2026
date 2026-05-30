@@ -1,51 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/CSS/dashboard-member.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
     <title>Dasboard</title>
 </head>
+
 <body>
     <main>
         <div class="main-container">
             <div class="sidebar">
 
-            <h2>DW Rental Car</h2>
+                <h2>DW Rental Car</h2>
 
-            <div class="menu">
+                <div class="menu">
 
-                <button class="active">
+                    <button class="active">
 
-                    <img src="/image/dashboard.png" alt="">
-                    <span>Dashboard</span>
+                        <img src="/image/dashboard.png" alt="">
+                        <span>Dashboard</span>
 
-                </button>
+                    </button>
 
-                <button>
+                    <button>
 
-                    <img src="/image/katalog.png" alt="">
-                    <span>Katalog Mobil</span>
+                        <img src="/image/katalog.png" alt="">
+                        <span>Katalog Mobil</span>
 
-                </button>
+                    </button>
+
+                </div>
+
+                <div class="exit">
+
+                    <button>
+
+                        <img src="/image/exit.png" alt="">
+                        <span>Keluar</span>
+
+                    </button>
+
+                </div>
 
             </div>
-
-            <div class="exit">
-
-                <button>
-
-                    <img src="/image/exit.png" alt="">
-                    <span>Keluar</span>
-
-                </button>
-
-            </div>
-
-        </div>
             <div class="header">
                 <h1 class="title">Dashboard</h1>
             </div>
@@ -114,7 +117,20 @@
 
             </div>
         </div>
+
     </main>
-    <script></script>
+    <script>
+        const katalogMobilButton = document.querySelector('.menu button:nth-child(2)');
+        const exitButton = document.querySelector('.exit button');
+
+        katalogMobilButton.addEventListener('click', () => {
+            window.location.href = '/katalog-mobil';
+        });
+
+        exitButton.addEventListener('click', () => {
+            window.location.href = '/login';
+        })
+    </script>
 </body>
+
 </html>

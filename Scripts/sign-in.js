@@ -8,8 +8,7 @@ document.querySelector('.form-field').addEventListener('submit', async (e) => {
     const phone = document.getElementById('phone').value;
     const noSIM = document.getElementById('no-sim').value;
     const password = document.getElementById('password').value;
-
-    const form = { nama, jenisKelamin, tanggalLahir, email, phone, noSIM, password };
+    const form = { nama, jenisKelamin, tanggalLahir, email, phone, noSIM, password};
 
     try {
         const response = await fetch('api/register', {
