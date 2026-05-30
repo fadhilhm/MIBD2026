@@ -1,3 +1,5 @@
+import { getDaftarMobil } from "./api.js";
+
 // navigasi 
 const dashboardButton = document.querySelector('.menu button:nth-child(1)');
 const exitButton = document.querySelector('.exit button');
@@ -11,8 +13,23 @@ exitButton.addEventListener('click', () => {
 });
 
 // display card
+const productContainer = document.getElementById('productContainer');
 
+async function getKatalogMobil() {
+    try {
+        const daftarMobil = await getDaftarMobil();
 
+        productContainer.innerHTML = '';
+
+        if (daftarMobil.length == 0) {
+            productContainer.innerHTML = 
+                `<p class="empty-message">Saat ini tidak ada mobil yang tersedia untuk disewa.</p>`;
+            return;
+        }
+    } catch (error) {
+        
+    }
+}
 
 // pop up enable
 const popupOverlay = document.getElementById("popupOverlay");

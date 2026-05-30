@@ -14,19 +14,19 @@ GO
 CREATE TABLE TIPE_MOBIL (
     IDTipe INT IDENTITY(1,1) PRIMARY KEY,
     NamaTipe VARCHAR(255) NOT NULL, -- e.g., 'SUV', 'Sedan', 'MPV'
-    Kapasitas INT NOT NULL          -- Passenger capacity, e.g., 5, 7
+    Kapasitas INT NOT NULL          
 );
 
 CREATE TABLE MEREK_MOBIL (
     IDMerek INT IDENTITY(1,1) PRIMARY KEY,
-    NamaMerek VARCHAR(255) NOT NULL -- e.g., 'Toyota', 'Honda', 'Suzuki'
+    NamaMerek VARCHAR(255) NOT NULL 
 );
 
 CREATE TABLE [USER] (
     IDUser INT IDENTITY(1,1) PRIMARY KEY,
     Nama VARCHAR(255) NOT NULL,
     TanggalLahir DATE NOT NULL,
-    JenisKelamin VARCHAR(20) NOT NULL -- e.g., 'Pria', 'Wanita'
+    JenisKelamin VARCHAR(20) NOT NULL 
 );
 ALTER TABLE [USER]
 ADD [UserPassword] VARCHAR(50) NOT NULL
@@ -36,23 +36,30 @@ ADD [Role] INT NOT NULL
 
 CREATE TABLE CABANG (
     IDCabang INT IDENTITY(1,1) PRIMARY KEY,
-    NamaCabang VARCHAR(255) NOT NULL, -- e.g., 'Cabang Bandung', 'Cabang Jakarta'
-    NamaJalan VARCHAR(255) NOT NULL   -- e.g., 'Jl. Ciumbuleuit No. 94'
+    NamaCabang VARCHAR(255) NOT NULL, 
+    NamaJalan VARCHAR(255) NOT NULL   
 );
 
 CREATE TABLE MOBIL (
-    Nopol VARCHAR(20) PRIMARY KEY, -- e.g., 'D 1234 ABC'
+    Nopol VARCHAR(20) PRIMARY KEY, 
     IDTipe INT NOT NULL,
     IDMerek INT NOT NULL,
-    HargaSewaMobil DECIMAL(12, 2) NOT NULL, -- Rental price per day, e.g., 500000.00
-    TahunPembuatan INT NOT NULL,            -- Manufacturing year, e.g., 2022
+    HargaSewaMobil DECIMAL(12, 2) NOT NULL, 
+    TahunPembuatan INT NOT NULL,            
     FOREIGN KEY (IDTipe) REFERENCES TIPE_MOBIL(IDTipe),
     FOREIGN KEY (IDMerek) REFERENCES MEREK_MOBIL(IDMerek)
 );
 
+ALTER TABLE MOBIL
+ADD IDCabang INT NOT NULL
+FOREIGN KEY REFERENCES CABANG(IDCabang);
+
+ALTER TABLE MOBIL
+ADD Gambar VARCHAR(2048) NOT NULL; -- Path to image
+
 CREATE TABLE MEMBER (
     IDUser INT PRIMARY KEY,
-    NoSIM VARCHAR(50) NOT NULL, -- Driver's license number
+    NoSIM VARCHAR(50) NOT NULL, 
     FOREIGN KEY (IDUser) REFERENCES [USER](IDUser) ON DELETE CASCADE
 );
 
@@ -66,7 +73,7 @@ CREATE TABLE PEGAWAI (
 CREATE TABLE EMAIL_USER (
     IDUser INT,
     IDEmail INT IDENTITY(1,1),
-    AlamatEmail VARCHAR(255) NOT NULL, -- e.g., 'user@mail.com'
+    AlamatEmail VARCHAR(255) NOT NULL,
     PRIMARY KEY (IDUser, IDEmail),
     FOREIGN KEY (IDUser) REFERENCES [USER](IDUser) ON DELETE CASCADE
 );
@@ -74,7 +81,7 @@ CREATE TABLE EMAIL_USER (
 CREATE TABLE NOTELP_USER (
     IDUser INT,
     IDNomor INT IDENTITY(1,1),
-    NomorTelp VARCHAR(30) NOT NULL, -- e.g., '08123456789'
+    NomorTelp VARCHAR(30) NOT NULL, 
     PRIMARY KEY (IDUser, IDNomor),
     FOREIGN KEY (IDUser) REFERENCES [USER](IDUser) ON DELETE CASCADE
 );
@@ -82,7 +89,7 @@ CREATE TABLE NOTELP_USER (
 CREATE TABLE EMAIL_CABANG (
     IDCabang INT,
     IDEmail INT IDENTITY(1,1),
-    AlamatEmail VARCHAR(255) NOT NULL, -- e.g., 'branch@mail.com'
+    AlamatEmail VARCHAR(255) NOT NULL, 
     PRIMARY KEY (IDCabang, IDEmail),
     FOREIGN KEY (IDCabang) REFERENCES CABANG(IDCabang) ON DELETE CASCADE
 );
@@ -90,7 +97,7 @@ CREATE TABLE EMAIL_CABANG (
 CREATE TABLE NOTELP_CABANG (
     IDCabang INT,
     IDNomor INT IDENTITY(1,1),
-    NomorTelp VARCHAR(30) NOT NULL, -- e.g., '022123456'
+    NomorTelp VARCHAR(30) NOT NULL, 
     PRIMARY KEY (IDCabang, IDNomor),
     FOREIGN KEY (IDCabang) REFERENCES CABANG(IDCabang) ON DELETE CASCADE
 );
@@ -116,7 +123,7 @@ CREATE TABLE FOTO (
     IDMember INT NOT NULL,                 
     IDPegawai INT NOT NULL,                
     Nopol VARCHAR(20) NOT NULL,
-    Gambar VARCHAR(2048) NOT NULL, -- URL link path string to hosted cloud image asset
+    Gambar VARCHAR(2048) NOT NULL, -- Path to image
     Deskripsi TEXT NULL,           -- Condition notes or structural captions
     FOREIGN KEY (IDMember) REFERENCES MEMBER(IDUser),   
     FOREIGN KEY (IDPegawai) REFERENCES PEGAWAI(IDUser),   
