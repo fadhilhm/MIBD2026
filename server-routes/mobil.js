@@ -58,14 +58,16 @@ router.post('/add-data-mobil', upload.single('fotoMobil'), async (req, res) => {
         });
     }
 
+    const pool = getPool();
+    const transaction = new sql.Transaction(pool);
+
     const idCabangPegawai = req.session.idCabang;
 
     try {
+        await transaction.begin();
+        const request = new sql.Request(transaction);
+
         const hargaSewaClean = parseFloat(hargaSewa.replace(/\./g, ''));
-
-        const pool = getPool();
-        const request = pool.request();
-
 
         request.input('Nopol', sql.VarChar, nopol);
         request.input('Merek', sql.VarChar, merek);
@@ -109,11 +111,15 @@ router.post('/add-data-mobil', upload.single('fotoMobil'), async (req, res) => {
 
         await request.query(queryDataMobil);
 
+        await transaction.commit();
+
         return res.status(201).json({ 
             success: true,
             message: 'Mobil baru sukses didaftarkan di cabang Anda!'
         })
     } catch (error) {
+        transaction.rollback();
+
         console.error(error);
         return res.status(500).json({
             success: false,
