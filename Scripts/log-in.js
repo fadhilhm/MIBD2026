@@ -1,13 +1,6 @@
 document.getElementById('form-field').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-
-    // const inputs = e.target.querySelectorAll('input');
-    
-    // Grab the text strings by layout order index (0 is first box, 1 is second box)
-    // const emailInput = inputs[0].value;
-    // const passwordInput = inputs[1].value;
-
     const emailInput = document.querySelector('input[type="email"]').value;
     const passwordInput = document.querySelector('input[type="password"]').value;
 
@@ -25,15 +18,11 @@ document.getElementById('form-field').addEventListener('submit', async (e) => {
         const data = await response.json()
 
         if (response.ok) {
-            // alert('Login berhasil');
-
             if (data.user.role === 'Member') {
                 window.location.href = '/dashboard-member';
-
             } else {
                 window.location.href = '/dashboard-pegawai';
             }
-
         } else {
             alert('Login Gagal: ' + data.message);
         }

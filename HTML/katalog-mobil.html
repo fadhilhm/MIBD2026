@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap"
         rel="stylesheet">
-    <title>Dasboard</title>
+    <title>Katalog Mobil</title>
 </head>
 
 <body>
@@ -41,7 +41,7 @@
             </div>
 
             <div class="header">
-                <h1 class="title">Dashboard</h1>
+                <h1 class="title">Katalog Mobil</h1>
             </div>
 
             <div class="main">
@@ -111,7 +111,7 @@
                             </div>
                         </div>
 
-                        <div class="rent-button">
+                        <div class="rent-button" id="rent-button">
                             <button>Pinjam</button>
                         </div>
 
@@ -170,8 +170,8 @@
 
                         <div class="input-group">
                             <label>Pilih Tanggal Kembali</label>
-                            <input type="date" id="tanggal-mulai" required
-                                onclick="document.getElementById('tanggal-mulai').showPicker()">
+                            <input type="date" id="tanggal-kembali" required
+                                onclick="document.getElementById('tanggal-kembali').showPicker()">
                         </div>
 
                         <div class="input-group">
@@ -184,7 +184,7 @@
                                 Batal
                             </button>
 
-                            <button type="submit" class="btn-submit">
+                            <button type="submit" class="btn-submit" id="button-submit">
                                 Booking
                             </button>
                         </div>
@@ -196,18 +196,7 @@
             </div>
 
     </main>
-    <script src=""></script>
-    <script>
-        const dashboardButton = document.querySelector('.menu button:nth-child(1)');
-        const exitButton = document.querySelector('.exit button');
-
-        dashboardButton.addEventListener('click', () => {
-            window.location.href = '/dashboard-member';
-        });
-
-        exitButton.addEventListener('click', () => {
-            window.location.href = '/login';
-        })</script>
+    <script src="/Scripts/katalogMobil.js"></script>
 </body>
 
 </html>

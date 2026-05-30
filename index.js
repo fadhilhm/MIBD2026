@@ -7,7 +7,8 @@ const port = 3000;
 const PATHS = {
     html: path.join(__dirname, 'HTML'),
     css: path.join(__dirname, 'CSS'),
-    scripts: path.join(__dirname, 'Scripts')
+    scripts: path.join(__dirname, 'Scripts'),
+    image: path.join(__dirname, 'public')
 };
 
 console.log(PATHS);
@@ -32,6 +33,7 @@ let pool;
 app.use(express.static(PATHS.html, { extensions: ['html'] }));
 app.use('/CSS', express.static(PATHS.css));
 app.use('/Scripts', express.static(PATHS.scripts));
+app.use(express.static(PATHS.image));
 
 // serve html page
 app.get('/', (req, res) => {
@@ -180,5 +182,20 @@ app.post('/api/login', async (req, res) => {
     } catch (error) {
         console.error(`Login Endpoint Router processing error context: `, error);
         return res.status(500).json({ success: false, message: 'Internal server error.' });
+    }
+});
+
+// Author : Steven
+// Booking
+app.post('/api/booking', async (req, res) => {
+    const { startDate, endDate } = req.body;
+
+    try {
+        return res.status(200).json({
+            success: true,
+            message: "Berhasil di booking"
+        });
+    } catch (error) {
+        console.log(error);
     }
 });
