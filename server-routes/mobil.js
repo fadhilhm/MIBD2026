@@ -1,6 +1,44 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
+const path = require('path');
 const { getPool } = require('../server-config/db');
+
+// multer untuk upload foto mobil
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, 'public/image/');
+    },
+    filename: function(req, file, cb) {
+        const merekRaw = req.body.merek;
+        const tipeRaw = req.body.tipe;
+        const nopolRaw = req.body.nopol;
+
+        const merekClean = merekRaw.toLowerCase().trim();
+        const tipeClean = tipeRaw.toLowerCase().trim();
+        const nopolClean = nopolRaw.trim();
+
+        const extension = path.extname(file.originalname).toLowerCase();
+
+        const namaFile = `${merekClean}_${tipeClean}_${nopolClean}${extension}`;
+
+        cb(null, namaFile);
+    }
+});
+
+const upload = multer({
+    storage: storage,
+    // perbolehkan .png saja
+    fileFilter: function (req, file, cb) {
+        const ekstensi = path.extname(file.originalname).toLowerCase();
+        
+        if (ekstensi !== '.png' || file.mimetype !== 'image/png') {
+            return cb(null, false); 
+        }
+        
+        cb(null, true);
+    }
+});
 
 // mengambil data mobil
 router.get('/get-data-mobil', async (req, res) => {
@@ -23,7 +61,67 @@ router.get('/get-data-mobil', async (req, res) => {
 
 // menambahhkan data mobil yang baru
 router.post('/add-data-mobil', async (req, res) => {
-     
+    const { nopol, tipe, merek, kapasitas, tahunPembuatan, hargaSewa } = req.body;
+    
+    try {
+        const hargaSewaClean = parseFloat(hargaSewa.replace(/\./g, ''));
+
+        const pool = getPool();
+        const request = pool.request();
+
+
+        request.input('Nopol', sql.VarChar, nopol);
+        request.input('Merek', sql.VarChar, merek);
+        request.input('Tipe', sql.VarChar, tipe);
+        request.input('Kapasitas', sql.Int, parseInt(kapasitas));
+        request.input('TahunPembuatan', sql.Int, tahunPembuatan);
+        request.input('HargaSewa', sql.Decimal(12, 2), hargaSewaClean);
+
+        const queryDataMobil = `
+            -- Cari atau buat ID Merek
+            DECLARE @RealIDMerek INT;
+
+            SELECT @RealIDMerek = IDMerek 
+            FROM MEREK_MOBIL
+            WHERE NamaMerek = @Merek;
+
+            IF @RealIDMerek IS NULL
+            BEGIN
+                INSERT INTO MEREK_MOBIL(NamaMerek) VALUES (@Merek)
+                SET @RealIDMerek = SCOPE_IDENTITY();
+            END
+
+            -- Cari atau buat ID Tipe
+            DECLARE @RealIDTipe INT;
+
+            SELECT @RealIDTipe = IDTipe
+            FROM TIPE_MOBIL
+            WHERE NamaTipe = @Tipe;
+
+            IF @RealIDTipe IS NULL
+            BEGIN
+                INSERT INTO TIPE_MOBIL(NamaTipe, Kapasitas) VALUES (@Tipe, @Kapasitas)
+                SET @RealIDTipe = SCOPE_IDENTITY();
+            END
+
+            -- Masukkan data mobil
+            INSERT INTO MOBIL (Nopol, IDTipe, IDMerek, HargaSewaMobil, TahunPembuatan, IDCabang)
+            VALUES (@Nopol, @RealIDTipe, @RealIDMerek, @HargaSewa, @TahunPembuatan, 1);
+        `;
+
+        await request.query(queryDataMobil);
+
+        return res.status(201).json({ 
+            success: true,
+            message: 'Mobil berhasil disimpan!'
+        })
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 });
 
 // Author : Steven

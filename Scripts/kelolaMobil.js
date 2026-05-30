@@ -34,8 +34,9 @@ popupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const nopol = document.getElementById("nopol").value;
-    const tipe = document.getElementById("tipe").value;
     const merek = document.getElementById("merek").value;
+    const tipe = document.getElementById("tipe").value;
+    const kapasitasKursi = document.getElementById("kapasitas-kursi").value
     const tahunPembuatan = document.getElementById("tahun-pembuatan").value;
     const hargaSewa = document.getElementById("harga-sewa").value;
     const fotoInput = document.getElementById("foto-mobil");
@@ -44,6 +45,7 @@ popupForm.addEventListener("submit", async (e) => {
     formData.append("nopol", nopol);
     formData.append("tipe", tipe);
     formData.append("merek", merek);
+    formData.append("kapasitas", kapasitasKursi);
     formData.append("tahunPembuatan", tahunPembuatan);
     formData.append("hargaSewa", hargaSewa);
     formData.append("fotoMobil", fotoInput.files[0]);
@@ -55,6 +57,8 @@ popupForm.addEventListener("submit", async (e) => {
             alert(result.message);
             popupOverlay.classList.remove("active");
             popupForm.reset();
+        } else {
+            alert("Gagal menyimpan data: " + result.message);
         }
     } catch (error) {
         console.error("Error saat mengirim data: ", error);

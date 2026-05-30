@@ -100,14 +100,23 @@
                 </div>
 
                 <form class="popup-form">
-
                     <div class="input-group">
                         <label>Nopol</label>
-                        <input type="text" id="nopol" pattern="[0-9]{16}" required>
+                        <input type="text" id="nopol" 
+                            pattern="[A-Za-z]{1,2}\s[0-9]{1,4}\s[A-Za-z]{1,3}" 
+                            placeholder="Cth: D 1234 ABC" 
+                            required>
                     </div>
 
                     <div class="input-group">
-                        <label>Pilih tipe</label>
+                        <label>Merek</label>
+                        <input type="text" id="merek" 
+                            placeholder="Cth: Toyota"
+                            required>
+                    </div>
+
+                    <!-- <div class="input-group">
+                        <label>Tipe</label>
                         <select name="tipe" id="tipe" required>
                             <option value="SUV">SUV</option>
                             <option value="MPV">MPV</option>
@@ -115,26 +124,39 @@
                             <option value="EV">EV</option>
                             <option value="city car">City car</option>
                         </select>
+                    </div> -->
+
+                    <div class="input-group">
+                        <label>Tipe</label>
+                        <input type="text" id="tipe" 
+                            placeholder="Cth: Avanza"
+                            required>
                     </div>
 
                     <div class="input-group">
-                        <label>Merek</label>
-                        <input type="text" id="merek" required>
+                        <label>Kapasitas Kursi</label>
+                        <input type="text" id="kapasitas-kursi" pattern="[0-9]" 
+                            placeholder="Cth: 5"
+                            required>
                     </div>
 
                     <div class="input-group">
                         <label>Tahun Pembuatan</label>
-                        <input type="text" id="tahun-pembuatan" pattern="[0-9]" required>
+                        <input type="text" id="tahun-pembuatan" pattern="[0-9][0-9][0-9][0-9]" 
+                            placeholder="Cth: 2018"
+                            required>
                     </div>
 
                     <div class="input-group">
                         <label>Harga Sewa</label>
-                        <input type="text" id="harga-sewa" required>
+                        <input type="text" id="harga-sewa" 
+                            placeholder="Cth: 250.000 atau 250000"
+                            required>
                     </div>
 
                     <div class="input-group">
                         <label>Upload Foto Mobil</label>
-                        <input type="file" id="foto-mobil" accept="image/png, image/jpeg" required>
+                        <input type="file" id="foto-mobil" accept="image/png" required>
                     </div>
 
                     <div class="button-group">
