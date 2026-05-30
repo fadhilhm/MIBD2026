@@ -26,32 +26,89 @@ async function getKatalogMobil() {
                 `<p class="empty-message">Saat ini tidak ada mobil yang tersedia untuk disewa.</p>`;
             return;
         }
+
+        daftarMobil.forEach(mobil => {
+            const hargaFormat = new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                maximumFractionDigits: 0
+            }).format(mobil.HargaSewaMobil);
+
+            const cardMobil = `
+                <div class="item-card" data-nopol="${mobil.Nopol}>
+                    <div class="status-product-active">
+                        Tersedia
+                    </div>
+
+                    <div class="img-item-container">
+                        <img src="/${mobil.NamaMerek.toLowerCase()}_${mobil.NamaTipe.toLowerCase()}_${mobil.Nopol}.png" alt="${mobil.NamaMerek} ${mobil.NamaTipe}">
+                    </div>
+
+                    <div class="info">
+                        <h5>${mobil.NamaMerek} ${mobil.NamaTipe}</h5>
+                        <div class="location">
+                            <div>
+                                <img src="location.png" alt="">
+                            </div>
+                            <p>${mobil.NamaJalan}</p>
+                        </div>
+                        <p class="price">${mobil.HargaSewaMobil} per hari</p>
+                        <div class="car-info">
+                            <div class="capacity">
+                                <img src="/image/person.png" alt="">
+                                <p>${mobil.Kapasitas} Kursi</p>
+                            </div>
+                            <div class="year-production">
+                                <img src="/image/calender.png" alt="">
+                                <p>${mobil.TahunPembuatan}/p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="rent-button">
+                        <button class="btn-pinjam">Pinjam</button>
+                    </div>
+                </div>
+            `;
+
+            productContainer.innerHTML += cardMobil;
+        });
     } catch (error) {
-        
+        console.error("Gagal memuat katalog: ", error);
+        productContainer.innerHTML = `<p class="error-message">Gagal memuat katalog mobil. Hubungi admin atau coba lagi nanti.</p>`;
     }
 }
 
+document.addEventListener('DOMContentLoaded', getKatalogMobil);
+
 // pop up enable
 const popupOverlay = document.getElementById("popupOverlay");
-const rentButton = document.getElementById("rent-button");
+
+
+productContainer.addEventListener('click', (e) => {
+    if (e.target.classList.contains('btn-pinjam')) {
+        e.preventDefault();
+
+        const card = e.target.closest('.item-card');
+        nopolMobil = card.getAttribute('data-nopol');
+
+        console.log("Mobil dipilih, Nopol: ", nopolMobil);
+
+        popupOverlay.classList.add("active");
+    }
+});
+
 const closePopUpButton = document.getElementById("closePopup");
 const btnCancel = document.getElementById("cancelPopup");
 
-rentButton.addEventListener("click", (e) => {
+const closePopup = (e) => {
     e.preventDefault();
-    popupOverlay.classList.add("active");
-});
+    popupOverlay.classList.remove("active");
+};
 
 // pop up unable
-closePopUpButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    popupOverlay.classList.remove("active");
-});
-
-btnCancel.addEventListener("click", (e) => {
-    e.preventDefault();
-    popupOverlay.classList.remove("active");
-});
+closePopUpButton.addEventListener('click', closePopup)
+btnCancel.addEventListener("click", closePopup)
 
 // handle booking
 document.querySelector(".popup-form").addEventListener("submit", async (e) => {

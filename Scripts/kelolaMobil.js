@@ -1,3 +1,9 @@
+const exitButton = document.querySelector('.exit button');
+
+exitButton.addEventListener('click', () => {
+    window.location.href = '/login'
+});
+
 // pop up enable
 const popupOverlay = document.getElementById("popupOverlay");
 const addBtn = document.getElementById("add-car");

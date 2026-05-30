@@ -8,7 +8,7 @@ router.get('/data_mobil', async (req, res) => {
         const pool = getPool();
 
         const result = await pool.request().query(`
-            SELECT M.Nopol, MK.NamaMerek, T.NamaTipe, T.Kapasitas, M.HargaSewaMobil, M.TahunPembuatan
+            SELECT M.Nopol, MK.NamaMerek, T.NamaTipe, T.Kapasitas, M.HargaSewaMobil, M.TahunPembuatan, C.NamaJalan
             FROM MOBIL M
             JOIN MEREK_MOBIL MK ON M.IDMerek = MK.IDMerek
             JOIN TIPE_MOBIL T ON M.IDTipe = T.IDTipe 
