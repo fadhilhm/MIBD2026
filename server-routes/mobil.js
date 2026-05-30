@@ -3,7 +3,7 @@ const router = express.Router();
 const { getPool } = require('../server-config/db');
 
 // mengambil data mobil
-router.get('/data_mobil', async (req, res) => {
+router.get('/get-data-mobil', async (req, res) => {
     try {
         const pool = getPool();
 
@@ -19,6 +19,11 @@ router.get('/data_mobil', async (req, res) => {
         console.error(error);
         return res.status(500).send("Failed to fetch car data");
     }
+});
+
+// menambahhkan data mobil yang baru
+router.post('/add-data-mobil', async (req, res) => {
+     
 });
 
 // Author : Steven
