@@ -1,4 +1,4 @@
-import { addDataMobil } from "./api";
+import { addDataMobil } from "./api.js";
 
 const exitButton = document.querySelector('.exit button');
 
