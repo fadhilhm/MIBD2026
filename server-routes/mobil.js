@@ -25,7 +25,6 @@ const storage = multer.diskStorage({
         cb(null, namaFile);
     }
 });
-
 const upload = multer({ storage: storage });
 
 // cek apakah pegawai

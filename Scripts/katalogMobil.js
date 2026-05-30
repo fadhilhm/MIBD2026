@@ -35,24 +35,24 @@ async function getKatalogMobil() {
             }).format(mobil.HargaSewaMobil);
 
             const cardMobil = `
-                <div class="item-card" data-nopol="${mobil.Nopol}>
+                <div class="item-card" data-nopol="${mobil.Nopol}">
                     <div class="status-product-active">
                         Tersedia
                     </div>
 
                     <div class="img-item-container">
-                        <img src="/${mobil.NamaMerek.toLowerCase()}_${mobil.NamaTipe.toLowerCase()}_${mobil.Nopol}.png" alt="${mobil.NamaMerek} ${mobil.NamaTipe}">
+                        <img src="/image/${mobil.NamaMerek.toLowerCase()}_${mobil.NamaTipe.toLowerCase()}_${mobil.Nopol.trim()}.png" alt="${mobil.NamaMerek} ${mobil.NamaTipe}">
                     </div>
 
                     <div class="info">
                         <h5>${mobil.NamaMerek} ${mobil.NamaTipe}</h5>
                         <div class="location">
                             <div>
-                                <img src="location.png" alt="">
+                                <img src="/image/location.png" alt="">
                             </div>
                             <p>${mobil.NamaJalan}</p>
                         </div>
-                        <p class="price">${mobil.HargaSewaMobil} per hari</p>
+                        <p class="price">${hargaFormat} / hari</p>
                         <div class="car-info">
                             <div class="capacity">
                                 <img src="/image/person.png" alt="">
@@ -60,7 +60,7 @@ async function getKatalogMobil() {
                             </div>
                             <div class="year-production">
                                 <img src="/image/calender.png" alt="">
-                                <p>${mobil.TahunPembuatan}/p>
+                                <p>${mobil.TahunPembuatan}</p>
                             </div>
                         </div>
                     </div>
@@ -90,7 +90,7 @@ productContainer.addEventListener('click', (e) => {
         e.preventDefault();
 
         const card = e.target.closest('.item-card');
-        nopolMobil = card.getAttribute('data-nopol');
+        const nopolMobil = card.getAttribute('data-nopol');
 
         console.log("Mobil dipilih, Nopol: ", nopolMobil);
 
