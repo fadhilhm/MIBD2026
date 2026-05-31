@@ -31,3 +31,11 @@ export async function addDataMobil(formData) {
         throw error;
     }
 }
+
+export function formatToRupiah(money) {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        maximumFractionDigits: '0'
+    }).format(money);
+};

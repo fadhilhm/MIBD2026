@@ -27,3 +27,4 @@ VALUES('Cabang Citarum', 'Jl. Diporegoro No.22')
 
 INSERT INTO PEGAWAI(IDUser, IDCabang)
 VALUES(1, 1)
+

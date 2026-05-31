@@ -40,7 +40,7 @@ app.use((req, res, next) => {
             console.log(`Request Masuk : ${req.method} ${req.url}`);
             
             if (req.session) {
-                console.log(`📦 Isi Session   :`, {
+                console.log(`Isi Session   :`, {
                     idUser: req.session.idUser || 'Belum Login',
                     role: req.session.role || 'Guest',
                     nama: req.session.nama || '-',

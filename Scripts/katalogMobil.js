@@ -1,4 +1,4 @@
-import { getDaftarMobil } from "./api.js";
+import { getDaftarMobil, formatToRupiah } from "./api.js";
 
 // navigasi 
 const dashboardButton = document.querySelector('.menu button:nth-child(1)');
@@ -12,12 +12,14 @@ exitButton.addEventListener('click', () => {
     window.location.href = '/login';
 });
 
+let daftarMobil = [];
+
 // display card
 const productContainer = document.getElementById('productContainer');
 
 async function getKatalogMobil() {
     try {
-        const daftarMobil = await getDaftarMobil();
+        daftarMobil = await getDaftarMobil();
 
         productContainer.innerHTML = '';
 
@@ -28,11 +30,7 @@ async function getKatalogMobil() {
         }
 
         daftarMobil.forEach(mobil => {
-            const hargaFormat = new Intl.NumberFormat('id-ID', {
-                style: 'currency',
-                currency: 'IDR',
-                maximumFractionDigits: 0
-            }).format(mobil.HargaSewaMobil);
+            const hargaFormat = formatToRupiah(mobil.HargaSewaMobil);
 
             const cardMobil = `
                 <div class="item-card" data-nopol="${mobil.Nopol}">
@@ -92,12 +90,24 @@ productContainer.addEventListener('click', (e) => {
         const card = e.target.closest('.item-card');
         const nopolMobil = card.getAttribute('data-nopol');
 
-        console.log("Mobil dipilih, Nopol: ", nopolMobil);
+        const mobilTerpilih = daftarMobil.find(mobil => mobil.Nopol === nopolMobil);
+
+        console.log(mobilTerpilih);
+
+        document.getElementById('popup-img').src = `/image/${mobilTerpilih.NamaMerek.toLowerCase()}_${mobilTerpilih.NamaTipe.toLowerCase()}_${mobilTerpilih.Nopol.trim()}.png`;
+        document.getElementById('popup-img').alt = `${mobilTerpilih.NamaMerek} ${mobilTerpilih.NamaTipe}`;
+        document.getElementById('popup-title').innerText = `${mobilTerpilih.NamaMerek} ${mobilTerpilih.NamaTipe}`;
+        document.getElementById('popup-cabang').innerText = `${mobilTerpilih.NamaCabang}, ${mobilTerpilih.NamaJalan}`;
+        document.getElementById('popup-nopol').innerText = `No Plat: ${mobilTerpilih.Nopol}`;
+        document.getElementById('popup-harga-sewa').innerText = `Harga / Hari: ${formatToRupiah(mobilTerpilih.HargaSewaMobil)}`;
+        document.getElementById('popup-kapasitas').innerText = `${mobilTerpilih.Kapasitas} Kursi`;
+        document.getElementById('popup-tahun-keluaran').innerText = mobilTerpilih.TahunPembuatan;
 
         popupOverlay.classList.add("active");
     }
 });
 
+// pop up unable
 const closePopUpButton = document.getElementById("closePopup");
 const btnCancel = document.getElementById("cancelPopup");
 
@@ -106,7 +116,6 @@ const closePopup = (e) => {
     popupOverlay.classList.remove("active");
 };
 
-// pop up unable
 closePopUpButton.addEventListener('click', closePopup)
 btnCancel.addEventListener("click", closePopup)
 
