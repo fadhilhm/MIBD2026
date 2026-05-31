@@ -43,7 +43,7 @@ async function renderKatalogMobil() {
                     </div>
 
                     <div class="info">
-                        <h5>${mobil.NamaMerek} ${mobil.NamaTipe}</h5>
+                        <h5>${mobil.NamaMerek}</h5>
                         <div class="location">
                             <div>
                                 <img src="/image/location.png" alt="">
@@ -59,6 +59,10 @@ async function renderKatalogMobil() {
                             <div class="year-production">
                                 <img src="/image/calender.png" alt="">
                                 <p>${mobil.TahunPembuatan}</p>
+                            </div>
+                            <div class="car-type">
+                                <img src="/image/car.png" alt="">
+                                <p>${mobil.NamaTipe}</p>
                             </div>
                         </div>
                     </div>
@@ -96,12 +100,13 @@ productContainer.addEventListener('click', (e) => {
 
         document.getElementById('popup-img').src = `/image/${mobilTerpilih.NamaMerek.toLowerCase()}_${mobilTerpilih.NamaTipe.toLowerCase()}_${mobilTerpilih.Nopol.trim()}.png`;
         document.getElementById('popup-img').alt = `${mobilTerpilih.NamaMerek} ${mobilTerpilih.NamaTipe}`;
-        document.getElementById('popup-title').innerText = `${mobilTerpilih.NamaMerek} ${mobilTerpilih.NamaTipe}`;
+        document.getElementById('popup-title').innerText = `${mobilTerpilih.NamaMerek}`;
         document.getElementById('popup-cabang').innerText = `${mobilTerpilih.NamaCabang}, ${mobilTerpilih.NamaJalan}`;
-        document.getElementById('popup-nopol').innerText = `No Plat: ${mobilTerpilih.Nopol}`;
-        document.getElementById('popup-harga-sewa').innerText = `Harga / Hari: ${formatToRupiah(mobilTerpilih.HargaSewaMobil)}`;
+        document.getElementById('popup-nopol').innerText = `${mobilTerpilih.Nopol}`;
+        document.getElementById('popup-harga-sewa').innerText = `${formatToRupiah(mobilTerpilih.HargaSewaMobil)} / Hari`;
         document.getElementById('popup-kapasitas').innerText = `${mobilTerpilih.Kapasitas} Kursi`;
         document.getElementById('popup-tahun-keluaran').innerText = mobilTerpilih.TahunPembuatan;
+        document.getElementById('popup-tipe').innerText = `${mobilTerpilih.NamaTipe}`;
 
         popupOverlay.classList.add("active");
     }
