@@ -17,7 +17,7 @@ let daftarMobil = [];
 // display card
 const productContainer = document.getElementById('productContainer');
 
-async function getKatalogMobil() {
+async function renderKatalogMobil() {
     try {
         daftarMobil = await getDaftarMobil();
 
@@ -77,7 +77,7 @@ async function getKatalogMobil() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', getKatalogMobil);
+document.addEventListener('DOMContentLoaded', renderKatalogMobil);
 
 // pop up enable
 const popupOverlay = document.getElementById("popupOverlay");
