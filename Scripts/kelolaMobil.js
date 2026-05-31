@@ -28,7 +28,7 @@ async function renderKatalogMobil() {
                         <img src="/image/${mobil.NamaMerek.toLowerCase()}_${mobil.NamaTipe.toLowerCase()}_${mobil.Nopol.trim()}.png" alt="${mobil.NamaMerek} ${mobil.NamaTipe}">
                     </div>
                     <div class="info">
-                        <h5>${mobil.NamaMerek} ${mobil.NamaTipe}</h5>
+                        <h5>${mobil.NamaMerek}</h5>
                         <div class="location">
                             <div>
                                 <img src="/image/location.png" alt="">
@@ -44,6 +44,10 @@ async function renderKatalogMobil() {
                             <div class="year-production">
                                 <img src="/image/calender.png" alt="">
                                 <p>${mobil.TahunPembuatan}</p>
+                            </div>
+                            <div class="car-type">
+                                <img src="/image/car.png" alt="">
+                                <p>${mobil.NamaTipe}</p>
                             </div>
                         </div>
                     </div>

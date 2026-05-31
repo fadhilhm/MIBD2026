@@ -68,18 +68,35 @@ router.get('/get-data-mobil', async (req, res) => {
 
 // menambahhkan data mobil yang baru
 router.post('/add-data-mobil', cekPegawai, upload.single('fotoMobil'), async (req, res) => {
-    const { nopol, tipe, merek, kapasitas, tahunPembuatan, hargaSewa } = req.body;
+    let { nopol, tipe, merek, kapasitas, tahunPembuatan, hargaSewa } = req.body;
+    
+    const idCabangPegawai = req.session.idCabang;
+
+    if (idCabangPegawai == '-') {
+        if (req.file && fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
+        }
+
+        return res.status(403).json({
+            success: false,
+            message: 'Anda tidak memiliki hak akses pegawai untuk menambahkan data mobil.'
+        });
+    }
+
+    nopol = nopol.trim();
+    tipe = tipe.trim();
+    merek = merek.trim();
+    
+    const hargaSewaClean = parseFloat(hargaSewa.replace(/\./g, '').trim());
+    const kapasitasClean = parseInt(kapasitas.trim());
+    const tahunClean = parseInt(tahunPembuatan.trim());
 
     const pool = getPool();
     const transaction = new sql.Transaction(pool);
 
-    const idCabangPegawai = req.session.idCabang;
-
     try {
         await transaction.begin();
         const request = new sql.Request(transaction);
-
-        const hargaSewaClean = parseFloat(hargaSewa.replace(/\./g, ''));
 
         request.input('Nopol', sql.VarChar, nopol);
         request.input('Merek', sql.VarChar, merek);
@@ -130,7 +147,7 @@ router.post('/add-data-mobil', cekPegawai, upload.single('fotoMobil'), async (re
             message: 'Mobil baru sukses didaftarkan di cabang Anda!'
         })
     } catch (error) {
-        transaction.rollback();
+        await transaction.rollback();
 
         console.error(error);
         return res.status(500).json({
