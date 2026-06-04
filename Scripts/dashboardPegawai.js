@@ -6,9 +6,17 @@ kelolaMobilButton.addEventListener('click', (e) => {
     window.location.href = '/kelola-mobil';
 })
 
+/**
+ * Log Out Confirmation Pop up
+ * Author: Pearce Nathaniel N.
+*/
 exitButton.addEventListener('click', (e) => {
     e.preventDefault();
-    window.location.href = '/login';
+    const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
+
+    if(confirmLogout){
+        window.location.href = '/login';
+    }
 })
 
 // pop up

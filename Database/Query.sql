@@ -6,6 +6,8 @@ SELECT *
 FROM MEMBER
 SELECT *
 FROM EMAIL_USER
+SELECT *
+FROM MOBIL
 
 -- Delete rows from table 'TableName'
 DELETE FROM [USER]
@@ -17,21 +19,24 @@ FROM [USER]
     INNER JOIN EMAIL_USER
     ON [USER].IDUser = EMAIL_USER.IDUser
 
--- Ubah user jadi pegawai dan cabang
--- UPDATE [USER]
--- SET Role = 2
--- WHERE IDUser = 1;
+-- Dummy Data
+-- DROP DB dulu
+USE master;
+GO
 
--- INSERT INTO CABANG(NamaCabang, NamaJalan)
--- VALUES('Cabang Citarum', 'Jl. Diporegoro No.22')
+ALTER DATABASE CarRentalDB 
+SET SINGLE_USER 
+WITH ROLLBACK IMMEDIATE;
+GO
 
--- INSERT INTO PEGAWAI(IDUser, IDCabang)
--- VALUES(1, 1)
+DROP DATABASE CarRentalDB;
+GO
 
--- UPDATE TIPE_MOBIL
--- SET NamaTipe = 'EV'
--- WHERE IDTipe = 2;
+-- run CarRental_MIBD.sql, kemudian kasih login adminTester OWNER
+USE CarRentalDB;
+GO
 
+<<<<<<< HEAD
 -- UPDATE MEREK_MOBIL
 -- SET NamaMerek = 'Tesla Model 3'
 -- WHERE IDMerek = 2
@@ -55,3 +60,34 @@ FROM [USER]
 
 
 -- DELETE FROM MOBIL
+=======
+INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, UserPassword, [Role])
+VALUES 
+    -- user
+    ('Fadhil', '20200112', 'M', 'fadhil', 1), 
+    ('Pearce', '20200412', 'M', 'pearce', 1),
+    -- admin
+    ('Steven', '20200212', 'M', 'steven', 2), 
+    ('Kenneth', '20200312', 'M', 'kenneth', 2);
+
+INSERT INTO CABANG (NamaCabang, NamaJalan)
+VALUES
+    ('Cabang Citarum', 'Jl. Diporogero No. 22')
+
+INSERT INTO PEGAWAI (IDUser, IDCabang)
+VALUES
+    (3, 1),
+    (4, 1)
+
+INSERT INTO EMAIL_USER(IDUser, AlamatEmail)
+VALUES
+    (1, 'fadhil@gmail.com'),
+    (2, 'pearce@gmail.com'),
+    (3, 'steven@gmail.com'),
+    (4, 'kenneth@gmail.com')
+
+INSERT INTO MEMBER (IDUser, NoSIM)
+VALUES 
+    (1, '1234567890123456'),
+    (2, '1234567890654321')
+>>>>>>> b27b03f8a6ddbce40338dd64da3f6670d07c6e58

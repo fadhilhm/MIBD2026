@@ -182,12 +182,18 @@ tr{
     font-weight: 600;
 }
 
-#action-button{
+.action-button{
     border-radius: 30px;
     background-color: rgb(172, 204, 255);
     padding: 10px;
     font-weight: 600;
     border: none;
+}
+
+.action-btn-container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 /*pop up*/
@@ -271,6 +277,8 @@ tr{
     gap: 22px;
 }
 
+/* btn input */
+
 .input-group{
     display: flex;
     flex-direction: column;
@@ -296,7 +304,7 @@ tr{
 .input-group input:focus{
     border-color: #3b82f6;
 }
-
+/* btn pop up */
 .button-group{
     display: flex;
     justify-content: space-between;
@@ -327,4 +335,52 @@ tr{
 
     cursor: pointer;
     font-weight: 600;
+}
+
+/* SUMMARY */
+.summary-container{
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+
+    padding-bottom: 15px;
+}
+
+.img-car-summary{
+    width: 100%;
+}
+
+.img-car-summary img{
+    width: 100%;
+    object-fit: contain;
+}
+
+.summary-location{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.summary-location img{
+    width: 15px;
+}
+
+.summary-car-detail{
+    display: flex;
+    justify-content: space-around;
+}
+
+.summary-car-detail img{
+    width: 18px;
+    height: 20px;
+}
+
+.summary-car-spec{
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }

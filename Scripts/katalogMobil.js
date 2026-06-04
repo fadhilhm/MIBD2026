@@ -1,21 +1,60 @@
 import { getDaftarMobil, formatToRupiah } from "./api.js";
 
-// navigasi 
+// =================================================================
+// 1. SELECTOR
+// =================================================================
 const dashboardButton = document.querySelector('.menu button:nth-child(1)');
 const exitButton = document.querySelector('.exit button');
+
+// -> Total Harga Sewa
+const elementTanggalMulai = document.getElementById('tanggal-mulai');
+const elementTanggalKembali = document.getElementById('tanggal-kembali');
+const elementHargaSewa = document.getElementById('popup-harga-sewa');
+const elementTotalHargaSewa = document.getElementById('total-harga');
+
+// -> Pop up enable
+const popupOverlay = document.getElementById("popupOverlay");
+
+// -> pop up unable
+const closePopUpButton = document.getElementById("closePopup");
+const btnCancel = document.getElementById("cancelPopup");
+const popupForm = document.querySelector(".popup-form");
+
+// -> Display Card
+const productContainer = document.getElementById('productContainer');
+
+// =================================================================
+// 2. NAVIGATION
+// =================================================================
+/**
+ * Navigation Form
+ * Author: Pearce Nathaniel N.
+*/
 
 dashboardButton.addEventListener('click', () => {
     window.location.href = '/dashboard-member';
 });
 
+/**
+ * Log Out Confirmation Pop up
+ * Author: Pearce Nathaniel N.
+*/
 exitButton.addEventListener('click', () => {
-    window.location.href = '/login';
-});
+    const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
 
+    if (confirmLogout) {
+        window.location.href = '/login';
+    }
+})
+
+
+// =================================================================
+// 3. CORE LOGIC FUNCTIONS
+// =================================================================
+
+// Display card
 let daftarMobil = [];
 
-// display card
-const productContainer = document.getElementById('productContainer');
 
 async function renderKatalogMobil() {
     try {
@@ -24,7 +63,7 @@ async function renderKatalogMobil() {
         productContainer.innerHTML = '';
 
         if (daftarMobil.length == 0) {
-            productContainer.innerHTML = 
+            productContainer.innerHTML =
                 `<p class="empty-message">Saat ini tidak ada mobil yang tersedia untuk disewa.</p>`;
             return;
         }
@@ -83,9 +122,7 @@ async function renderKatalogMobil() {
 
 document.addEventListener('DOMContentLoaded', renderKatalogMobil);
 
-// pop up enable
-const popupOverlay = document.getElementById("popupOverlay");
-
+// Pop up enable
 
 productContainer.addEventListener('click', (e) => {
     if (e.target.classList.contains('btn-pinjam')) {
@@ -112,13 +149,21 @@ productContainer.addEventListener('click', (e) => {
     }
 });
 
-// pop up unable
-const closePopUpButton = document.getElementById("closePopup");
-const btnCancel = document.getElementById("cancelPopup");
+/**
+ * Cancel Pop Up Peminjaman
+ * Author: Fadhil & Pearce Nathaniel N.
+ */
 
 const closePopup = (e) => {
     e.preventDefault();
-    popupOverlay.classList.remove("active");
+    const formElement = document.querySelector(".popup-form");
+
+    // Clear Form
+    if (formElement) formElement.reset();
+    // Reset kalkulasi harga
+    elementTotalHargaSewa.value = "";
+    // Close element
+    if (popupOverlay) popupOverlay.classList.remove("active");
 };
 
 closePopUpButton.addEventListener('click', closePopup)
@@ -135,21 +180,21 @@ document.querySelector(".popup-form").addEventListener("submit", async (e) => {
     // get id mobil
     // get id pegawai
 
-    const data = {startDate, endDate};
+    const data = { startDate, endDate };
 
     // send a request to api
     try {
         const req = await fetch('/api/booking', {
             method: "POST",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
         });
-    
+
         const res = await req.json();
 
-        if(res.success === true){
+        if (res.success === true) {
             alert(res.message);
         } else {
             alert("tidak berhasil");
@@ -160,4 +205,52 @@ document.querySelector(".popup-form").addEventListener("submit", async (e) => {
     }
 });
 
+/**
+ * Display Total Harga Peminjaman
+ * Author: Pearce Nathaniel N.
+ */
 
+
+// Parse Text to number
+function parseHargaSewa() {
+    if (!elementHargaSewa) return 0;
+
+    const textHarga = elementHargaSewa.innerText || elementHargaSewa.textContent;
+    const angka = textHarga.replace(/[^0-9]/g, '');
+
+    return parseInt(angka, 10) || 0;
+}
+
+// Hitung Total Harga Sewa
+function hitungTotalHargaSewa() {
+    const valMulai = elementTanggalMulai.value;
+    const valKembali = elementTanggalKembali.value;
+    const hargaPerHari = parseHargaSewa();
+
+    // Hitung durasi peminjaman (Hari)
+    if (valMulai && valKembali && hargaPerHari > 0) {
+        const tanggalMulai = new Date(valMulai);
+        const tanggalKembali = new Date(valKembali);
+        // Selisih dalam ms, ubah ke hari. 
+        // (1000 ms/s, 60 s/min, 60 min/h, 24 h/day) 
+        // +1 karena inklusif.
+        const durasi = Math.ceil((tanggalKembali - tanggalMulai) / (1000 * 60 * 60 * 24)) + 1;
+
+        if (durasi > 0) {
+            const totalHarga = hargaPerHari * durasi;
+            elementTotalHargaSewa.value = "Rp " + totalHarga.toLocaleString('id-ID');
+        } else if (durasi === 0) {
+            elementTotalHargaSewa.value = "Rp " + hargaPerHari.toLocaleString('id-ID');
+        } else {
+            elementTotalHargaSewa.value = "Tanggal tidak valid!";
+        }
+
+    } else {
+        elementTotalHargaSewa.value = "";
+    }
+}
+
+if (elementTanggalMulai && elementTanggalKembali) {
+    elementTanggalMulai.addEventListener('change', hitungTotalHargaSewa);
+    elementTanggalKembali.addEventListener('change', hitungTotalHargaSewa);
+}

@@ -8,15 +8,23 @@ kelolaPeminjamanBtn.addEventListener('click', (e) => {
     window.location.href = '/dashboard-pegawai'
 })
 
+/**
+ * Log Out Confirmation Pop up
+ * Author: Pearce Nathaniel N.
+*/
 exitButton.addEventListener('click', () => {
-    window.location.href = '/login'
-});
+    const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
+
+    if (confirmLogout) {
+        window.location.href = '/login';
+    }
+})
 
 // show katalog
 async function renderKatalogMobil() {
     try {
         const daftarMobil = await getDaftarMobil();
-        
+
         productContainer.innerHTML = '';
 
         if (daftarMobil.length === 0) {

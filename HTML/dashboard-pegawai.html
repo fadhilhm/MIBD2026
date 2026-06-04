@@ -67,7 +67,12 @@
                                     <p id="rent-status">Dipinjam</p>
                                     <p id="returned-status">Dikembalikan</p>
                                 </td>
-                                <td><button id="action-button">Tindakan</button></td>
+                                <td>
+                                    <div class="action-btn-container">
+                                        <button class="action-button">Konfirmasi</button>
+                                        <button class="action-button" id="action-button">Tindakan</button>
+                                    </div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -85,6 +90,42 @@
                 <div class="popup-header">
                     <h2>Form Pengembalian</h2>
                     <button id="closePopup">&times;</button>
+                </div>
+
+                <div class="summary-container">
+                    <div class="img-car-summary">
+                        <img src="/image/car.png" alt="" id="popup-img">
+                    </div>
+
+                    <h2 id="popup-title">Toyota Avanza</h2>
+
+                    <p id="popup-nopol">Plat no: B 1234 ABC</p>
+
+                    <div class="summary-location">
+                        <img src="/image/location.png" alt="">
+                        <p id="popup-cabang">Cabang: Jl Diponegoro No 22, Citarum</p>
+                    </div>
+
+
+                    <p id="popup-harga-sewa">Harga / hari: Rp750.000</p>
+
+                    <div class="summary-car-detail">
+                        <div class="summary-car-spec">
+                            <img src="/image/person.png" alt="">
+                            <p id="popup-kapasitas">7 Kursi</p>
+                        </div>
+
+                        <div class="summary-car-spec">
+                            <img src="/image/calender.png" alt="">
+                            <p id="popup-tahun-keluaran">2022</p>
+                        </div>
+
+                        <div class="summary-car-spec">
+                            <img src="/image/car.png" alt="">
+                            <p id="popup-tipe">2022</p>
+                        </div>
+                    </div>
+
                 </div>
 
                 <form class="popup-form">
@@ -111,7 +152,7 @@
 
                     <div class="input-group">
                         <label>Link Foto Setelah Pemakaian</label>
-                        <input type="text" required>
+                        <input type="url" required>
                     </div>
 
                     <div class="button-group">

@@ -16,7 +16,7 @@ const PATHS = {
     css: path.join(__dirname, 'CSS'),
     scripts: path.join(__dirname, 'Scripts'),
     image: path.join(__dirname, 'public')
-};
+};  
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
