@@ -1,8 +1,35 @@
 import { getDaftarMobil, formatToRupiah } from "./api.js";
 
-// navigasi 
+// =================================================================
+// 1. SELECTOR
+// =================================================================
 const dashboardButton = document.querySelector('.menu button:nth-child(1)');
 const exitButton = document.querySelector('.exit button');
+
+// -> Total Harga Sewa
+const elementTanggalMulai = document.getElementById('tanggal-mulai');
+const elementTanggalKembali = document.getElementById('tanggal-kembali');
+const elementHargaSewa = document.getElementById('popup-harga-sewa');
+const elementTotalHargaSewa = document.getElementById('total-harga');
+
+// -> Pop up enable
+const popupOverlay = document.getElementById("popupOverlay");
+
+// -> pop up unable
+const closePopUpButton = document.getElementById("closePopup");
+const btnCancel = document.getElementById("cancelPopup");
+const popupForm = document.querySelector(".popup-form");
+
+// -> Display Card
+const productContainer = document.getElementById('productContainer');
+
+// =================================================================
+// 2. NAVIGATION
+// =================================================================
+/**
+ * Navigation Form
+ * Author: Pearce Nathaniel N.
+*/
 
 dashboardButton.addEventListener('click', () => {
     window.location.href = '/dashboard-member';
@@ -20,10 +47,14 @@ exitButton.addEventListener('click', () => {
     }
 })
 
-// display card
+
+// =================================================================
+// 3. CORE LOGIC FUNCTIONS
+// =================================================================
+
+// Display card
 let daftarMobil = [];
 
-const productContainer = document.getElementById('productContainer');
 
 async function renderKatalogMobil() {
     try {
@@ -91,9 +122,7 @@ async function renderKatalogMobil() {
 
 document.addEventListener('DOMContentLoaded', renderKatalogMobil);
 
-// pop up enable
-const popupOverlay = document.getElementById("popupOverlay");
-
+// Pop up enable
 
 productContainer.addEventListener('click', (e) => {
     if (e.target.classList.contains('btn-pinjam')) {
@@ -120,13 +149,21 @@ productContainer.addEventListener('click', (e) => {
     }
 });
 
-// pop up unable
-const closePopUpButton = document.getElementById("closePopup");
-const btnCancel = document.getElementById("cancelPopup");
+/**
+ * Cancel Pop Up Peminjaman
+ * Author: Fadhil & Pearce Nathaniel N.
+ */
 
 const closePopup = (e) => {
     e.preventDefault();
-    popupOverlay.classList.remove("active");
+    const formElement = document.querySelector(".popup-form");
+
+    // Clear Form
+    if (formElement) formElement.reset();
+    // Reset kalkulasi harga
+    elementTotalHargaSewa.value = "";
+    // Close element
+    if (popupOverlay) popupOverlay.classList.remove("active");
 };
 
 closePopUpButton.addEventListener('click', closePopup)
@@ -173,11 +210,6 @@ document.querySelector(".popup-form").addEventListener("submit", async (e) => {
  * Author: Pearce Nathaniel N.
  */
 
-// Select Elements
-const elementTanggalMulai = document.getElementById('tanggal-mulai');
-const elementTanggalKembali = document.getElementById('tanggal-kembali');
-const elementHargaSewa = document.getElementById('popup-harga-sewa');
-const elementTotalHargaSewa = document.getElementById('total-harga');
 
 // Parse Text to number
 function parseHargaSewa() {
