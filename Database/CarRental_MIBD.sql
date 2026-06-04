@@ -1,9 +1,3 @@
--- ============================================================================
--- SQL SCRIPT: CarRentalDB Schema Setup
--- Database Engine: Microsoft SQL Server (MS SQL Server)
--- Design Pattern: Relational Layout with Composite Primary Keys 
--- ============================================================================
-
 CREATE DATABASE CarRentalDB;
 GO
 
