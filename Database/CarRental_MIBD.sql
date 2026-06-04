@@ -98,9 +98,9 @@ CREATE TABLE PEMINJAMAN (
     IDMember INT,                          
     Nopol VARCHAR(20),
     IDPegawai INT,                         
-    TanggalPeminjaman DATETIME,
-    TanggalKembali DATETIME NULL,
-    TanggalBatasPengembalian DATETIME NOT NULL,
+    TanggalPeminjaman DATE,
+    TanggalKembali DATE NULL,
+    TanggalBatasPengembalian DATE NOT NULL,
     TotalBiaya DECIMAL(12, 2) NOT NULL,
     PersentaseDenda DECIMAL(5, 2) NOT NULL, -- e.g., 10.50 for 10.5%
     PRIMARY KEY (IDMember, Nopol, IDPegawai, TanggalPeminjaman),

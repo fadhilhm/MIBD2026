@@ -9,7 +9,7 @@ async function verifyUserLogin(emailInput, passwordInput) {
     const request = new sql.Request(pool);
 
     request.input('EmailParam', sql.VarChar, emailInput);
-    request.input('PasswordParam', sql.VarChar, passwordInput);
+    request.input('PasswordParam', sql. VarChar, passwordInput);
 
     const queryText = `
         SELECT u.IDUser, u.Nama, e.AlamatEmail, u.UserPassword, u.[Role], p.IDCabang
