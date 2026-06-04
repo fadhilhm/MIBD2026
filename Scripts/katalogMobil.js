@@ -15,15 +15,14 @@ dashboardButton.addEventListener('click', () => {
 exitButton.addEventListener('click', () => {
     const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
 
-    if(confirmLogout){
+    if (confirmLogout) {
         window.location.href = '/login';
     }
 })
 
-
+// display card
 let daftarMobil = [];
 
-// display card
 const productContainer = document.getElementById('productContainer');
 
 async function renderKatalogMobil() {
@@ -33,7 +32,7 @@ async function renderKatalogMobil() {
         productContainer.innerHTML = '';
 
         if (daftarMobil.length == 0) {
-            productContainer.innerHTML = 
+            productContainer.innerHTML =
                 `<p class="empty-message">Saat ini tidak ada mobil yang tersedia untuk disewa.</p>`;
             return;
         }
@@ -144,21 +143,21 @@ document.querySelector(".popup-form").addEventListener("submit", async (e) => {
     // get id mobil
     // get id pegawai
 
-    const data = {startDate, endDate};
+    const data = { startDate, endDate };
 
     // send a request to api
     try {
         const req = await fetch('/api/booking', {
             method: "POST",
             headers: {
-                "Content-Type" : "application/json"
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
         });
-    
+
         const res = await req.json();
 
-        if(res.success === true){
+        if (res.success === true) {
             alert(res.message);
         } else {
             alert("tidak berhasil");
@@ -169,4 +168,57 @@ document.querySelector(".popup-form").addEventListener("submit", async (e) => {
     }
 });
 
+/**
+ * Display Total Harga Peminjaman
+ * Author: Pearce Nathaniel N.
+ */
 
+// Select Elements
+const elementTanggalMulai = document.getElementById('tanggal-mulai');
+const elementTanggalKembali = document.getElementById('tanggal-kembali');
+const elementHargaSewa = document.getElementById('popup-harga-sewa');
+const elementTotalHargaSewa = document.getElementById('total-harga');
+
+// Parse Text to number
+function parseHargaSewa() {
+    if (!elementHargaSewa) return 0;
+
+    const textHarga = elementHargaSewa.innerText || elementHargaSewa.textContent;
+    const angka = textHarga.replace(/[^0-9]/g, '');
+
+    return parseInt(angka, 10) || 0;
+}
+
+// Hitung Total Harga Sewa
+function hitungTotalHargaSewa() {
+    const valMulai = elementTanggalMulai.value;
+    const valKembali = elementTanggalKembali.value;
+    const hargaPerHari = parseHargaSewa();
+
+    // Hitung durasi peminjaman (Hari)
+    if (valMulai && valKembali && hargaPerHari > 0) {
+        const tanggalMulai = new Date(valMulai);
+        const tanggalKembali = new Date(valKembali);
+        // Selisih dalam ms, ubah ke hari. 
+        // (1000 ms/s, 60 s/min, 60 min/h, 24 h/day) 
+        // +1 karena inklusif.
+        const durasi = Math.ceil((tanggalKembali - tanggalMulai) / (1000 * 60 * 60 * 24)) + 1;
+
+        if (durasi > 0) {
+            const totalHarga = hargaPerHari * durasi;
+            elementTotalHargaSewa.value = "Rp " + totalHarga.toLocaleString('id-ID');
+        } else if (durasi === 0) {
+            elementTotalHargaSewa.value = "Rp " + hargaPerHari.toLocaleString('id-ID');
+        } else {
+            elementTotalHargaSewa.value = "Tanggal tidak valid!";
+        }
+
+    } else {
+        elementTotalHargaSewa.value = "";
+    }
+}
+
+if (elementTanggalMulai && elementTanggalKembali) {
+    elementTanggalMulai.addEventListener('change', hitungTotalHargaSewa);
+    elementTanggalKembali.addEventListener('change', hitungTotalHargaSewa);
+}
