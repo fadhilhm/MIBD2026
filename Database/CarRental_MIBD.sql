@@ -1,6 +1,6 @@
 CREATE DATABASE CarRentalDB;
 GO
-
+    
 USE CarRentalDB;
 GO
 

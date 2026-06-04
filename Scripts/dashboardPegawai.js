@@ -1,9 +1,16 @@
 const exitButton = document.querySelector('.exit-button-container a');
 
+/**
+ * Log Out Confirmation Pop up
+ * Author: Pearce Nathaniel N.
+*/
 exitButton.addEventListener('click', (e) => {
     e.preventDefault();
+    const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
 
-    window.location.href = '/login';
+    if(confirmLogout){
+        window.location.href = '/login';
+    }
 })
 
 // pop up
