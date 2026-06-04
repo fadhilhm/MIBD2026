@@ -1,4 +1,10 @@
-const exitButton = document.querySelector('.exit-button-container a');
+const kelolaMobilButton = document.getElementById("kelola-mobil-btn");
+const exitButton = document.getElementById('exit-button');
+
+kelolaMobilButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '/kelola-mobil';
+})
 
 /**
  * Log Out Confirmation Pop up
@@ -15,11 +21,11 @@ exitButton.addEventListener('click', (e) => {
 
 // pop up
 const popupOverlay = document.getElementById("popupOverlay");
-const doneBtn = document.getElementById("done-button");
+const actionBtn = document.getElementById("action-button");
 const closePopUpButton = document.getElementById("closePopup");
 const btnCancel = document.getElementById("cancelPopup");
 
-doneBtn.addEventListener("click", (e) => {
+actionBtn.addEventListener("click", (e) => {
     e.preventDefault();
     popupOverlay.classList.add("active");
 });

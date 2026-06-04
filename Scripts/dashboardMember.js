@@ -23,5 +23,3 @@ exitButton.addEventListener('click', () => {
     }
 })
 
-
-// fetching data mobil yang terental dan riwayat peminjaman

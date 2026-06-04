@@ -66,13 +66,13 @@ router.get('/get-data-mobil', async (req, res) => {
     }
 });
 
-// menambahhkan data mobil yang baru
+// menambahkan data mobil yang baru
 router.post('/add-data-mobil', cekPegawai, upload.single('fotoMobil'), async (req, res) => {
     let { nopol, tipe, merek, kapasitas, tahunPembuatan, hargaSewa } = req.body;
     
     const idCabangPegawai = req.session.idCabang;
 
-    if (idCabangPegawai == '-') {
+    if (idCabangPegawai === '-') {
         if (req.file && fs.existsSync(req.file.path)) {
             fs.unlinkSync(req.file.path);
         }

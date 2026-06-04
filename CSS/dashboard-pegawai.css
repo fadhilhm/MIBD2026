@@ -12,139 +12,191 @@ html{
 }
 
 body{
-    margin: 0;
-    height: 110vh;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-content: center;
+    font-family: "Open Sans", sans-serif;
+    background-color: #efefef;
 }
 
-.main-container{
-    display: flex;
-    flex-direction: column;
-
-    justify-items: center;
-
-    width: 1100px;
-    height: 100vh;
-}
-
-.main-container h2{
-    color: #3751FE;
-}
-
-.header{
-    display: flex;
-    gap: 220px;
-}
-
-.card-header{
-    border: 1px solid black;
-    display: flex;
-    flex-direction: column;
-
-    align-items: center;
-    align-content: center;
-
-    width: 200px;
-    height: 60px;
-
-    padding: 1%;
-    border-radius: 30px;
-    border: 1px solid #969696;
-}
-
-.card-header h3{
-    display: inline-block;
-    margin: 0;
-    font-weight: 400;
-    font-size: 13px;
-}
-
-.card-header h4{
-    margin: 12px 0 0 0;
-    font-size: large;
-}
-
-.table-container{
-    border: 1px solid #969696;
-    border-radius: 30px;
-    margin-top: 40px;
-    padding: 30px;
-}
-
-.table-container h3{
-    margin-top: 2px;
-}
-
-.table-penyewaan{
-    width: 100%;
-    margin-top: 50px;
-
-    border-collapse: separate;
-    border-spacing: 0 15px;
-}
-
-thead th{
-    padding-bottom: 10px;
-}
-
-tbody th, td{
-    text-align: center;
-    vertical-align: middle;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    border-top: 1px solid #969696;
-    padding-top: 10px;
-}
-
-#done-button{
-    border-radius: 30px;
-    border: 0;
-    padding: 10px;
-    background: #64aed9;
-    font-weight: 600;
+button{
+    font-family: inherit;
     cursor: pointer;
 }
 
-#running-status{
-    border-radius: 30px;
-    border: 0;
-    padding: 2px;
-    background-color: #75FF1F;
-    font-size: 15px;
-    font-weight: 500;
+.main-container{
+    display: grid;
+
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 90px 1fr;
+
+    grid-template-areas:
+    "sidebar header"
+    "sidebar main";
+
+    height: 100vh;
 }
 
-#done-status{
-    border-radius: 30px;
-    border: 0;
-    padding: 2px;
-    background-color: #90D964;
-    font-size: 15px;
-    font-weight: 500;
-}
+.sidebar{
+    grid-area: sidebar;
 
-.exit-button-container{
-    width: 20px;
-    margin-top: 60px;
-}
+    background-color: white;
 
-.exit-button-container a{
+    border-right: 1px solid #d8d8d8;
+
+    padding: 30px 18px;
+
     display: flex;
-    gap: 10px;
-    color: black;
-    text-decoration: none;
+    flex-direction: column;
 }
 
-.exit-button-container img{
+.sidebar h2{
+    color: #3751FE;
+
+    text-align: center;
+
+    margin-bottom: 60px;
+
+    font-size: 28px;
+}
+
+/*menu di sidebar*/
+
+.menu{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.menu button,
+.exit button{
+    width: 100%;
+
+    border: none;
+    background-color: transparent;
+
+    display: flex;
+    align-items: center;
+
+    gap: 16px;
+
+    padding: 16px 18px;
+
+    border-radius: 12px;
+
+    transition: 0.2s;
+}
+
+.menu button:hover,
+.exit button:hover{
+    background-color: #f3f3f3;
+}
+
+.menu button img,
+.exit button img{
+    width: 24px;
+    height: 24px;
+}
+
+.menu button span,
+.exit button span{
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.menu .active{
+    background-color: #e9edff;
+    color: #3751FE;
+}
+
+.exit{
+    margin-top: auto;
+}
+
+/* header */
+.header{
+    grid-area: header;
+
+    background-color: white;
+
+    border-bottom: 1px solid #d8d8d8;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 40px;
+}
+
+.header h1{
+    font-size: 42px;
+    font-weight: 700;
+}
+
+/* table */
+.main-content{
+    grid-area: main;
+    padding-top: 40px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: top;
+
+    margin-left: 40px;
+}
+
+.table-container{
     width: 90%;
-    object-fit: contain;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 40px;
+    background-color: white;
 }
 
-/* BUTTON OPEN */
+table{
+    border-collapse: collapse;
+    text-align: center;
+    vertical-align: middle;
+}
+
+tr{
+    border-bottom: 1px solid #7c7b7b;
+}
+
+#waiting-status{
+    border-radius: 30px;
+    background-color: rgba(131, 136, 137, 0.413);
+    padding: 6px;
+    font-weight: 600;
+}
+
+#rent-status{
+    border-radius: 30px;
+    background-color: yellow;
+    padding: 6px;
+    font-weight: 600;
+}
+
+#returned-status{
+    border-radius: 30px;
+    background-color: rgb(58, 143, 58);
+    padding: 6px;
+    font-weight: 600;
+}
+
+.action-button{
+    border-radius: 30px;
+    background-color: rgb(172, 204, 255);
+    padding: 10px;
+    font-weight: 600;
+    border: none;
+}
+
+.action-btn-container{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/*pop up*/
 
 .btn-open{
     padding: 12px 20px;
@@ -154,8 +206,6 @@ tbody th, td{
     color: white;
     cursor: pointer;
 }
-
-/* OVERLAY */
 
 .popup-overlay{
     position: fixed;
@@ -182,8 +232,6 @@ tbody th, td{
     visibility: visible;
 }
 
-/* POPUP */
-
 .popup-container{
     width: 430px;
     background-color: #f8f8f8;
@@ -204,8 +252,6 @@ tbody th, td{
     transform: translateY(0);
 }
 
-/* HEADER */
-
 .popup-header{
     display: flex;
     justify-content: space-between;
@@ -225,13 +271,13 @@ tbody th, td{
     cursor: pointer;
 }
 
-/* FORM */
-
 .popup-form{
     display: flex;
     flex-direction: column;
     gap: 22px;
 }
+
+/* btn input */
 
 .input-group{
     display: flex;
@@ -258,9 +304,7 @@ tbody th, td{
 .input-group input:focus{
     border-color: #3b82f6;
 }
-
-/* BUTTON */
-
+/* btn pop up */
 .button-group{
     display: flex;
     justify-content: space-between;
@@ -291,4 +335,52 @@ tbody th, td{
 
     cursor: pointer;
     font-weight: 600;
+}
+
+/* SUMMARY */
+.summary-container{
+    display: flex;
+    flex-direction: column;
+
+    gap: 15px;
+
+    padding-bottom: 15px;
+}
+
+.img-car-summary{
+    width: 100%;
+}
+
+.img-car-summary img{
+    width: 100%;
+    object-fit: contain;
+}
+
+.summary-location{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.summary-location img{
+    width: 15px;
+}
+
+.summary-car-detail{
+    display: flex;
+    justify-content: space-around;
+}
+
+.summary-car-detail img{
+    width: 18px;
+    height: 20px;
+}
+
+.summary-car-spec{
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }

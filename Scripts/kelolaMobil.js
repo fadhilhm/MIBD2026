@@ -1,6 +1,12 @@
 import { addDataMobil, getDaftarMobil, formatToRupiah } from "./api.js";
 
+const kelolaPeminjamanBtn = document.getElementById('kelola-peminjaman-btn');
 const exitButton = document.querySelector('.exit button');
+
+kelolaPeminjamanBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '/dashboard-pegawai'
+})
 
 /**
  * Log Out Confirmation Pop up

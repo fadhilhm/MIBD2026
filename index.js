@@ -21,7 +21,9 @@ const PATHS = {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Simpan session
+// TODO
+// Coba local storage dan session storage
+// Simpan session (siapa yang lagi login) ? 
 app.use(session({
     secret: 'rental-mobil',
     resave: false,
@@ -32,11 +34,11 @@ app.use(session({
     }
 }));
 
-// logger
+// logger (middleware)
 app.use((req, res, next) => {
     if (req.method === 'POST' || req.method === 'PUT' || req.method === 'DELETE') {
         res.on('finish', () => {
-            console.log(`\n========= 🕒 [${new Date().toLocaleTimeString()}] =========`);
+            console.log(`\n========= [${new Date().toLocaleTimeString()}] =========`);
             console.log(`Request Masuk : ${req.method} ${req.url}`);
             
             if (req.session) {
@@ -49,7 +51,6 @@ app.use((req, res, next) => {
             } else {
                 console.log(`Session belum aktif.`);
             }
-            console.log(`============================================`);
         });
     }
 
@@ -62,14 +63,14 @@ app.use('/CSS', express.static(PATHS.css));
 app.use('/Scripts', express.static(PATHS.scripts));
 app.use(express.static(PATHS.image));
 
-// Routes
-app.use('/api', ROUTES.auth);
-app.use('/api/mobil', ROUTES.mobil);
-
 // Serve HTML page utama
 app.get('/', (req, res) => {
     res.sendFile(path.join(PATHS.html, 'index.html'));
 });
+
+// Routes
+app.use('/api', ROUTES.auth);
+app.use('/api/mobil', ROUTES.mobil);
 
 // Connect ke MS SQL
 connectMS_SQL().then(() => {

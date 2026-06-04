@@ -141,7 +141,7 @@ body{
     cursor: pointer;
 }
 
-#signin-button{
+#sign-up-button{
     width: 120px;
     height: 42px;
 
@@ -161,6 +161,6 @@ body{
     background-color: #2642ff;
 }
 
-#signin-button:hover{
+#sign-up-button:hover{
     background-color: #d1d4e3;
 }

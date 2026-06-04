@@ -38,9 +38,33 @@ GO
 USE CarRentalDB;
 GO
 
-INSERT INTO [USER]
-    (Nama, TanggalLahir, JenisKelamin, UserPassword, [Role])
-VALUES
+<<<<<<< HEAD
+-- UPDATE MEREK_MOBIL
+-- SET NamaMerek = 'Tesla Model 3'
+-- WHERE IDMerek = 2
+
+-- SELECT * FROM CABANG
+-- SELECT * FROM [User]
+-- SELECT * FROM Pegawai
+-- SELECT * FROM EMAIL_USER
+-- SELECT * FROM MOBIL
+
+-- ALTER TABLE MOBIL
+-- ADD IDCabang INT FOREIGN KEY REFERENCES Cabang(IDCabang) 
+
+-- ALTER TABLE MOBIL
+-- ALTER COLUMN 
+-- 	IDCabang INT NOT NULL
+
+-- UPDATE Mobil
+-- SET IDCabang = 1
+-- WHERE Nopol = 'BE 1234 E'
+
+
+-- DELETE FROM MOBIL
+=======
+INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, UserPassword, [Role])
+VALUES 
     -- user
     ('Fadhil', '20200112', 'M', 'fadhil', 1),
     ('Pearce', '20200412', 'M', 'pearce', 1),
@@ -181,92 +205,6 @@ GO
 -- ========================================================
 INSERT INTO MOBIL (Nopol, IDTipe, IDMerek, HargaSewaMobil, TahunPembuatan, IDCabang)
 VALUES 
-    ('D 1234 AB', 1, 1, 300000.00, 2022, 1),  -- Avanza (MPV Toyota)
-    ('D 5678 XYZ', 2, 2, 500000.00, 2023, 1); -- Civic (Sedan Honda)
-GO
-
--- ========================================================
--- 7. INSERT DATA TRANSAKSI PEMINJAMAN (MURNI DATE 'YYYY-MM-DD')
--- ========================================================
-
--- Skenario 1: Status 'Dikembalikan' & Tepat Waktu
--- Fadhil (1) sewa Avanza, di-handle Steven (3). Kembali tepat waktu.
-INSERT INTO PEMINJAMAN (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalBatasPengembalian, TanggalKembali, TotalBiaya, PersentaseDenda)
-VALUES (1, 'D 1234 AB', 3, '2026-05-10', '2026-05-13', '2026-05-13', 900000.00, 10.00);
-
--- Skenario 2: Status 'Dikembalikan' Tapi Terlambat (Kena Denda)
--- Pearce (2) sewa Civic, di-handle Kenneth (4). Batas tgl 15 Mei, kembali tgl 16 Mei.
-INSERT INTO PEMINJAMAN (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalBatasPengembalian, TanggalKembali, TotalBiaya, PersentaseDenda)
-VALUES (2, 'D 5678 XYZ', 4, '2026-05-12', '2026-05-15', '2026-05-16', 1500000.00, 10.00);
-
--- Skenario 3: Status 'Menunggu Konfirmasi' (Booking Online Terbuka)
--- Fadhil (1) booking Civic melalui web. Tertempel sementara ke Akun Sistem (5). TanggalKembali NULL.
-INSERT INTO PEMINJAMAN (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalBatasPengembalian, TanggalKembali, TotalBiaya, PersentaseDenda)
-VALUES (1, 'D 5678 XYZ', 5, '2026-06-02', '2026-06-05', NULL, 1500000.00, 10.00);
-
--- Skenario 4: Status 'Berjalan' (Mobil Sedang Digunakan)
--- Pearce (2) sewa Avanza, sudah di-approve oleh Steven (3) namun belum dikembalikan.
-INSERT INTO PEMINJAMAN (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalBatasPengembalian, TanggalKembali, TotalBiaya, PersentaseDenda)
-VALUES (2, 'D 1234 AB', 3, '2026-06-01', '2026-06-04', NULL, 900000.00, 10.00);
-GO
-
--- ========================================================
--- 8. INSERT DATA FOTO KONDISI MOBIL (Opsional)
--- ========================================================
-INSERT INTO FOTO (IDMember, IDPegawai, Nopol, Gambar, Deskripsi)
-VALUES (1, 3, 'D 1234 AB', '/images/avanza_front.jpg', 'Kondisi bumper depan mulus saat penyerahan awal.');
-GO
-
-PRINT 'Seluruh data tiruan baru berhasil dimasukkan ke dalam 13 tabel secara berurutan!';
-GO
-
--- ========================================================
--- CLEANUP TOTAL UNTUK SELURUH 13 TABEL DALAM DATABASE
--- ========================================================
-
--- 1. HAPUS DATA TABEL ANAK / KETERGANTUNGAN TERBAWAH
-DELETE FROM FOTO;
-DELETE FROM PEMINJAMAN;
-
--- 2. HAPUS DATA TABEL MOBIL 
--- (Harus dihapus sebelum TIPE_MOBIL dan MEREK_MOBIL karena memegang Foreign Key)
-DELETE FROM MOBIL;
-
--- 3. HAPUS DATA MASTER SPESIFIKASI MOBIL
-DELETE FROM TIPE_MOBIL;
-DELETE FROM MEREK_MOBIL;
-
--- 4. HAPUS DATA ATRIBUT MULTIVALUED USER & CABANG
-DELETE FROM EMAIL_USER;
-DELETE FROM NOTELP_USER;
-DELETE FROM EMAIL_CABANG;
-DELETE FROM NOTELP_CABANG;
-
--- 5. HAPUS DATA ENTITAS SUBTYPE (ISA INHERITANCE)
-DELETE FROM MEMBER;
-DELETE FROM PEGAWAI;
-
--- 6. HAPUS DATA ENTITAS INDUK UTAMA (Level Teratas)
-DELETE FROM [USER];
-DELETE FROM CABANG;
-
-
--- ========================================================
--- RESET SEMUA COUNTER IDENTITY (KEMBALI KE AWAL / SEBELUM ID 1)
--- ========================================================
--- Menggunakan RESEED ke 0 agar baris data baru berikutnya otomatis mulai dari ID 1
-
-DBCC CHECKIDENT ('TIPE_MOBIL', RESEED, 0);
-DBCC CHECKIDENT ('MEREK_MOBIL', RESEED, 0);
-DBCC CHECKIDENT ('[USER]', RESEED, 0);
-DBCC CHECKIDENT ('CABANG', RESEED, 0);
-DBCC CHECKIDENT ('FOTO', RESEED, 0);
-
--- Reset untuk tabel dengan Composite Primary Key + Identity
-DBCC CHECKIDENT ('EMAIL_USER', RESEED, 0);
-DBCC CHECKIDENT ('NOTELP_USER', RESEED, 0);
-DBCC CHECKIDENT ('EMAIL_CABANG', RESEED, 0);
-DBCC CHECKIDENT ('NOTELP_CABANG', RESEED, 0);
-
-PRINT 'Seluruh 13 tabel dalam CarRentalDB berhasil dikosongkan dan di-reset total!';
-GO
+    (1, '1234567890123456'),
+    (2, '1234567890654321')
+>>>>>>> b27b03f8a6ddbce40338dd64da3f6670d07c6e58
