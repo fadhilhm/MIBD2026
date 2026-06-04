@@ -152,7 +152,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{
     margin-top: 10px;
 }
 
-#signin-button{
+#sign-up-button{
     width: 120px;
     height: 42px;
 
@@ -184,7 +184,7 @@ input[type="date"]::-webkit-calendar-picker-indicator{
     cursor: pointer;
 }
 
-#signin-button:hover{
+#sign-up-button:hover{
     background-color: #2642ff;
 }
 

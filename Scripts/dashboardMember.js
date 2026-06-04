@@ -9,5 +9,3 @@ exitButton.addEventListener('click', () => {
     window.location.href = '/login';
 })
 
-
-// fetching data mobil yang terental dan riwayat peminjaman

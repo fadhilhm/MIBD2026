@@ -2,7 +2,7 @@ document.querySelector('.form-field').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const nama = document.getElementById('name-field').value;
-    const jenisKelamin = document.getElementById('pria-radio').checked ? 'M' : 'F';
+    const jenisKelamin = document.getElementById('pria-radio').value;
     const tanggalLahir = document.getElementById('tgl-lahir').value;
     const email = document.getElementById('email').value;
     const phone = document.getElementById('phone').value;

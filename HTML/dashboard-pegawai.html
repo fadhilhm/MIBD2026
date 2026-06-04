@@ -1,75 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../CSS/dashboard-pegawai.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
     <title>Dashboard</title>
 </head>
+
 <body>
     <main>
         <div class="main-container">
-            <h2>DW Car Rental</h2>
+            <div class="sidebar">
+                <h2>DW Car Rental</h2>
+                <div class="menu">
+                    <button class="active">
+                        <img src="/image/dashboard.png" alt="">
+                        <span>Kelola Peminjaman</span>
+                    </button>
+                    <button id="kelola-mobil-btn">
+                        <img src="/image/katalog.png" alt="">
+                        <span>Kelola Mobil</span>
+                    </button>
+                </div>
+
+                <div class="exit">
+                    <button id="exit-button">
+                        <img src="/image/exit.png" alt="">
+                        <span>Keluar</span>
+                    </button>
+                </div>
+            </div>
 
             <div class="header">
-                <div class="card-header">
-                    <h3>Rental Aktif</h3>
-                    <h4>0</h4>
-                </div>
-                <div class="card-header">
-                    <h3>Mobil Kembali Hari Ini</h3>
-                    <h4>0</h4>
-                </div>
-                <div class="card-header">
-                    <h3>Menuggu Verifikasi</h3>
-                    <h4>0</h4>
-                </div>
+                <h1>Kelola Peminjaman</h1>
             </div>
 
-            <div class="table-container">
-                <h3>Data Penyewaan</h3>
-                <table class="table-penyewaan">
-                    <thead>
-                        <tr>
-                            <th scope="col">Pelanggan</th>
-                            <th scope="col">Mobil</th>
-                            <th scope="col">Nopol</th>
-                            <th scope="col">Tanggal</th>
-                            <th scope="col">Deadline</th>
-                            <th scope="col">Status</th>
-                            <th scope="col">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Anton</td>
-                            <td>Toyota Avanza</td>
-                            <td>D 1234 AB</td>
-                            <td>20 Januari 2026</td>
-                            <td>25 Januari 2026</td>
-                            <td>
-                                <p id="running-status">Berjalan</p>
-                                <p id="done-status">Dikembalikan</p>
-                            </td>
-                            <td><button id="done-button">Selesaikan</button></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="main-content">
+                <div class="table-container">
+                    <h3>Data Penyewaan</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Pelanggan</th>
+                                <th scope="col">Mobil</th>
+                                <th scope="col">Nopol</th>
+                                <th scope="col">Tanggal</th>
+                                <th scope="col">Deadline</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Anton</td>
+                                <td>Toyota Avanza</td>
+                                <td>D 1234 AB</td>
+                                <td>20 Januari 2026</td>
+                                <td>25 Januari 2026</td>
+                                <td>
+                                    <p id="waiting-status">Menunggu Konfirmasi</p>
+                                    <p id="rent-status">Dipinjam</p>
+                                    <p id="returned-status">Dikembalikan</p>
+                                </td>
+                                <td><button id="action-button">Tindakan</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
-
-            <div class="exit-button-container">
-                <a href="http://">
-                    <img src="/image/exit.png" alt="">
-                    <p>Keluar</p>
-                </a>
-            </div>
-
-            
         </div>
-        
+
         <!-- POP UP Selesaikan -->
         <!-- Enable dengan JS -->
         <!-- Caranya timpa class css -->
@@ -125,7 +130,7 @@
 
         </div>
     </main>
-    <script src="/Scripts/dashboardPegawai.js">
-    </script>
+    <script src="/Scripts/dashboardPegawai.js"></script>
 </body>
+
 </html>

@@ -32,6 +32,26 @@ FROM [USER]
 -- SET NamaTipe = 'EV'
 -- WHERE IDTipe = 2;
 
-UPDATE MEREK_MOBIL
-SET NamaMerek = 'Tesla Model 3'
-WHERE IDMerek = 2
+-- UPDATE MEREK_MOBIL
+-- SET NamaMerek = 'Tesla Model 3'
+-- WHERE IDMerek = 2
+
+-- SELECT * FROM CABANG
+-- SELECT * FROM [User]
+-- SELECT * FROM Pegawai
+-- SELECT * FROM EMAIL_USER
+-- SELECT * FROM MOBIL
+
+-- ALTER TABLE MOBIL
+-- ADD IDCabang INT FOREIGN KEY REFERENCES Cabang(IDCabang) 
+
+-- ALTER TABLE MOBIL
+-- ALTER COLUMN 
+-- 	IDCabang INT NOT NULL
+
+-- UPDATE Mobil
+-- SET IDCabang = 1
+-- WHERE Nopol = 'BE 1234 E'
+
+
+-- DELETE FROM MOBIL
