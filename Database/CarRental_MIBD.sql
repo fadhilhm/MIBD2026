@@ -1,3 +1,13 @@
+-- Drop DB
+ALTER DATABASE CarRentalDB 
+SET SINGLE_USER 
+WITH ROLLBACK IMMEDIATE;
+GO
+
+DROP DATABASE CarRentalDB;
+GO
+
+-- Create DB
 CREATE DATABASE CarRentalDB;
 GO
     
@@ -7,7 +17,7 @@ GO
 -- Entity
 CREATE TABLE TIPE_MOBIL (
     IDTipe INT IDENTITY(1,1) PRIMARY KEY,
-    NamaTipe VARCHAR(255) NOT NULL, -- e.g., 'SUV', 'Sedan', 'MPV'
+    NamaTipe VARCHAR(255) NOT NULL, -- 'SUV', 'Sedan', 'MPV'
     Kapasitas INT NOT NULL          
 );
 
@@ -20,18 +30,18 @@ CREATE TABLE [USER] (
     IDUser INT IDENTITY(1,1) PRIMARY KEY,
     Nama VARCHAR(255) NOT NULL,
     TanggalLahir DATE NOT NULL,
-    JenisKelamin VARCHAR(20) NOT NULL 
+    JenisKelamin VARCHAR(20) NOT NULL, 
+    AlamatEmail VARCHAR(255) NOT NULL,
+    UserPassword VARCHAR(50) NOT NULL,
+    NomorTelp VARCHAR(30) NOT NULL, 
+    [Role] INT NOT NULL
 );
-ALTER TABLE [USER]
-ADD [UserPassword] VARCHAR(50) NOT NULL
-
-ALTER TABLE [USER]
-ADD [Role] INT NOT NULL
 
 CREATE TABLE CABANG (
     IDCabang INT IDENTITY(1,1) PRIMARY KEY,
     NamaCabang VARCHAR(255) NOT NULL, 
-    NamaJalan VARCHAR(255) NOT NULL   
+    NamaJalan VARCHAR(255) NOT NULL, 
+    AlamatEmail VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE MOBIL (
@@ -40,13 +50,11 @@ CREATE TABLE MOBIL (
     IDMerek INT NOT NULL,
     HargaSewaMobil DECIMAL(12, 2) NOT NULL, 
     TahunPembuatan INT NOT NULL,            
+    IDCabang INT NOT NULL,
+    FOREIGN KEY (IDCabang) REFERENCES CABANG(IDCabang),
     FOREIGN KEY (IDTipe) REFERENCES TIPE_MOBIL(IDTipe),
     FOREIGN KEY (IDMerek) REFERENCES MEREK_MOBIL(IDMerek)
 );
-
-ALTER TABLE MOBIL
-ADD IDCabang INT NOT NULL
-FOREIGN KEY REFERENCES CABANG(IDCabang);
 
 CREATE TABLE MEMBER (
     IDUser INT PRIMARY KEY,
@@ -61,30 +69,8 @@ CREATE TABLE PEGAWAI (
     FOREIGN KEY (IDCabang) REFERENCES CABANG(IDCabang)
 );
 
-CREATE TABLE EMAIL_USER (
-    IDUser INT,
-    IDEmail INT IDENTITY(1,1),
-    AlamatEmail VARCHAR(255) NOT NULL,
-    PRIMARY KEY (IDUser, IDEmail),
-    FOREIGN KEY (IDUser) REFERENCES [USER](IDUser) ON DELETE CASCADE
-);
 
-CREATE TABLE NOTELP_USER (
-    IDUser INT,
-    IDNomor INT IDENTITY(1,1),
-    NomorTelp VARCHAR(30) NOT NULL, 
-    PRIMARY KEY (IDUser, IDNomor),
-    FOREIGN KEY (IDUser) REFERENCES [USER](IDUser) ON DELETE CASCADE
-);
-
-CREATE TABLE EMAIL_CABANG (
-    IDCabang INT,
-    IDEmail INT IDENTITY(1,1),
-    AlamatEmail VARCHAR(255) NOT NULL, 
-    PRIMARY KEY (IDCabang, IDEmail),
-    FOREIGN KEY (IDCabang) REFERENCES CABANG(IDCabang) ON DELETE CASCADE
-);
-
+-- Atribut Multivalue
 CREATE TABLE NOTELP_CABANG (
     IDCabang INT,
     IDNomor INT IDENTITY(1,1),
@@ -93,12 +79,12 @@ CREATE TABLE NOTELP_CABANG (
     FOREIGN KEY (IDCabang) REFERENCES CABANG(IDCabang) ON DELETE CASCADE
 );
 
--- Relation
+-- Relasi
 CREATE TABLE PEMINJAMAN (
-    IDMember INT,                          
-    Nopol VARCHAR(20),
-    IDPegawai INT,                         
-    TanggalPeminjaman DATE,
+    IDMember INT NOT NULL,                          
+    Nopol VARCHAR(20) NOT NULL,
+    IDPegawai INT NOT NULL,
+    TanggalPeminjaman DATE NOT NULL,
     TanggalKembali DATE NULL,
     TanggalBatasPengembalian DATE NOT NULL,
     TotalBiaya DECIMAL(12, 2) NOT NULL,
