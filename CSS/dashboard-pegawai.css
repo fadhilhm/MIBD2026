@@ -1,40 +1,40 @@
-*::-webkit-scrollbar{
+*::-webkit-scrollbar {
     width: 6px;
 }
 
-*::-webkit-scrollbar-thumb{
+*::-webkit-scrollbar-thumb {
     background-color: #cfcfcf;
     border-radius: 10px;
 }
 
-html{
+html {
     font-family: "Open Sans", sans-serif;
 }
 
-body{
+body {
     font-family: "Open Sans", sans-serif;
     background-color: #efefef;
 }
 
-button{
+button {
     font-family: inherit;
     cursor: pointer;
 }
 
-.main-container{
+.main-container {
     display: grid;
 
     grid-template-columns: 260px 1fr;
     grid-template-rows: 90px 1fr;
 
     grid-template-areas:
-    "sidebar header"
-    "sidebar main";
+        "sidebar header"
+        "sidebar main";
 
     height: 100vh;
 }
 
-.sidebar{
+.sidebar {
     grid-area: sidebar;
 
     background-color: white;
@@ -47,7 +47,7 @@ button{
     flex-direction: column;
 }
 
-.sidebar h2{
+.sidebar h2 {
     color: #3751FE;
 
     text-align: center;
@@ -59,14 +59,14 @@ button{
 
 /*menu di sidebar*/
 
-.menu{
+.menu {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
 .menu button,
-.exit button{
+.exit button {
     width: 100%;
 
     border: none;
@@ -85,33 +85,33 @@ button{
 }
 
 .menu button:hover,
-.exit button:hover{
+.exit button:hover {
     background-color: #f3f3f3;
 }
 
 .menu button img,
-.exit button img{
+.exit button img {
     width: 24px;
     height: 24px;
 }
 
 .menu button span,
-.exit button span{
+.exit button span {
     font-size: 15px;
     font-weight: 600;
 }
 
-.menu .active{
+.menu .active {
     background-color: #e9edff;
     color: #3751FE;
 }
 
-.exit{
+.exit {
     margin-top: auto;
 }
 
 /* header */
-.header{
+.header {
     grid-area: header;
 
     background-color: white;
@@ -124,24 +124,26 @@ button{
     padding: 0 40px;
 }
 
-.header h1{
+.header h1 {
     font-size: 42px;
     font-weight: 700;
 }
 
 /* table */
-.main-content{
+.main-content {
     grid-area: main;
     padding-top: 40px;
+    padding-bottom: 40px;
 
     display: flex;
     flex-direction: column;
-    justify-content: top;
-
+    /* justify-content: top; */
+    justify-content: flex-start;
     margin-left: 40px;
+    overflow-y: auto;
 }
 
-.table-container{
+.table-container {
     width: 90%;
     display: flex;
     flex-direction: column;
@@ -149,40 +151,46 @@ button{
 
     padding: 40px;
     background-color: white;
+
+    /* Scroll feature */
+    max-height: 65vh;
+    overflow-y: auto;
+    overflow-x: auto;
+    border-radius: 14px;
 }
 
-table{
+table {
     border-collapse: collapse;
     text-align: center;
     vertical-align: middle;
 }
 
-tr{
+tr {
     border-bottom: 1px solid #7c7b7b;
 }
 
-#waiting-status{
+#waiting-status {
     border-radius: 30px;
     background-color: rgba(131, 136, 137, 0.413);
     padding: 6px;
     font-weight: 600;
 }
 
-#rent-status{
+#rent-status {
     border-radius: 30px;
     background-color: yellow;
     padding: 6px;
     font-weight: 600;
 }
 
-#returned-status{
+#returned-status {
     border-radius: 30px;
     background-color: rgb(58, 143, 58);
     padding: 6px;
     font-weight: 600;
 }
 
-.action-button{
+.action-button {
     border-radius: 30px;
     background-color: rgb(172, 204, 255);
     padding: 10px;
@@ -190,7 +198,7 @@ tr{
     border: none;
 }
 
-.action-btn-container{
+.action-btn-container {
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -198,7 +206,7 @@ tr{
 
 /*pop up*/
 
-.btn-open{
+.btn-open {
     padding: 12px 20px;
     border: none;
     border-radius: 10px;
@@ -207,7 +215,7 @@ tr{
     cursor: pointer;
 }
 
-.popup-overlay{
+.popup-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -215,7 +223,7 @@ tr{
     width: 100%;
     height: 100vh;
 
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
 
     display: flex;
     justify-content: center;
@@ -227,19 +235,19 @@ tr{
     transition: 0.3s;
 }
 
-.popup-overlay.active{
+.popup-overlay.active {
     opacity: 1;
     visibility: visible;
 }
 
-.popup-container{
+.popup-container {
     width: 430px;
     background-color: #f8f8f8;
 
     border-radius: 18px;
     padding: 35px;
 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 
     transform: translateY(20px);
     transition: 0.3s;
@@ -248,11 +256,11 @@ tr{
     overflow-y: auto;
 }
 
-.popup-overlay.active .popup-container{
+.popup-overlay.active .popup-container {
     transform: translateY(0);
 }
 
-.popup-header{
+.popup-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -260,18 +268,18 @@ tr{
     margin-bottom: 30px;
 }
 
-.popup-header h2{
+.popup-header h2 {
     font-size: 22px;
 }
 
-.popup-header button{
+.popup-header button {
     border: none;
     background: none;
     font-size: 30px;
     cursor: pointer;
 }
 
-.popup-form{
+.popup-form {
     display: flex;
     flex-direction: column;
     gap: 22px;
@@ -279,18 +287,18 @@ tr{
 
 /* btn input */
 
-.input-group{
+.input-group {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.input-group label{
+.input-group label {
     font-size: 14px;
     font-weight: 600;
 }
 
-.input-group input{
+.input-group input {
     padding: 15px;
     border-radius: 14px;
     border: 1px solid #d1d5db;
@@ -301,18 +309,19 @@ tr{
     background-color: white;
 }
 
-.input-group input:focus{
+.input-group input:focus {
     border-color: #3b82f6;
 }
+
 /* btn pop up */
-.button-group{
+.button-group {
     display: flex;
     justify-content: space-between;
 
     margin-top: 15px;
 }
 
-.btn-cancel{
+.btn-cancel {
     padding: 12px 24px;
 
     border-radius: 10px;
@@ -324,7 +333,7 @@ tr{
     font-weight: 600;
 }
 
-.btn-submit{
+.btn-submit {
     padding: 12px 24px;
 
     border-radius: 10px;
@@ -338,7 +347,7 @@ tr{
 }
 
 /* SUMMARY */
-.summary-container{
+.summary-container {
     display: flex;
     flex-direction: column;
 
@@ -347,27 +356,27 @@ tr{
     padding-bottom: 15px;
 }
 
-.summary-location{
+.summary-location {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
-.summary-location img{
+.summary-location img {
     width: 15px;
 }
 
-.summary-car-detail{
+.summary-car-detail {
     display: flex;
     justify-content: space-around;
 }
 
-.summary-car-detail img{
+.summary-car-detail img {
     width: 18px;
     height: 20px;
 }
 
-.summary-car-spec{
+.summary-car-spec {
     display: flex;
     flex-direction: column;
 

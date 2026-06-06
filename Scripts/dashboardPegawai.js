@@ -38,16 +38,16 @@ const btnCancel = document.getElementById("cancelPopup");
 //     popupOverlay.classList.add("active");
 // });
 
-// // pop up unable
-// closePopUpButton.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     popupOverlay.classList.remove("active");
-// });
+// pop up unable
+closePopUpButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    popupOverlay.classList.remove("active");
+});
 
-// btnCancel.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     popupOverlay.classList.remove("active");
-// });
+btnCancel.addEventListener("click", (e) => {
+    e.preventDefault();
+    popupOverlay.classList.remove("active");
+});
 
 const popupOverlayKonfirmasi = document.getElementById("popupOverlayKonfirmasi");
 const actionBtnKonfirmasi = document.getElementById("action-button-konfirmasi");
@@ -60,15 +60,15 @@ const btnCancelkonfirmasi = document.getElementById("cancelPopupKonfirmasi");
 // });
 
 // // pop up unable
-// closePopUpButtonKonfirmasi.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     popupOverlayKonfirmasi.classList.rFemove("active");
-// });
+closePopUpButtonKonfirmasi.addEventListener('click', (e) => {
+    e.preventDefault();
+    popupOverlayKonfirmasi.classList.remove("active");
+});
 
-// btnCancelkonfirmasi.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     popupOverlayKonfirmasi.classList.remove("active");
-// });
+btnCancelkonfirmasi.addEventListener("click", (e) => {
+    e.preventDefault();
+    popupOverlayKonfirmasi.classList.remove("active");
+});
 
 
 /**
