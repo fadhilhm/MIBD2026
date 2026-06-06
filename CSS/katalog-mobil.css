@@ -574,3 +574,9 @@ button{
     align-items: center;
     gap: 10px;
 }
+
+.contact-cabang{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
