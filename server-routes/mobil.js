@@ -29,7 +29,9 @@ router.get('/get-data-mobil', async (req, res) => {
                 M.HargaSewaMobil, 
                 M.TahunPembuatan, 
                 C.NamaCabang, 
-                C.NamaJalan 
+                C.NamaJalan,
+                C.AlamatEmail,
+                C.NoTelp
             FROM MOBIL M
             JOIN MEREK_MOBIL MK ON M.IDMerek = MK.IDMerek
             JOIN TIPE_MOBIL T ON M.IDTipe = T.IDTipe 
