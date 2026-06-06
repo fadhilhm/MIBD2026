@@ -67,28 +67,6 @@ export function formatToTanggalID(date) {
 }
 
 /**
- * Destroy Session Saat Logout
- * Author: Pearce Nathaniel N.
- */
-
-export async function logoutUser() {
-    try {
-        const response = await fetch('/api/auth/logout', {
-            method: 'POST'
-        });
-
-        if (!response.ok) {
-            throw new Error(`Gagal destroy session. Status: ${response.status}`);
-        }
-
-        return response;
-    } catch (error) {
-        console.error("Error pada Scripts/api.js (logoutUser): ", error);
-        throw error;
-    }
-}
-
-/**
  * Fetch data Dashboard Pegawai
  * Author: Pearce Nathaniel N.
  */
