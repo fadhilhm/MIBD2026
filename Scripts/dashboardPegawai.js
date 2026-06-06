@@ -1,4 +1,4 @@
-import { fetchDataDashboardPegawai, formatToRupiah, formatToTanggalID } from './api.js';
+import { fetchDataDashboardPegawai, logoutUser, formatToRupiah, formatToTanggalID } from './api.js';
 
 const kelolaMobilButton = document.getElementById("kelola-mobil-btn");
 const exitButton = document.getElementById('exit-button');

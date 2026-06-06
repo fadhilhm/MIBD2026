@@ -221,7 +221,7 @@ function hitungTotalHargaSewa() {
     const valKembali = elementTanggalKembali.value;
     const hargaPerHari = parseHargaSewa();
 
-    // Hitung durasi peminjaman (Hari)
+    // Hitung durasi pem    injaman (Hari)
     if (valMulai && valKembali && hargaPerHari > 0) {
         const tanggalMulai = new Date(valMulai);
         const tanggalKembali = new Date(valKembali);
