@@ -33,6 +33,7 @@ function formatDataDashboard(data) {
         }
 
         return {
+            // Data tampilan dashboard
             nama: sewa.Nama,
             merek: sewa.NamaMerek,
             nopol: sewa.Nopol,
@@ -40,13 +41,22 @@ function formatDataDashboard(data) {
             tglBatas: sewa.TanggalBatasPengembalian,
             tglKembali: sewa.TanggalKembali,
             status: statusPeminjaman,
-            totalBiaya: totalBiayaFinal
+            totalBiaya: totalBiayaFinal,
+
+            // Data Pop Up Konfirmasi
+            idMember: sewa.IDMember,
+            kapasitas: sewa.Kapasitas,
+            tahunMobil: sewa.TahunPembuatan,
+            hargaSewaPerHari: sewa.HargaSewaMobil,
+            namaCabang: sewa.NamaCabang,
+            namaJalan: sewa.NamaJalan,
+            namaTipe: sewa.NamaTipe
         };
     });
 }
 
 // Data dashboard Pegawai
-async function showDataDashboard(idPegawai) {
+async function queryDataDashboardPegawai(idPegawai) {
     const pool = await getPool();
     const request1 = new sql.Request(pool);
 
@@ -71,6 +81,7 @@ async function showDataDashboard(idPegawai) {
     request2.input('IDCabangParam', sql.Int, idCabangPegawai);
     const queryDataDashcboard = `
         SELECT 
+            PEMINJAMAN.IDMember,
             [USER].Nama,
             MEREK_MOBIL.NamaMerek,
             PEMINJAMAN.Nopol,
@@ -79,12 +90,23 @@ async function showDataDashboard(idPegawai) {
             PEMINJAMAN.TanggalKembali,
             PEMINJAMAN.TotalBiaya,
             PEMINJAMAN.PersentaseDenda,
-            PEMINJAMAN.IDPegawai
+            PEMINJAMAN.IDPegawai,
+
+            -- Data Untuk PopUp
+            MOBIL.TahunPembuatan,
+            TIPE_MOBIL.Kapasitas,
+            MOBIL.HargaSewaMobil,
+            CABANG.NamaCabang,
+            CABANG.NamaJalan,
+            TIPE_MOBIL.NamaTipe
+
         FROM PEMINJAMAN
             JOIN MEMBER ON PEMINJAMAN.IDMember = MEMBER.IDUser -- Cari idMember utk Nama
             JOIN [USER] ON [USER].IDUser = MEMBER.IDUser -- Cari Nama User
             JOIN MOBIL ON PEMINJAMAN.Nopol = MOBIL.NOPOL -- Cari idMobiil utk Nama Merek
             JOIN MEREK_MOBIL ON MOBIL.IDMerek = MEREK_MOBIL.IDMerek -- Cari Nama Merek
+            JOIN CABANG ON MOBIL.IDCabang = CABANG.IDCabang
+            JOIN TIPE_MOBIL ON MOBIL.IDTipe = TIPE_MOBIL.IDTipe 
         WHERE MOBIL.IDCabang = @IDCabangParam -- Mobil yang satu cabang dengan pegawai itu.
     `;
 
@@ -103,7 +125,7 @@ router.get('/peminjaman', async (req, res) => {
         }
 
         const idPegawai = req.session.idUser;
-        const records = await showDataDashboard(idPegawai);
+        const records = await queryDataDashboardPegawai(idPegawai);
 
         const processedData = formatDataDashboard(records);
 

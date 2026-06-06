@@ -112,7 +112,7 @@ export async function logoutUser() {
 export async function fetchDataDashboardPegawai() {
     try {
 
-        const response = await fetch('/api/peminjaman/peminjaman', {
+        const response = await   fetch('/api/peminjaman/peminjaman', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -147,4 +147,18 @@ export async function updateDataMobil(data) {
         console.error("Error pada Scripts/api.js (updateDataMobil): ", error);
         throw error;
     }
+}
+
+// Format Tanggal untuk Pop Up Konfirmasi
+export function formatToInputDate(date) {
+    if (!date) return "";
+    const d = new Date(date);
+    
+    // Ambil komponen tahun, bulan, dan tanggal
+    const year = d.getFullYear();
+    //getMonth() dimulai dari 0 (Januari = 0), maka harus ditambah 1. padStart memastikan selalu 2 digit (01, 02, dst)
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`; // Menghasilkan format tepat: YYYY-MM-DD
 }

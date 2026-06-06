@@ -1,15 +1,32 @@
-import { fetchDataDashboardPegawai, formatToRupiah, formatToTanggalID } from './api.js';
+import { fetchDataDashboardPegawai, formatToRupiah, formatToTanggalID, formatToInputDate } from './api.js';
 
+// Kelola Mobil
 const kelolaMobilButton = document.getElementById("kelola-mobil-btn");
 const exitButton = document.getElementById('exit-button');
 
+// Pop Up 
+const popupOverlay = document.getElementById("popupOverlay");
+const actionBtn = document.getElementById("action-button");
+const closePopUpButton = document.getElementById("closePopup");
+const btnCancel = document.getElementById("cancelPopup");
+// Pop Up Konfirmasi
+const popupOverlayKonfirmasi = document.getElementById("popupOverlayKonfirmasi");
+const actionBtnKonfirmasi = document.getElementById("action-button-konfirmasi");
+const closePopUpButtonKonfirmasi = document.getElementById("closePopupKonfirmasi");
+const btnCancelkonfirmasi = document.getElementById("cancelPopupKonfirmasi");
+const tbodyPeminjaman = document.getElementById("table-body-peminjaman");
+
+// Data dari query
+let listRecordsDashboardGlobal = [];
+
+// Navigasi
 kelolaMobilButton.addEventListener('click', (e) => {
     e.preventDefault();
     window.location.href = '/kelola-mobil';
 })
 
 /**
- * Log Out Confirmation Pop up
+ * Log Out Confirmation Pop up & Session Destroy 
  * Author: Pearce Nathaniel N.
 */
 exitButton.type = 'button';
@@ -43,11 +60,6 @@ exitButton.addEventListener('click', async (e) => {
 
 })
 
-// pop up
-const popupOverlay = document.getElementById("popupOverlay");
-const actionBtn = document.getElementById("action-button");
-const closePopUpButton = document.getElementById("closePopup");
-const btnCancel = document.getElementById("cancelPopup");
 
 // actionBtn.addEventListener("click", (e) => {
 //     e.preventDefault();
@@ -64,28 +76,6 @@ btnCancel.addEventListener("click", (e) => {
     e.preventDefault();
     popupOverlay.classList.remove("active");
 });
-
-const popupOverlayKonfirmasi = document.getElementById("popupOverlayKonfirmasi");
-const actionBtnKonfirmasi = document.getElementById("action-button-konfirmasi");
-const closePopUpButtonKonfirmasi = document.getElementById("closePopupKonfirmasi");
-const btnCancelkonfirmasi = document.getElementById("cancelPopupKonfirmasi");
-
-// actionBtnKonfirmasi.addEventListener("click", (e) => {
-//     e.preventDefault();
-//     popupOverlayKonfirmasi.classList.add("active");
-// });
-
-// // pop up unable
-closePopUpButtonKonfirmasi.addEventListener('click', (e) => {
-    e.preventDefault();
-    popupOverlayKonfirmasi.classList.remove("active");
-});
-
-btnCancelkonfirmasi.addEventListener("click", (e) => {
-    e.preventDefault();
-    popupOverlayKonfirmasi.classList.remove("active");
-});
-
 
 /**
  * Show data peminjaman di Dashboard Pegawai
@@ -109,6 +99,7 @@ async function loadDataDashboard() {
         }
 
         const records = await response.json();
+        listRecordsDashboardGlobal = records;
         tableBody.innerHTML = "";
 
         if (records.length === 0) {
@@ -125,10 +116,10 @@ async function loadDataDashboard() {
 
             if (sewa.status === "Menunggu Verifikasi") {
                 statusHTML = `<p id="waiting-status">Menunggu Konfirmasi</p>`;
-                actionHTML = `<button class="action-button" id="action-button-konfirmasi" data-nopol="${sewa.nopol}">Konfirmasi</button>`;
+                actionHTML = `<button class="action-button" id="action-button-konfirmasi" data-nopol="${sewa.nopol}" data-member="${sewa.idMember}" data-tanggal="${sewa.tglPeminjaman}">Konfirmasi</button>`;
             } else if (sewa.status === "Ongoing") {
                 statusHTML = `<p id="rent-status">Dipinjam</p>`;
-                actionHTML = `<button class="action-button" id="action-button" data-nopol="${sewa.nopol}">Tindakan</button>`;
+                actionHTML = `<button class="action-button" id="action-button" data-nopol="${sewa.nopol}" data-member="${sewa.idMember}" data-tanggal="${sewa.tglPeminjaman}">Tindakan</button>`;
 
             } else if (sewa.status == "Selesai") {
                 statusHTML = `<p id="returned-status">Dikembalikan</p>`;
@@ -163,26 +154,154 @@ async function loadDataDashboard() {
 
 // Helper function untuk trigeger Event Pop-up dinamis 
 function initPopupTriggers() {
-    // Ikat click tombol Tindakan
-    const btnTindakanList = document.querySelectorAll('[id="action-button"]');
-    btnTindakanList.forEach(btn => {
-        btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const nopol = btn.getAttribute("data-nopol");
-            console.log("Memproses form tindakan untuk mobil plat:", nopol);
-            if (popupOverlay) popupOverlay.classList.add("active");
-        });
-    });
-
     // Ikat click tombol Konfirmasi
     const btnKonfirmasiList = document.querySelectorAll('[id="action-button-konfirmasi"]');
+    console.log(`Jumlah tombol konfirmasi yang ditemukan di tabel: ${btnKonfirmasiList.length}`);
     btnKonfirmasiList.forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
-            const nopol = btn.getAttribute("data-nopol");
-            console.log("Memproses form konfirmasi awal untuk mobil plat:", nopol);
-            if (popupOverlayKonfirmasi) popupOverlayKonfirmasi.classList.add("active");
+            const nopolPilihan = btn.getAttribute("data-nopol");
+            const memberPilihan = btn.getAttribute("data-member");
+            const tanggalPilihan = btn.getAttribute("data-tanggal");
 
+            const dataSewaLengkap = listRecordsDashboardGlobal.find(sewa =>
+                sewa.nopol === nopolPilihan &&
+                String(sewa.idMember) === String(memberPilihan) &&
+                sewa.tglPeminjaman === tanggalPilihan
+            );
+
+            if (dataSewaLengkap) {
+                console.log("Data ditemukan! Mengisi form dan membuka pop-up konfirmasi.");
+                openPopUpKonfirmasi(dataSewaLengkap);
+            } else {
+                console.error("Gagal mencocokkan data transaksi berdasarkan Kunci Komposit.");
+                if (popupOverlayKonfirmasi) popupOverlayKonfirmasi.classList.add("active");
+            }
         })
-    })
+    });
+
+    // Ikat click tombol Tindakan
+    const btnTindakanList = document.querySelectorAll('[id="action-button"]');
+    console.log(`Jumlah tombol konfirmasi yang ditemukan di tabel: ${btnTindakanList.length}`);
+    btnTindakanList.forEach(btn => {
+        btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const nopolPilihan = btn.getAttribute("data-nopol");
+            const memberPilihan = btn.getAttribute("data-member");
+            const tanggalPilihan = btn.getAttribute("data-tanggal");
+
+            const dataSewaLengkap = listRecordsDashboardGlobal.find(sewa =>
+                sewa.nopol === nopolPilihan &&
+                String(sewa.idMember) === String(memberPilihan) &&
+                sewa.tglPeminjaman === tanggalPilihan
+            );
+
+            if (dataSewaLengkap) {
+                console.log("Data ditemukan! Mengisi form dan membuka pop-up konfirmasi.");
+                openPopUpTindakan(dataSewaLengkap);
+            } else {
+                console.error("Gagal mencocokkan data transaksi berdasarkan Kunci Komposit.");
+                if (popupOverlay) popupOverlay.classList.add("active");
+            }
+        })
+    });
+
+}
+
+/**
+ * Prefill data di Pop Up Konfirmasi
+ * Author: Pearce Nathaniel N.
+ */
+
+let peminjamanAktif = null;
+export function openPopUpKonfirmasi(data) {
+    peminjamanAktif = data;
+
+    const overlayKonfirmasi = document.getElementById("popupOverlayKonfirmasi");
+    if (!overlayKonfirmasi) return;
+
+    // Prefill data
+    overlayKonfirmasi.querySelector('#popup-title').innerText = data.merek;
+    overlayKonfirmasi.querySelector('#popup-nopol').innerText = `Plat no: ${data.nopol}`;
+    overlayKonfirmasi.querySelector('#popup-cabang').innerText = `Cabang: ${data.namaCabang}, ${data.namaJalan}`;
+    overlayKonfirmasi.querySelector('#popup-harga-sewa').innerText = `Harga / Hari: ${formatToRupiah(data.hargaSewaPerHari)}`;
+
+    overlayKonfirmasi.querySelector('#popup-kapasitas').innerText = `${data.kapasitas} Kursi`;
+    overlayKonfirmasi.querySelector('#popup-tahun-keluaran').innerText = data.tahunMobil;
+    overlayKonfirmasi.querySelector('#popup-tipe').innerText = data.namaTipe;
+
+    overlayKonfirmasi.querySelector('#nama-penyewa').value = data.nama;
+    overlayKonfirmasi.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
+    overlayKonfirmasi.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglBatas);
+
+    // Link Foto
+    overlayKonfirmasi.querySelector('#foto-depan-sebelum').value = "";
+    overlayKonfirmasi.querySelector('#foto-belakang-sebelum').value = "";
+    overlayKonfirmasi.querySelector('#foto-kanan-sebelum').value = "";
+    overlayKonfirmasi.querySelector('#foto-kiri-sebelum').value = "";
+
+    overlayKonfirmasi.classList.add("active");
+}
+
+// Pop Up Konfirmasi unable
+closePopUpButtonKonfirmasi.addEventListener('click', (e) => {
+    e.preventDefault();
+    popupOverlayKonfirmasi.classList.remove("active");
+    peminjamanAktif = null;
+});
+
+btnCancelkonfirmasi.addEventListener("click", (e) => {
+    e.preventDefault();
+    popupOverlayKonfirmasi.classList.remove("active");
+    peminjamanAktif = null;
+});
+
+tbodyPeminjaman.addEventListener("click", (e) => {
+    if (e.target && e.target.classList.contains("btn-konfirmasi-aksi")) {
+        e.preventDefault();
+        const tombol = e.target;
+
+        const nopolPilihan = tombol.getAttribute("data-nopol");
+        const memberPilihan = tombol.getAttribute("data-member");
+        const tanggalPilihan = tombol.getAttribute("data-tanggal");
+
+        const dataSewaLengkap = list
+    }
+});
+
+/**
+ * Prefill data di Pop Up Tindakan
+ * Author: Pearce Nathaniel N.
+ */
+
+export function openPopUpTindakan(data) {
+    if (!popupOverlay) return;
+
+    // Prefill data
+    popupOverlay.querySelector('#popup-title').innerText = data.merek;
+    popupOverlay.querySelector('#popup-nopol').innerText = `Plat no: ${data.nopol}`;
+    popupOverlay.querySelector('#popup-cabang').innerText = `Cabang: ${data.namaCabang}, ${data.namaJalan}`;
+    popupOverlay.querySelector('#popup-harga-sewa').innerText = `Harga / Hari: ${formatToRupiah(data.hargaSewaPerHari)}`;
+
+    popupOverlay.querySelector('#popup-kapasitas').innerText = `${data.kapasitas} Kursi`;
+    popupOverlay.querySelector('#popup-tahun-keluaran').innerText = data.tahunMobil;
+    popupOverlay.querySelector('#popup-tipe').innerText = data.namaTipe;
+
+    popupOverlay.querySelector('#nama-penyewa').value = data.nama;
+    popupOverlay.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
+    popupOverlay.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglBatas);
+
+    // Denda
+    // popupOverlay.querySelector('#jumlah-terlambat').value = " Hari";
+    // popupOverlay.querySelector('#total-denda').value = formatToRupiah();
+
+
+    // Link Foto
+    popupOverlay.querySelector('#foto-depan-sesudah').value = "";
+    popupOverlay.querySelector('#foto-belakang-sesudah').value = "";
+    popupOverlay.querySelector('#foto-kanan-sesudah').value = "";
+    popupOverlay.querySelector('#foto-kiri-sesudah').value = "";
+
+    popupOverlay.classList.add("active");
+
 }
