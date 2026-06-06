@@ -1,4 +1,4 @@
-import { formatToRupiah, getDataRiwayatRental, formatToTanggalID, logoutUser } from "./api.js";
+import { formatToRupiah, getDataRiwayatRental, formatToTanggalID } from "./api.js";
 
 const dashboardButton = document.querySelector('.menu button:nth-child(1)')
 const katalogMobilButton = document.querySelector('.menu button:nth-child(2)');
