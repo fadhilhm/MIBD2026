@@ -38,9 +38,6 @@ async function renderKatalogMobil() {
                     <div class="status-product-active">
                         Tersedia
                     </div>
-                    <div class="img-item-container">
-                        <img src="/image/${mobil.NamaMerek.toLowerCase()}_${mobil.NamaTipe.toLowerCase()}_${mobil.Nopol.trim()}.png" alt="${mobil.NamaMerek} ${mobil.NamaTipe}">
-                    </div>
                     <div class="info">
                         <h5>${mobil.NamaMerek}</h5>
                         <div class="location">

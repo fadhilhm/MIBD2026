@@ -40,3 +40,24 @@ btnCancel.addEventListener("click", (e) => {
     e.preventDefault();
     popupOverlay.classList.remove("active");
 });
+
+const popupOverlayKonfirmasi = document.getElementById("popupOverlayKonfirmasi");
+const actionBtnKonfirmasi = document.getElementById("action-button-konfirmasi");
+const closePopUpButtonKonfirmasi = document.getElementById("closePopupKonfirmasi");
+const btnCancelkonfirmasi = document.getElementById("cancelPopupKonfirmasi");
+
+actionBtnKonfirmasi.addEventListener("click", (e) => {
+    e.preventDefault();
+    popupOverlayKonfirmasi.classList.add("active");
+});
+
+// pop up unable
+closePopUpButtonKonfirmasi.addEventListener('click', (e) => {
+    e.preventDefault();
+    popupOverlayKonfirmasi.classList.remove("active");
+});
+
+btnCancelkonfirmasi.addEventListener("click", (e) => {
+    e.preventDefault();
+    popupOverlayKonfirmasi.classList.remove("active");
+});
