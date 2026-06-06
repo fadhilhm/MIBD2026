@@ -50,6 +50,22 @@ export async function getDataRiwayatRental() {
     }
 }
 
+export async function deleteMobilAPI(nopol, version){
+    try {
+        // clean
+        const url = `/api/mobil/delete-mobil/${encodeURIComponent(nopol)}?version=${version}`;
+        
+        const response = await fetch(url, {
+            method: "DELETE"
+        });
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (deleteMobilAPI): ", error);
+        throw error;
+    }
+}
+
 export function formatToRupiah(money) {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -85,6 +101,28 @@ export async function fetchDataDashboardPegawai() {
         return response;
     } catch (error) {
         console.error("Error pada Scripts/api.js (fetchDataDashboardPegawai): ", error);
+        throw error;
+    }
+}
+
+// update data mobil
+export async function updateDataMobil(data) {
+    try {
+        const response = await fetch(`/api/mobil/update-data-mobil`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal mengubah data mobil. Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (updateDataMobil): ", error);
         throw error;
     }
 }

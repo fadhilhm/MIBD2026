@@ -78,6 +78,7 @@ async function renderKatalogMobil() {
                     </div>
                     <div class="info">
                         <h5>${mobil.NamaMerek}</h5>
+                        <p>${mobil.Nopol}</p>
                         <div class="location">
                             <div>
                                 <img src="/image/location.png" alt="">
