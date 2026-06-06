@@ -256,22 +256,36 @@ button{
 
 table{
     width: 100%;
-
     border-collapse: collapse;
+    text-align: center;
+    vertical-align: middle;
 }
 
 th{
-    text-align: left;
-
     padding-bottom: 16px;
-
     border-bottom: 1px solid #d8d8d8;
-
     font-size: 18px;
 }
 
 td{
     padding-top: 22px;
-
     color: #444;
+}
+
+.status-container {
+    border-radius: 30px;
+    padding: 6px;
+    font-weight: 600;
+}
+
+.late-status{
+    background-color: rgba(255, 187, 0, 0.413);
+}
+
+.active-status{
+    background-color: yellow;
+}
+
+.finished-status{
+    background-color: rgb(58, 143, 58);
 }

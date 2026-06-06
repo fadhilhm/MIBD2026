@@ -8,7 +8,8 @@ const port = 3000;
 
 const ROUTES = {
     auth: require('./server-routes/auth'),
-    mobil: require('./server-routes/mobil')
+    mobil: require('./server-routes/mobil'),
+    peminjaman: require('./server-routes/peminjaman')
 }
 
 const PATHS = {
@@ -71,6 +72,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/api', ROUTES.auth);
 app.use('/api/mobil', ROUTES.mobil);
+app.use('/api/peminjaman', ROUTES.peminjaman);
 
 // Connect ke MS SQL
 connectMS_SQL().then(() => {
