@@ -141,7 +141,6 @@ button{
     gap: 30px;
 }
 
-.card,
 .riwayat-transaksi{
     background-color: white;
 
@@ -154,124 +153,50 @@ button{
     box-shadow: 0 2px 10px rgba(0,0,0,0.04);
 }
 
-.card-title{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    margin-bottom: 25px;
-}
-
-.card-title h3{
-    font-size: 30px;
-}
-
-.card-title a{
-    text-decoration: none;
-
-    color: #3751FE;
-
-    font-weight: 700;
-}
-
-.car-content{
-    display: flex;
-    align-items: center;
-
-    gap: 35px;
-}
-
-.car-image{
-    width: 280px;
-    height: 170px;
-
-    border: 1px solid #d8d8d8;
-
-    border-radius: 14px;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    overflow: hidden;
-}
-
-.car-image img{
-    width: 90%;
-    object-fit: contain;
-}
-
-.car-info{
-    display: flex;
-    flex-direction: column;
-
-    gap: 12px;
-}
-
-.car-info h2{
-    font-size: 32px;
-}
-
-.car-info p{
-    color: #555;
-    font-size: 17px;
-}
-
-.car-detail{
-    display: flex;
-
-    gap: 50px;
-
-    margin-top: 10px;
-
-    padding-top: 16px;
-
-    border-top: 1px solid #d8d8d8;
-}
-
-.detail-item{
-    display: flex;
-    align-items: center;
-
-    gap: 10px;
-
-    font-size: 16px;
-    color: #444;
-}
-
-.car-detail-img{
-    width: 20px;
-    height: 20px;
-}
-
-.car-detail-img img{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
 .riwayat-transaksi h2{
     margin-bottom: 20px;
 }
 
 table{
     width: 100%;
-
     border-collapse: collapse;
+    text-align: center;
+    vertical-align: middle;
 }
 
 th{
-    text-align: left;
-
-    padding-bottom: 16px;
-
     border-bottom: 1px solid #d8d8d8;
-
     font-size: 18px;
 }
 
-td{
-    padding-top: 22px;
+tr{
+    border-top: 1px solid #d8d8d8;
+}
 
-    color: #444;
+td{
+    padding: 30px;
+    color: #262626;
+}
+
+.status-container {
+    width: 80px;
+    font-weight: 600;
+}
+
+.late-status{
+    padding: 8px;
+    border-radius: 30px;
+    background-color: rgba(216, 38, 38, 0.495);
+}
+
+.active-status{
+    padding: 8px;
+    border-radius: 30px;
+    background-color: rgba(223, 223, 23, 0.788);
+}
+
+.finished-status{
+    padding: 8px;
+    border-radius: 30px;
+    background-color: rgba(20, 153, 235, 0.797);
 }

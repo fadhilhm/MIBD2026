@@ -53,69 +53,28 @@
                 <h1 class="title">Dashboard</h1>
             </div>
             <div class="main">
-
-                <div class="card">
-
-                    <div class="card-title">
-                        <h3>Rental Aktif</h3>
-                        <a href="#">Rental Lainnya</a>
-                    </div>
-
-                    <div class="car-content">
-
-                        <div class="car-info">
-                            <h2>Toyota Avanza - Merah</h2>
-                            <p>Bandung</p>
-                            <p>Dikembalikan pada 25 Oktober 2026</p>
-
-                            <div class="car-detail">
-                                <div class="detail-item">
-                                    <div class="car-detail-img">
-                                        <img src="/image/person.png" alt="">
-                                    </div>
-                                    7 kursi
-                                </div>
-                                <div class="detail-item">
-                                    <div class="car-detail-img">
-                                        <img src="/image/calender.png" alt="">
-                                    </div>
-                                    2022
-                                </div>
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
                 <div class="riwayat-transaksi">
-
-                    <h2>Riwayat Rental Terakhir</h2>
-
+                    <h2>Riwayat Rental</h2>
                     <table>
-
-                        <tr>
-                            <th>Kendaraan</th>
-                            <th>Tanggal Peminjaman</th>
-                            <th>Total</th>
-                        </tr>
-
-                        <tr>
-                            <td>Toyota Avanza</td>
-                            <td>14 Januari 2026 - 27 Februari 2026</td>
-                            <td>Rp. 10.000.000</td>
-                        </tr>
-
+                        <thead>
+                            <tr>
+                                <th scope="col">Mobil</th>
+                                <th scope="col">Nopol</th>
+                                <th scope="col">Tanggal Peminjaman</th>
+                                <th scope="col">Deadline Pengembalian</th>
+                                <th scope="col">Total Harga</th>
+                                <th scope="col">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
                     </table>
-
                 </div>
-
             </div>
         </div>
 
     </main>
-    <script src="/Scripts/dashboardMember.js"></script>
+    <script type="module" src="/Scripts/dashboardMember.js"></script>
 </body>
 
 </html>

@@ -111,7 +111,7 @@ async function renderKatalogMobil() {
         });
     } catch (error) {
         console.error("Gagal memuat katalog: ", error);
-        productContainer.innerHTML = `<p class="error-message">Gagal memuat katalog mobil. Hubungi admin atau coba lagi nanti.</p>`;
+        productContainer.innerHTML = `<p>Gagal memuat katalog mobil. Hubungi admin atau coba lagi nanti.</p>`;
     }
 }
 
@@ -128,10 +128,6 @@ productContainer.addEventListener('click', (e) => {
 
         const mobilTerpilih = daftarMobil.find(mobil => mobil.Nopol === nopolMobil);
 
-        console.log(mobilTerpilih);
-
-        document.getElementById('popup-img').src = `/image/${mobilTerpilih.NamaMerek.toLowerCase()}_${mobilTerpilih.NamaTipe.toLowerCase()}_${mobilTerpilih.Nopol.trim()}.png`;
-        document.getElementById('popup-img').alt = `${mobilTerpilih.NamaMerek} ${mobilTerpilih.NamaTipe}`;
         document.getElementById('popup-title').innerText = `${mobilTerpilih.NamaMerek}`;
         document.getElementById('popup-cabang').innerText = `${mobilTerpilih.NamaCabang}, ${mobilTerpilih.NamaJalan}`;
         document.getElementById('popup-nopol').innerText = `${mobilTerpilih.Nopol}`;
@@ -139,6 +135,8 @@ productContainer.addEventListener('click', (e) => {
         document.getElementById('popup-kapasitas').innerText = `${mobilTerpilih.Kapasitas} Kursi`;
         document.getElementById('popup-tahun-keluaran').innerText = mobilTerpilih.TahunPembuatan;
         document.getElementById('popup-tipe').innerText = `${mobilTerpilih.NamaTipe}`;
+        document.getElementById('popup-email-cabang').innerText = mobilTerpilih.AlamatEmail;
+        document.getElementById('popup-no-telp-cabang').innerText = `${mobilTerpilih.NoTelp}`;
 
         popupOverlay.classList.add("active");
     }
