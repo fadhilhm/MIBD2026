@@ -1,3 +1,5 @@
+import { renderKatalogMobil } from "./kelolaMobil.js";
+
 export async function getDaftarMobil() {
     try {
         const response = await fetch('/api/mobil/get-data-mobil');
@@ -49,6 +51,32 @@ export async function getDataRiwayatRental() {
         throw error
     }
 }
+
+// export async function deleteCar(e){
+//     if(!e.target.classList.contains("delete-button")) return;
+
+//     const nopol = e.target.dataset.nopol;
+
+//     try {
+//         const res = await fetch(`/api/mobil/delete-mobil/${nopol}`, {
+//             method: "DELETE"
+//         });
+        
+//         if(!res.ok){
+//             alert("Masalah");
+//             throw new Error("Delete gagal");
+//         }
+
+//         if(res.ok){
+//             alert("berhasil")
+//         }
+//         // render tampilan baru
+//         await renderKatalogMobil();
+//     } catch (error) {
+//         console.log(error);
+        
+//     }
+// }
 
 export function formatToRupiah(money) {
     return new Intl.NumberFormat('id-ID', {

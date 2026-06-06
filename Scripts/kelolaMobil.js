@@ -78,6 +78,7 @@ async function renderKatalogMobil() {
 
 document.addEventListener('DOMContentLoaded', renderKatalogMobil);
 
+
 // pop up enable
 const popupOverlay = document.getElementById("popupOverlay");
 const addBtn = document.getElementById("add-car");

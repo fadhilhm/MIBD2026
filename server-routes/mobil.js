@@ -3,6 +3,8 @@ const router = express.Router();
 const path = require('path');
 const { getPool, sql } = require('../server-config/db');
 
+router.use(express.urlencoded({extended: true}));
+
 // cek apakah pegawai
 const cekPegawai = (req, res, next) => {
     if (!req.session.role || req.session.role !== 'pegawai') {
@@ -28,6 +30,9 @@ router.get('/get-data-mobil', async (req, res) => {
                 T.Kapasitas, 
                 M.HargaSewaMobil, 
                 M.TahunPembuatan, 
+                M.isActive,
+                M.updatedAt,
+                M.version,
                 C.NamaCabang, 
                 C.NamaJalan,
                 C.AlamatEmail,
@@ -136,6 +141,33 @@ router.post('/booking', async (req, res) => {
         console.log(error);
         return res.status(500).json({ message: "Booking gagal" });
     }
+});
+
+// delte mobil
+router.delete("/delete-mobil/:nopol", (req, res) => {
+    const nopol = req.params.nopol;
+    // console.log(nopol)
+
+    // const pool = getPool();
+    // const transaction = new sql.Transaction(pool);
+
+    // try {
+    //     await transaction.begin();
+
+    //     const delReq = new sql.Request(transaction);
+    //     delReq.input("Nopol", sql.VarChar, nopolClean);
+
+    //     const query = `
+
+    //     `;
+
+    //     const response = delReq.execute(query);
+
+    // } catch (error) {
+    //     await transaction.rollback();
+    //     console.log(error);
+    //     res.status(401).json({ message: "gagal" });
+    // }
 });
 
 module.exports = router;
