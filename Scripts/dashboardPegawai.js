@@ -292,8 +292,22 @@ export function openPopUpTindakan(data) {
     popupOverlay.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglBatas);
 
     // Denda
-    // popupOverlay.querySelector('#jumlah-terlambat').value = " Hari";
-    // popupOverlay.querySelector('#total-denda').value = formatToRupiah();
+    const tanggalHariIni = new Date();
+    tanggalHariIni.setHours(0, 0, 0, 0);
+    const tanggalDeadline = new Date(data.tglBatas);
+    tanggalDeadline.setHours(0, 0, 0, 0);
+
+    const selisihHari = Math.ceil((tanggalHariIni - tanggalDeadline) / (100 * 60 * 60 * 24));
+
+    let hariTerlambat = 0;
+    let totalDenda = 0;
+
+    if (selisihHari > 0) {
+        hariTerlambat = selisihHari;
+        totalDenda = hariTerlambat * (data.persentaseDenda / 100.0) * (data.hargaSewaPerHari);
+    }
+    popupOverlay.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
+    popupOverlay.querySelector('#total-denda').value = formatToRupiah(totalDenda);
 
 
     // Link Foto
