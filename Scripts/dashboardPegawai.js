@@ -12,17 +12,10 @@ kelolaMobilButton.addEventListener('click', (e) => {
  * Log Out Confirmation Pop up
  * Author: Pearce Nathaniel N.
 */
-exitButton.addEventListener('click', async (e) => {
-    e.preventDefault();
+exitButton.addEventListener('click', () => {
     const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
 
     if (confirmLogout) {
-        try {
-            await logoutUser();
-        } catch (error) {
-            console.error("Gagal menghapus session di server: ", error);
-        }
-
         window.location.href = '/login';
     }
 })

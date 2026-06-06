@@ -14,16 +14,9 @@ dashboardButton.addEventListener('click', () => {
 })
 
 exitButton.addEventListener('click', () => {
-    e.preventDefault();
     const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
 
     if (confirmLogout) {
-        try {
-            await logoutUser();
-        } catch (error) {
-            console.error("Gagal menghapus session di server: ", error);
-        }
-
         window.location.href = '/login';
     }
 })
