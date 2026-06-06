@@ -17,7 +17,7 @@ const PATHS = {
     css: path.join(__dirname, 'CSS'),
     scripts: path.join(__dirname, 'Scripts'),
     image: path.join(__dirname, 'public')
-};  
+};
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
         res.on('finish', () => {
             console.log(`\n========= [${new Date().toLocaleTimeString()}] =========`);
             console.log(`Request Masuk : ${req.method} ${req.url}`);
-            
+
             if (req.session) {
                 console.log(`Isi Session   :`, {
                     idUser: req.session.idUser || 'Belum Login',

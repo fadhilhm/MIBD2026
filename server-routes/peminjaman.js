@@ -1,19 +1,123 @@
+/**
+ * Query Data Mobil pada Cabang si Pegawai yang sedang Login
+ * Author: Pearce Nathaniel N.
+ */
+
 const express = require('express');
 const router = express.Router();
 const { getPool, sql } = require('../server-config/db');
 
+// Helper function process data dashboard
+function formatDataDashboard(data) {
+    return data.map(sewa => {
+        let biayaSewa = parseInt(sewa.TotalBiaya);
+        let totalBiayaFinal = biayaSewa;
+        let statusPeminjaman = "";
+
+        if (sewa.TanggalKembali !== null) {
+            statusPeminjaman = "Selesai";
+
+            // Hitung Denda
+            const tanggalBatas = new Date(sewa.TanggalBatasPengembalian);
+            const tanggalKembali = new Date(sewa.TanggalKembali);
+            if (tanggalKembali > tanggalBatas) {
+                // Selisih dalam ms, ubah ke hari. 
+                // (1000 ms/s, 60 s/min, 60 min/h, 24 h/day) 
+                const denda = biayaSewa * sewa.PersentaseDenda / 100.0 * Math.ceil((tanggalKembali - tanggalBatas) / (1000 * 60 * 60 * 24));
+                totalBiayaFinal = biayaSewa + denda;
+            }
+        } else if (sewa.IDPegawai === 5) {
+            statusPeminjaman = "Menunggu Verifikasi";
+        } else {
+            statusPeminjaman = "Ongoing";
+        }
+
+        return {
+            nama: sewa.Nama,
+            merek: sewa.NamaMerek,
+            nopol: sewa.Nopol,
+            tglPeminjaman: sewa.TanggalPeminjaman,
+            tglBatas: sewa.TanggalBatasPengembalian,
+            tglKembali: sewa.TanggalKembali,
+            status: statusPeminjaman,
+            totalBiaya: totalBiayaFinal
+        };
+    });
+}
+
 // Data dashboard Pegawai
-router.get('/dashboard-pegawai', async(req, res) =>{
-    try {
-        const pool = await getPool();
+async function showDataDashboard(idPegawai) {
+    const pool = await getPool();
+    const request1 = new sql.Request(pool);
 
-        const query = ``;
-    } catch (error) {
-        
+
+    request1.input('IDPegawaiParam', sql.Int, idPegawai);
+    // Cari cabang dulu
+    const queryCabangPegawai = `
+        SELECT IDCabang
+        FROM PEGAWAI
+        WHERE IDUser = @IDPegawaiParam
+    `;
+    const resultCabang = await request1.query(queryCabangPegawai);
+
+    if (resultCabang.recordset.length === 0) {
+        return [];
     }
-})
 
-router.get('/get-riwayat-rental', async(req,res) => {
+    const idCabangPegawai = resultCabang.recordset[0].IDCabang;
+
+    // Tampilkan data pada cabang itu
+    const request2 = new sql.Request(pool);
+    request2.input('IDCabangParam', sql.Int, idCabangPegawai);
+    const queryDataDashcboard = `
+        SELECT 
+            [USER].Nama,
+            MEREK_MOBIL.NamaMerek,
+            PEMINJAMAN.Nopol,
+            PEMINJAMAN.TanggalPeminjaman,
+            PEMINJAMAN.TanggalBatasPengembalian,
+            PEMINJAMAN.TanggalKembali,
+            PEMINJAMAN.TotalBiaya,
+            PEMINJAMAN.PersentaseDenda,
+            PEMINJAMAN.IDPegawai
+        FROM PEMINJAMAN
+            JOIN MEMBER ON PEMINJAMAN.IDMember = MEMBER.IDUser -- Cari idMember utk Nama
+            JOIN [USER] ON [USER].IDUser = MEMBER.IDUser -- Cari Nama User
+            JOIN MOBIL ON PEMINJAMAN.Nopol = MOBIL.NOPOL -- Cari idMobiil utk Nama Merek
+            JOIN MEREK_MOBIL ON MOBIL.IDMerek = MEREK_MOBIL.IDMerek -- Cari Nama Merek
+        WHERE MOBIL.IDCabang = @IDCabangParam -- Mobil yang satu cabang dengan pegawai itu.
+    `;
+
+    const resultDataDashboard = await request2.query(queryDataDashcboard);
+    return resultDataDashboard.recordset;
+}
+
+router.get('/peminjaman', async (req, res) => {
+
+    try {
+        if (!req.session || !req.session.idUser) {
+            // Jika tidak ada, langsung stop di sini dan kirim status 412 (Precondition Failed) atau 401 (Unauthorized)
+            return res.status(401).json({
+                error: "Akses ditolak. Anda harus login terlebih dahulu untuk melihat dashboard ini."
+            });
+        }
+
+        const idPegawai = req.session.idUser;
+        const records = await showDataDashboard(idPegawai);
+
+        const processedData = formatDataDashboard(records);
+
+        return res.json(processedData);
+    } catch (error) {
+        console.error("Error fetching dashboard records:", error);
+        return res.status(500).send("Failed to fetch car data");
+    }
+});
+
+module.exports = router;
+
+
+router.get('/get-riwayat-rental', async (req, res) => {
     try {
         const pool = getPool();
 

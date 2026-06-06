@@ -1,4 +1,4 @@
-import { formatToRupiah, getDataRiwayatRental, formatToTanggalID } from "./api.js";
+import { formatToRupiah, getDataRiwayatRental, formatToTanggalID, logoutUser } from "./api.js";
 
 const dashboardButton = document.querySelector('.menu button:nth-child(1)')
 const katalogMobilButton = document.querySelector('.menu button:nth-child(2)');
@@ -14,9 +14,16 @@ dashboardButton.addEventListener('click', () => {
 })
 
 exitButton.addEventListener('click', () => {
+    e.preventDefault();
     const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
 
-    if(confirmLogout){
+    if (confirmLogout) {
+        try {
+            await logoutUser();
+        } catch (error) {
+            console.error("Gagal menghapus session di server: ", error);
+        }
+
         window.location.href = '/login';
     }
 })
@@ -35,7 +42,7 @@ async function renderRiwayatRental() {
             return;
         }
 
-        daftarRiwayatRental.sort((a,b) => new Date(b.TanggalPeminjaman) - new Date(a.TanggalPeminjaman));
+        daftarRiwayatRental.sort((a, b) => new Date(b.TanggalPeminjaman) - new Date(a.TanggalPeminjaman));
 
         daftarRiwayatRental.forEach(riwayat => {
             const hargaFormat = formatToRupiah(riwayat.TotalBiaya);
@@ -45,21 +52,21 @@ async function renderRiwayatRental() {
 
             let status;
 
-            if (riwayat.TanggalKembali == null) 
+            if (riwayat.TanggalKembali == null)
                 status = `
                 <td class="status-container">  
                     <p class="active-status"> Aktif </p>
-                </td>`;  
+                </td>`;
             else if (tanggalKembali > deadlinePengembalian)
                 status = `
                 <td class="status-container">  
                     <p class="late-status"> Telat </p>
-                </td>`;  
+                </td>`;
             else
                 status = `
                 <td class="status-container">  
                     <p class="finished-status"> Selesai </p>
-                </td>`;  
+                </td>`;
 
             const rowRiwayat = `
                 <tr>
