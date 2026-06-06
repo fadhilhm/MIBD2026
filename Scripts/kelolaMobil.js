@@ -1,4 +1,4 @@
-import { addDataMobil, getDaftarMobil, formatToRupiah, deleteMobilAPI } from "./api.js";
+import { addDataMobil, getDaftarMobil, formatToRupiah, deleteMobilAPI, updateDataMobil } from "./api.js";
 
 const kelolaPeminjamanBtn = document.getElementById('kelola-peminjaman-btn');
 const exitButton = document.querySelector('.exit button');
@@ -64,7 +64,7 @@ async function renderKatalogMobil() {
                         </div>
                     </div>
                     <div class="group-button">
-                        <button class="change-button" data-nopol="${mobil.Nopol}">Ubah</button>
+                        <button class="change-button" data-nopol="${mobil.Nopol}" data-version="${mobil.version}">Ubah</button>
                         <button class="delete-button" data-nopol="${mobil.Nopol}" data-version="${mobil.version}">Hapus</button>
                     </div>
                 </div>
@@ -86,14 +86,19 @@ const closePopUpButton = document.getElementById("closePopup");
 const btnCancel = document.getElementById("cancelPopup");
 
 addBtn.addEventListener("click", (e) => {
-    e.preventDefault();
+    e.preventDefault()
+    // Reset form & atur ulang ke mode tambah;
+    popupForm.reset();
+    document.getElementById("popup-title").innerText = "Form Tambah Mobil";
+    document.getElementById("nopol").readOnly = false; // Nopol boleh diisi baru
+    
+    popupOverlay.dataset.mode = "add"; 
     popupOverlay.classList.add("active");
 });
 
 // pop up unable
 const closePopup = (e) => {
     e.preventDefault();
-
     popupOverlay.classList.remove("active")
 };
 
@@ -105,6 +110,8 @@ const popupForm = document.querySelector(".popup-form");
 
 popupForm.addEventListener("submit", async (e) => {
     e.preventDefault();
+
+    const mode = popupOverlay.dataset.mode;
 
     const nopol = document.getElementById("nopol").value;
     const merek = document.getElementById("merek").value;
@@ -123,22 +130,75 @@ popupForm.addEventListener("submit", async (e) => {
     }
 
     try {
-        const result = await addDataMobil(data);
+        if (mode === 'edit') {
+            // tambah property
+            data.version = popupOverlay.dataset.version;
 
-        if (result.success) {
-            alert(result.message);
-            popupOverlay.classList.remove("active");
-            popupForm.reset();
+            const result = await updateDataMobil(data);
 
-            renderKatalogMobil();
+            if (result.success) {
+                alert(result.message);
+                popupOverlay.classList.remove("active");
+                popupForm.reset();
+                renderKatalogMobil();
+            } else {
+                alert("Gagal mengubah data: " + result.message);
+            }
+
         } else {
-            alert("Gagal menyimpan data: " + result.message);
+            const result = await addDataMobil(data);
+
+            if (result.success) {
+                alert(result.message);
+                popupOverlay.classList.remove("active");
+                popupForm.reset();
+
+                renderKatalogMobil();
+            } else {
+                alert("Gagal menyimpan data: " + result.message);
+            }
         }
     } catch (error) {
         console.error("Error saat mengirim data: ", error);
         alert("Terjadi masalah koneksi ke server.");
     }
 });
+
+// update
+async function handleUpdateData(e) {
+    const nopol = e.target.dataset.nopol;
+
+    try {
+        // Ambil data katalog terbaru untuk mencari data mobil yang diklik
+        const daftarMobil = await getDaftarMobil();
+        const mobil = daftarMobil.find(m => m.Nopol === nopol);
+
+        if (!mobil) {
+            alert("Data mobil tidak ditemukan!");
+            return;
+        }
+
+        // Isikan data mobil yang dipilih ke dalam Form Pop-up
+        document.getElementById("nopol").value = mobil.Nopol;
+        document.getElementById("merek").value = mobil.NamaMerek;
+        document.getElementById("tipe").value = mobil.NamaTipe;
+        document.getElementById("kapasitas-kursi").value = mobil.Kapasitas;
+        document.getElementById("tahun-pembuatan").value = mobil.TahunPembuatan;
+        document.getElementById("harga-sewa").value = mobil.HargaSewaMobil;
+
+        // Pengaturan Khusus Mode ubah:
+        document.getElementById("popup-title").innerText = "Form Ubah Mobil";
+        document.getElementById("nopol").readOnly = true; // Nopol (Primary Key) tidak boleh diedit
+
+        popupOverlay.dataset.mode = "edit"; // Tandai sebagai mode edit
+        popupOverlay.dataset.version = mobil.version; // Simpan version
+
+        popupOverlay.classList.add("active"); // Tampilkan pop-up
+    } catch (error) {
+        console.error("Gagal memuat data untuk ubah:", error);
+        alert("Terjadi kesalahan saat memuat data.");
+    }
+}
 
 // delete
 async function handleDeleteCar(e) {
@@ -162,7 +222,7 @@ async function handleDeleteCar(e) {
 
         if (result.success) {
             alert(result.message);
-            renderKatalogMobil(); 
+            renderKatalogMobil();
         } else {
             alert("Operasi Ditolak: " + result.message);
         }
@@ -172,6 +232,16 @@ async function handleDeleteCar(e) {
     }
 }
 
-// 💡 4. Sambungkan Event Listener ke fungsi handler baru kita
+// reload display
 const productContainer = document.getElementById("productContainer");
-productContainer.addEventListener("click", handleDeleteCar);
+productContainer.addEventListener("click", async (e) => {
+    if (e.target.classList.contains("delete-button")) {
+        handleDeleteCar(e);
+        return;
+    }
+
+    if (e.target.classList.contains("change-button")) {
+        handleUpdateData(e);
+        return;
+    }
+});

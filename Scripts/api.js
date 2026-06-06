@@ -126,3 +126,25 @@ export async function fetchDataDashboardPegawai() {
         throw error;
     }
 }
+
+// update data mobil
+export async function updateDataMobil(data) {
+    try {
+        const response = await fetch(`/api/mobil/update-data-mobil`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal mengubah data mobil. Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (updateDataMobil): ", error);
+        throw error;
+    }
+}

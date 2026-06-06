@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const { getPool, sql } = require('../server-config/db');
+const { formatToRupiah } = require('../Scripts/api');
 
 router.use(express.urlencoded({extended: true}));
 
@@ -32,7 +33,7 @@ router.get('/get-data-mobil', async (req, res) => {
                 M.TahunPembuatan, 
                 M.isActive,
                 M.updatedAt,
-                M.version AS version,
+                M.version,
                 C.NamaCabang, 
                 C.NamaJalan,
                 C.AlamatEmail,
@@ -71,12 +72,14 @@ router.post('/add-data-mobil', cekPegawai, async (req, res) => {
         await transaction.begin();
         const request = new sql.Request(transaction);
 
+        const hargaSewaClean = String(hargaSewa).replace(/\./g, '');
+
         request.input('Nopol', sql.VarChar, nopol);
         request.input('Merek', sql.VarChar, merek);
         request.input('Tipe', sql.VarChar, tipe);
         request.input('Kapasitas', sql.Int, parseInt(kapasitas));
         request.input('TahunPembuatan', sql.Int, tahunPembuatan);
-        request.input('HargaSewa', sql.Decimal(12, 2), hargaSewa);
+        request.input('HargaSewa', sql.Decimal(12, 2), parseFloat(hargaSewaClean));
         request.input('IDCabang', sql.Int, idCabangPegawai);
 
         const queryDataMobil = `
@@ -172,11 +175,10 @@ router.delete("/delete-mobil/:nopol", async (req, res) => {
 
         const result = await request.query(query);
         await transaction.commit();
-        // Jika rowsAffected bernilai 0, berarti data sudah berubah/dihapus orang lain
         if (result.rowsAffected[0] === 0) {
             return res.status(409).json({ 
                 success: false, 
-                message: "Gagal hapus" 
+                message: "bad requeset" 
             });
         }
 
@@ -188,8 +190,114 @@ router.delete("/delete-mobil/:nopol", async (req, res) => {
     } catch (error) {
         await transaction.rollback();
         console.log(error);
-        res.status(500).json({ message: "gagal" });
+        res.status(500).json({ message: "internal problem" });
     }
 });
+
+// update mobil
+router.put('/update-data-mobil', async (req, res) =>{
+    const { nopol, merek, tipe, kapasitas, tahunPembuatan, hargaSewa, version } = req.body;
+    console.log(req.body);
+    
+    const pool = getPool();
+    const transaction = new sql.Transaction(pool);
+    try {
+        await transaction.begin();
+
+        // cek apakah idmerek null ?
+        const reqMerek = new sql.Request(transaction);
+        reqMerek.input('Merek', sql.VarChar, merek);
+        
+        let resMerek = await reqMerek.query(`
+            SELECT IDMerek 
+            FROM MEREK_MOBIL 
+            WHERE NamaMerek = @Merek
+        `);
+
+        let idMerekFinal;
+        
+        if (resMerek.recordset.length === 0) {
+            // Jika tidak lakukan insert dan ambil ID barunya
+            let insMerek = await reqMerek.query(`
+                INSERT INTO MEREK_MOBIL (NamaMerek) 
+                OUTPUT INSERTED.IDMerek 
+                VALUES (@Merek)
+            `);
+            idMerekFinal = insMerek.recordset[0].IDMerek;
+        } else {
+            // Jika ada ambil ID yang sudah ada
+            idMerekFinal = resMerek.recordset[0].IDMerek;
+        }
+
+        const reqTipe = new sql.Request(transaction);
+        reqTipe.input('NamaTipe', sql.VarChar, tipe);
+        reqTipe.input('Kapasitas', sql.Int, parseInt(kapasitas));
+
+        let resTipe = await reqTipe.query(
+            `
+            SELECT IDTipe 
+            FROM Tipe_Mobil
+            WHERE NamaTipe = @NamaTipe AND Kapasitas = @Kapasitas
+            `
+        )
+
+        let idTipeFinal;
+
+        if(resTipe.recordset.length === 0){
+            let insTipe = await reqTipe.query(
+                `
+                INSERT INTO TIPE_MOBIL(NamaTipe, Kapasitas)
+                OUTPUT INSERTED.IDTipe
+                VALUES(@NamaTipe, @Kapasitas)
+                `
+            )
+            idTipeFinal = insTipe.recordset[0].IDTipe;
+        } else {
+            idTipeFinal = resTipe.recordset[0].IDTipe;
+        }
+
+        const reqUpdate = transaction.request(pool);
+
+        const hargaSewaClean = String(hargaSewa).replace(/\./g, '');
+
+        reqUpdate.input('Nopol', sql.VarChar, nopol);
+        reqUpdate.input('Merek', sql.VarChar, merek);
+        reqUpdate.input('Tipe', sql.VarChar, tipe);
+        reqUpdate.input('Kapasitas', sql.Int, kapasitas);
+        reqUpdate.input('TahunPembuatan', sql.Int, parseInt(tahunPembuatan));
+        reqUpdate.input('HargaSewa', sql.Decimal(12, 2), parseFloat(hargaSewaClean));
+        reqUpdate.input('Version', sql.Int, parseInt(version));
+
+        const queryUpdate = `
+            UPDATE MOBIL
+            SET 
+                -- IDMerek berdasarkan namanya
+                IDMerek = (SELECT IDMerek FROM MEREK_MOBIL WHERE NamaMerek = @Merek),
+                
+                -- IDTipe berdasarkan namanya dan kapasitasnya
+                IDTipe = (SELECT IDTipe FROM TIPE_MOBIL WHERE NamaTipe = @Tipe AND Kapasitas = @Kapasitas),
+                
+                HargaSewaMobil = @HargaSewa,
+                TahunPembuatan = @TahunPembuatan,
+                updatedAt = GETDATE(),
+                version = version + 1
+            WHERE 
+                Nopol = @Nopol 
+                AND version = @Version;
+        `;
+        const result = await reqUpdate.query(queryUpdate);
+        await transaction.commit();
+        if (result.rowsAffected[0] === 0) {
+            return res.status(409).json({ success: false, message: 'Conflict, gagal update' });
+        }
+
+        return res.status(200).json({ success: true, message: 'Berhasil di update' });
+
+    } catch (error) {
+        await transaction.rollback();
+        console.error(error);
+        return res.status(500).json({ success: false, message: 'Internal Error.' });
+    }
+})
 
 module.exports = router;
