@@ -12,10 +12,10 @@ async function verifyUserLogin(emailInput, passwordInput) {
     request.input('PasswordParam', sql. VarChar, passwordInput);
 
     const queryText = `
-        SELECT u.IDUser, u.Nama, e.AlamatEmail, u.UserPassword, u.[Role], p.IDCabang
+        SELECT IDUser, Nama, AlamatEmail, UserPassword, [Role]
         FROM [USER]
         WHERE 
-            e.AlamatEmail = @EmailParam AND u.UserPassword = @PasswordParam;
+            AlamatEmail = @EmailParam AND UserPassword = @PasswordParam;
     `;
 
     const result = await request.query(queryText);
@@ -41,7 +41,7 @@ async function executeUserRegistration(userData) {
         userRequest.input('Role', sql.Int, 0);
 
         const userQuery = `
-            INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, AlamatEmail, UserPassword, NoTelp, [Role])
+            INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, AlamatEmail, UserPassword, NomorTelp, [Role])
             VALUES (@Nama, @TanggalLahir, @JenisKelamin, @AlamatEmail, @UserPassword, @NoTelp, @Role);
             SELECT SCOPE_IDENTITY() AS NewUserID;
         `;
@@ -86,9 +86,9 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ success: false, message: 'Email atau password salah.' });
         }
 
-        const user = records[0];
+        const user = records[0];        
         let userRole = 
-                    user.Role === 0 ? 'member' : 'pegawai';
+                    user.Role === false ? 'member' : 'pegawai';
 
         req.session.idUser = user.IDUser;
         req.session.role = userRole;
