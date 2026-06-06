@@ -70,7 +70,8 @@ async function showDataDashboard(idPegawai) {
     const request2 = new sql.Request(pool);
     request2.input('IDCabangParam', sql.Int, idCabangPegawai);
     const queryDataDashcboard = `
-        SELECT [USER].Nama,
+        SELECT 
+            [USER].Nama,
             MEREK_MOBIL.NamaMerek,
             PEMINJAMAN.Nopol,
             PEMINJAMAN.TanggalPeminjaman,
@@ -84,7 +85,7 @@ async function showDataDashboard(idPegawai) {
             JOIN [USER] ON [USER].IDUser = MEMBER.IDUser -- Cari Nama User
             JOIN MOBIL ON PEMINJAMAN.Nopol = MOBIL.NOPOL -- Cari idMobiil utk Nama Merek
             JOIN MEREK_MOBIL ON MOBIL.IDMerek = MEREK_MOBIL.IDMerek -- Cari Nama Merek
-        WHERE PEGAWAI.IDCabang = @IDCabangParam -- Mobil yang satu cabang dengan pegawai itu.
+        WHERE MOBIL.IDCabang = @IDCabangParam -- Mobil yang satu cabang dengan pegawai itu.
     `;
 
     const resultDataDashboard = await request2.query(queryDataDashcboard);
@@ -110,15 +111,13 @@ router.get('/peminjaman', async (req, res) => {
     } catch (error) {
         console.error("Error fetching dashboard records:", error);
         return res.status(500).send("Failed to fetch car data");
-    }   
+    }
 });
 
 module.exports = router;
-        
-    }
-})
 
-router.get('/get-riwayat-rental', async(req,res) => {
+
+router.get('/get-riwayat-rental', async (req, res) => {
     try {
         const pool = getPool();
 

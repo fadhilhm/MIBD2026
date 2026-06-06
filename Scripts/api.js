@@ -18,8 +18,8 @@ export async function addDataMobil(data) {
     try {
         const response = await fetch('/api/mobil/add-data-mobil', {
             method: "POST",
-            headers:{
-                "Content-Type" : "application/json"
+            headers: {
+                "Content-Type": "application/json"
             },
             body: JSON.stringify(data)
         });
@@ -64,4 +64,49 @@ export function formatToTanggalID(date) {
         month: 'long',
         year: 'numeric'
     });
+}
+
+/**
+ * Destroy Session Saat Logout
+ * Author: Pearce Nathaniel N.
+ */
+
+export async function logoutUser() {
+    try {
+        const response = await fetch('/api/auth/logout', {
+            method: 'POST'
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal destroy session. Status: ${response.status}`);
+        }
+
+        return response;
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (logoutUser): ", error);
+        throw error;
+    }
+}
+
+/**
+ * Fetch data Dashboard Pegawai
+ * Author: Pearce Nathaniel N.
+ */
+
+export async function fetchDataDashboardPegawai() {
+    try {
+
+        const response = await fetch('/api/peminjaman/peminjaman', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal fetch data dashboard pegawai. Status: ${response.status}`);
+        }
+        return response;
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (fetchDataDashboardPegawai): ", error);
+        throw error;
+    }
 }

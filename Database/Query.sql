@@ -9,23 +9,26 @@
 
 USE CarRentalDB
 GO
+-- Cari ID Cabang Pegawai yg login
+SELECT IDCabang
+        FROM PEGAWAI
+        WHERE IDUser = @IDPegawaiParam
 
+-- Cari Data untuk dashboard Pegawai di Cabangnya 
 SELECT [USER].Nama,
-    MEREK_MOBIL.NamaMerek,
-    PEMINJAMAN.Nopol,
-    PEMINJAMAN.TanggalPeminjaman,
-    PEMINJAMAN.TanggalBatasPengembalian,
-    PEMINJAMAN.TanggalKembali
--- PEMINJAMAN.TotalBiaya + (PEMINJAMAN.TotalBiaya * PEMINJAMAN.PersentaseDenda /100.0) AS TotalBiayaPlusDenda
-    PEMINJAMAN.TanggalKembali,
-    PEMINJAMAN.TotalBiaya + (PEMINJAMAN.TotalBiaya * PEMINJAMAN.PersentaseDenda /100.0) AS TotalBiayaPlusDenda
-FROM PEMINJAMAN
-    JOIN MEMBER ON PEMINJAMAN.IDMember = MEMBER.IDUser -- Cari idMember utk Nama
-    JOIN [USER] ON [USER].IDUser = MEMBER.IDUser -- Cari Nama User
-    JOIN MOBIL ON PEMINJAMAN.Nopol = MOBIL.NOPOL -- Cari idMobiil utk Nama Merek
-    JOIN MEREK_MOBIL ON MOBIL.IDMerek = MEREK_MOBIL.IDMerek -- Cari Nama Merek
-    JOIN PEGAWAI ON PEGAWAI.IDCabang = MOBIL.IDCabang
-WHERE PEGAWAI.IDCabang = MOBIL.IDCabang
-GO
+            MEREK_MOBIL.NamaMerek,
+            PEMINJAMAN.Nopol,
+            PEMINJAMAN.TanggalPeminjaman,
+            PEMINJAMAN.TanggalBatasPengembalian,
+            PEMINJAMAN.TanggalKembali,
+            PEMINJAMAN.TotalBiaya,
+            PEMINJAMAN.PersentaseDenda,
+            PEMINJAMAN.IDPegawai
+        FROM PEMINJAMAN
+            JOIN MEMBER ON PEMINJAMAN.IDMember = MEMBER.IDUser -- Cari idMember utk Nama
+            JOIN [USER] ON [USER].IDUser = MEMBER.IDUser -- Cari Nama User
+            JOIN MOBIL ON PEMINJAMAN.Nopol = MOBIL.NOPOL -- Cari idMobiil utk Nama Merek
+            JOIN MEREK_MOBIL ON MOBIL.IDMerek = MEREK_MOBIL.IDMerek -- Cari Nama Merek
+        WHERE PEGAWAI.IDCabang = @IDCabangParam -- Mobil yang satu cabang dengan pegawai itu.
 
 
