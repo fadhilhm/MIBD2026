@@ -159,16 +159,13 @@ button{
 
 table{
     width: 100%;
-    text-align: center;
     border-collapse: collapse;
+    text-align: center;
     vertical-align: middle;
 }
 
 th{
-    padding: 16px;
-
     border-bottom: 1px solid #d8d8d8;
-
     font-size: 18px;
 }
 
@@ -177,34 +174,29 @@ tr{
 }
 
 td{
-    padding-top: 22px;
-    color: #444;
+    padding: 30px;
+    color: #262626;
 }
 
-.status-container{
-    display: flex;
-    flex-direction: column;
-
-    gap: 10px;
-}
-
-#active{
-    border-radius: 30px;
-    background-color: rgba(209, 250, 5, 0.63);
-    padding: 6px;
+.status-container {
+    width: 80px;
     font-weight: 600;
 }
 
-#finish{
+.late-status{
+    padding: 8px;
     border-radius: 30px;
-    background-color: rgba(6, 157, 239, 0.692);
-    padding: 6px;
-    font-weight: 600;
+    background-color: rgba(216, 38, 38, 0.495);
 }
 
-#late{
+.active-status{
+    padding: 8px;
     border-radius: 30px;
-    background-color: rgba(177, 25, 14, 0.413);
-    padding: 6px;
-    font-weight: 600;
+    background-color: rgba(223, 223, 23, 0.788);
+}
+
+.finished-status{
+    padding: 8px;
+    border-radius: 30px;
+    background-color: rgba(20, 153, 235, 0.797);
 }

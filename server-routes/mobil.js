@@ -38,7 +38,7 @@ router.get('/get-data-mobil', async (req, res) => {
         return res.json(result.recordset); 
     } catch (error) {
         console.error(error);
-        return res.status(500).send("Failed to fetch car data");
+        return res.status(500).send("Gagal mengambil data mobil");
     }
 });
 
@@ -132,7 +132,7 @@ router.post('/booking', async (req, res) => {
         });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({ message: "Booking failed" });
+        return res.status(500).json({ message: "Booking gagal" });
     }
 });
 

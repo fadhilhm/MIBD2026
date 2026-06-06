@@ -111,7 +111,7 @@ async function renderKatalogMobil() {
         });
     } catch (error) {
         console.error("Gagal memuat katalog: ", error);
-        productContainer.innerHTML = `<p class="error-message">Gagal memuat katalog mobil. Hubungi admin atau coba lagi nanti.</p>`;
+        productContainer.innerHTML = `<p>Gagal memuat katalog mobil. Hubungi admin atau coba lagi nanti.</p>`;
     }
 }
 

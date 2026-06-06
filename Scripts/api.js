@@ -35,6 +35,21 @@ export async function addDataMobil(data) {
     }
 }
 
+export async function getDataRiwayatRental() {
+    try {
+        const response = await fetch('/api/peminjaman/get-riwayat-rental');
+
+        if (!response.ok) {
+            throw new Error(`Gagal mengambil riwayat rental. Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (getRiwayatRental)", error);
+        throw error
+    }
+}
+
 export function formatToRupiah(money) {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -42,3 +57,11 @@ export function formatToRupiah(money) {
         maximumFractionDigits: '0'
     }).format(money);
 };
+
+export function formatToTanggalID(date) {
+    return new Date(date).toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+}
