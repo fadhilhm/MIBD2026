@@ -1,5 +1,3 @@
-import { renderKatalogMobil } from "./kelolaMobil.js";
-
 export async function getDaftarMobil() {
     try {
         const response = await fetch('/api/mobil/get-data-mobil');
@@ -52,31 +50,21 @@ export async function getDataRiwayatRental() {
     }
 }
 
-// export async function deleteCar(e){
-//     if(!e.target.classList.contains("delete-button")) return;
-
-//     const nopol = e.target.dataset.nopol;
-
-//     try {
-//         const res = await fetch(`/api/mobil/delete-mobil/${nopol}`, {
-//             method: "DELETE"
-//         });
+export async function deleteMobilAPI(nopol, version){
+    try {
+        // clean
+        const url = `/api/mobil/delete-mobil/${encodeURIComponent(nopol)}?version=${version}`;
         
-//         if(!res.ok){
-//             alert("Masalah");
-//             throw new Error("Delete gagal");
-//         }
+        const response = await fetch(url, {
+            method: "DELETE"
+        });
 
-//         if(res.ok){
-//             alert("berhasil")
-//         }
-//         // render tampilan baru
-//         await renderKatalogMobil();
-//     } catch (error) {
-//         console.log(error);
-        
-//     }
-// }
+        return await response.json();
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (deleteMobilAPI): ", error);
+        throw error;
+    }
+}
 
 export function formatToRupiah(money) {
     return new Intl.NumberFormat('id-ID', {

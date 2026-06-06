@@ -13,7 +13,7 @@ dashboardButton.addEventListener('click', () => {
     window.location.href = '/dashboard-member';
 })
 
-exitButton.addEventListener('click', () => {
+exitButton.addEventListener('click', async (e) => {
     e.preventDefault();
     const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
 

@@ -32,7 +32,7 @@ router.get('/get-data-mobil', async (req, res) => {
                 M.TahunPembuatan, 
                 M.isActive,
                 M.updatedAt,
-                M.version,
+                M.version AS version,
                 C.NamaCabang, 
                 C.NamaJalan,
                 C.AlamatEmail,
@@ -41,6 +41,7 @@ router.get('/get-data-mobil', async (req, res) => {
             JOIN MEREK_MOBIL MK ON M.IDMerek = MK.IDMerek
             JOIN TIPE_MOBIL T ON M.IDTipe = T.IDTipe 
             JOIN CABANG C ON M.IDCabang = C.IDCabang
+            WHERE M.isActive = 1
         `);
         return res.json(result.recordset); 
     } catch (error) {
@@ -143,31 +144,52 @@ router.post('/booking', async (req, res) => {
     }
 });
 
-// delte mobil
-router.delete("/delete-mobil/:nopol", (req, res) => {
+// delete mobil
+router.delete("/delete-mobil/:nopol", async (req, res) => {
     const nopol = req.params.nopol;
-    // console.log(nopol)
+    console.log(nopol);
+    
+    const version = req.query.version;
+    console.log(version);
 
-    // const pool = getPool();
-    // const transaction = new sql.Transaction(pool);
+    const pool = getPool();
+    const transaction = new sql.Transaction(pool);
 
-    // try {
-    //     await transaction.begin();
+    try {
+        await transaction.begin();
 
-    //     const delReq = new sql.Request(transaction);
-    //     delReq.input("Nopol", sql.VarChar, nopolClean);
+        const request = transaction.request(pool);
+        request.input("Nopol", sql.VarChar, nopol);
+        request.input("Version", sql.Int, parseInt(version));
 
-    //     const query = `
+        const query = `
+            UPDATE Mobil
+            SET isActive = 0,
+                updatedAt = GETDATE(),
+                version = version + 1
+            WHERE Nopol = @Nopol AND version = @Version
+        `
 
-    //     `;
+        const result = await request.query(query);
+        await transaction.commit();
+        // Jika rowsAffected bernilai 0, berarti data sudah berubah/dihapus orang lain
+        if (result.rowsAffected[0] === 0) {
+            return res.status(409).json({ 
+                success: false, 
+                message: "Gagal hapus" 
+            });
+        }
 
-    //     const response = delReq.execute(query);
+        return res.status(200).json({ 
+            success: true, 
+            message: "Berhasil" 
+        });
 
-    // } catch (error) {
-    //     await transaction.rollback();
-    //     console.log(error);
-    //     res.status(401).json({ message: "gagal" });
-    // }
+    } catch (error) {
+        await transaction.rollback();
+        console.log(error);
+        res.status(500).json({ message: "gagal" });
+    }
 });
 
 module.exports = router;
