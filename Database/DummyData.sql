@@ -4,30 +4,22 @@ GO
 -- 1. Dummy Data Master
 
 -- Dummy Data Cabang
-INSERT INTO CABANG (NamaCabang, NamaJalan, AlamatEmail)
+INSERT INTO CABANG (NamaCabang, NamaJalan, AlamatEmail, NoTelp)
 VALUES 
-    ('Cabang Citarum', 'Jl. Diponegoro No. 22', 'citarum@carrental.com'),
-    ('Cabang Dago', 'Jl. Ir. H. Juanda No. 102', 'dago@carrental.com'),
-    ('Cabang Riau', 'Jl. R.E. Martadinata No. 57', 'riau@carrental.com'),
-    ('Cabang Cihampelas', 'Jl. Cihampelas No. 160', 'cihampelas@carrental.com'),
-    ('Cabang Buah Batu', 'Jl. Buah Batu No. 235', 'buahbatu@carrental.com')
-
-INSERT INTO NOTELP_CABANG (IDCabang, NomorTelp)
-VALUES 
-    (1, '0224201234'),
-    (2, '0224234567'),
-    (3, '0227209812'),
-    (4, '0222015544'),
-    (5, '0225408899')
+    ('Cabang Citarum', 'Jl. Diponegoro No. 22', 'citarum@carrental.com', '0224201234'),
+    ('Cabang Dago', 'Jl. Ir. H. Juanda No. 102', 'dago@carrental.com', '0224234567'),
+    ('Cabang Riau', 'Jl. R.E. Martadinata No. 57', 'riau@carrental.com', '0227209812'),
+    ('Cabang Cihampelas', 'Jl. Cihampelas No. 160', 'cihampelas@carrental.com', '0222015544'),
+    ('Cabang Buah Batu', 'Jl. Buah Batu No. 235', 'buahbatu@carrental.com', '0225408899')
 
 -- Dummy Data User
 INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, AlamatEmail, UserPassword, NomorTelp, [Role])
 VALUES
-    ('Fadhil', '2020-01-12', 'M', 'fadhil@gmail.com', 'fadhil', '081122334455', 1),                
-    ('Pearce', '2020-04-12', 'M', 'pearce@gmail.com', 'pearce', '081955556666', 1),                
-    ('Steven', '2020-02-12', 'M', 'steven@gmail.com', 'steven', '082198761234', 2),                
-    ('Kenneth', '2020-03-12', 'M', 'kenneth@gmail.com', 'kenneth', '085711223344', 2),              
-    ('SISTEM AUTOMATION', '2026-01-01', 'M', 'sys@test', 'test', '089677889900', 2); 
+    ('Fadhil', '2020-01-12', 'M', 'fadhil@gmail.com', 'fadhil', '081122334455', 0),                
+    ('Pearce', '2020-04-12', 'M', 'pearce@gmail.com', 'pearce', '081955556666', 0),                
+    ('Steven', '2020-02-12', 'M', 'steven@gmail.com', 'steven', '082198761234', 1),                
+    ('Kenneth', '2020-03-12', 'M', 'kenneth@gmail.com', 'kenneth', '085711223344', 1),              
+    ('SISTEM AUTOMATION', '2026-01-01', 'M', 'sys@test', 'test', '089677889900', 1); 
 
 INSERT INTO PEGAWAI (IDUser, IDCabang)
 VALUES 

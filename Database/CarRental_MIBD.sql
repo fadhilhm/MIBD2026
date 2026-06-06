@@ -34,14 +34,15 @@ CREATE TABLE [USER] (
     AlamatEmail VARCHAR(255) NOT NULL,
     UserPassword VARCHAR(50) NOT NULL,
     NomorTelp VARCHAR(30) NOT NULL, 
-    [Role] INT NOT NULL
+    [Role] BIT NOT NULL
 );
 
 CREATE TABLE CABANG (
     IDCabang INT IDENTITY(1,1) PRIMARY KEY,
     NamaCabang VARCHAR(255) NOT NULL, 
     NamaJalan VARCHAR(255) NOT NULL, 
-    AlamatEmail VARCHAR(255) NOT NULL
+    AlamatEmail VARCHAR(255) NOT NULL,
+    NoTelp VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE MOBIL (
@@ -69,14 +70,19 @@ CREATE TABLE PEGAWAI (
     FOREIGN KEY (IDCabang) REFERENCES CABANG(IDCabang)
 );
 
-
 -- Atribut Multivalue
-CREATE TABLE NOTELP_CABANG (
-    IDCabang INT,
-    IDNomor INT IDENTITY(1,1),
-    NomorTelp VARCHAR(30) NOT NULL, 
-    PRIMARY KEY (IDCabang, IDNomor),
-    FOREIGN KEY (IDCabang) REFERENCES CABANG(IDCabang) ON DELETE CASCADE
+-- (hasil transformasi multivalue dari peminjaman)
+CREATE TABLE FOTO (
+    IDFoto INT IDENTITY(1,1) PRIMARY KEY,
+    IDMember INT NOT NULL,                 
+    IDPegawai INT NOT NULL,                
+    Nopol VARCHAR(20) NOT NULL,
+    Gambar VARCHAR(2048) NOT NULL,  -- Path to image
+    Kondisi BIT NOT NULL,           -- 0 = sebelum, 1 = sesudah
+    Deskripsi TEXT NULL,            -- Condition notes or structural captions
+    FOREIGN KEY (IDMember) REFERENCES MEMBER(IDUser),   
+    FOREIGN KEY (IDPegawai) REFERENCES PEGAWAI(IDUser),   
+    FOREIGN KEY (Nopol) REFERENCES MOBIL(Nopol)
 );
 
 -- Relasi
@@ -93,17 +99,5 @@ CREATE TABLE PEMINJAMAN (
     FOREIGN KEY (IDMember) REFERENCES MEMBER(IDUser),   
     FOREIGN KEY (Nopol) REFERENCES MOBIL(Nopol),
     FOREIGN KEY (IDPegawai) REFERENCES PEGAWAI(IDUser)   
-);
-
-CREATE TABLE FOTO (
-    IDFoto INT IDENTITY(1,1) PRIMARY KEY,
-    IDMember INT NOT NULL,                 
-    IDPegawai INT NOT NULL,                
-    Nopol VARCHAR(20) NOT NULL,
-    Gambar VARCHAR(2048) NOT NULL, -- Path to image
-    Deskripsi TEXT NULL,           -- Condition notes or structural captions
-    FOREIGN KEY (IDMember) REFERENCES MEMBER(IDUser),   
-    FOREIGN KEY (IDPegawai) REFERENCES PEGAWAI(IDUser),   
-    FOREIGN KEY (Nopol) REFERENCES MOBIL(Nopol)
 );
 GO

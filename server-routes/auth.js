@@ -13,11 +13,7 @@ async function verifyUserLogin(emailInput, passwordInput) {
 
     const queryText = `
         SELECT u.IDUser, u.Nama, e.AlamatEmail, u.UserPassword, u.[Role], p.IDCabang
-        FROM [USER] AS u
-        INNER JOIN EMAIL_USER AS e 
-            ON u.IDUser = e.IDUser
-        LEFT JOIN PEGAWAI AS p 
-            ON u.IDUser = p.IDUser
+        FROM [USER]
         WHERE 
             e.AlamatEmail = @EmailParam AND u.UserPassword = @PasswordParam;
     `;
@@ -37,14 +33,16 @@ async function executeUserRegistration(userData) {
 
         const userRequest = new sql.Request(transaction);
         userRequest.input('Nama', sql.VarChar, nama);
-        userRequest.input('JenisKelamin', sql.Char, jenisKelamin);
         userRequest.input('TanggalLahir', sql.Date, tanggalLahir);
+        userRequest.input('JenisKelamin', sql.Char, jenisKelamin);
+        userRequest.input('AlamatEmail', sql.VarChar, email)
         userRequest.input('UserPassword', sql.VarChar, password);
-        userRequest.input('Role', sql.Int, 1);
+        userRequest.input('NoTelp', sql.VarChar, phone);
+        userRequest.input('Role', sql.Int, 0);
 
         const userQuery = `
-            INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, UserPassword, [Role])
-            VALUES (@Nama, @TanggalLahir, @JenisKelamin, @UserPassword, @Role);
+            INSERT INTO [USER] (Nama, TanggalLahir, JenisKelamin, AlamatEmail, UserPassword, NoTelp, [Role])
+            VALUES (@Nama, @TanggalLahir, @JenisKelamin, @AlamatEmail, @UserPassword, @NoTelp, @Role);
             SELECT SCOPE_IDENTITY() AS NewUserID;
         `;
         const userResult = await userRequest.query(userQuery);
@@ -54,16 +52,6 @@ async function executeUserRegistration(userData) {
         memberRequest.input('IDUser', sql.Int, newUserID);
         memberRequest.input('NoSIM', sql.VarChar, noSIM);
         await memberRequest.query(`INSERT INTO MEMBER(IDUser, NoSIM) VALUES (@IDUser, @NoSIM);`);
-
-        const emailRequest = new sql.Request(transaction);
-        emailRequest.input('IDUser', sql.Int, newUserID);
-        emailRequest.input('Email', sql.VarChar, email);
-        await emailRequest.query(`INSERT INTO EMAIL_USER (IDUser, AlamatEmail) VALUES (@IDUser, @Email);`);
-
-        const phoneRequest = new sql.Request(transaction);
-        phoneRequest.input('IDUser', sql.Int, newUserID);
-        phoneRequest.input('Phone', sql.VarChar, phone);
-        await phoneRequest.query(`INSERT INTO NOTELP_USER (IDUser, NomorTelp) VALUES (@IDUser, @Phone);`);
 
         await transaction.commit();
         return true;
@@ -100,8 +88,7 @@ router.post('/login', async (req, res) => {
 
         const user = records[0];
         let userRole = 
-                    user.Role === 1 ? 'member' : 
-                    user.Role === 2 ? 'pegawai' : 'user';
+                    user.Role === 0 ? 'member' : 'pegawai';
 
         req.session.idUser = user.IDUser;
         req.session.role = userRole;
