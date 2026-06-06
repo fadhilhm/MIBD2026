@@ -22,6 +22,21 @@ async function verifyUserLogin(emailInput, passwordInput) {
     return result.recordset;
 }
 
+async function getIDCabangPegawai(idUser){
+    const pool = getPool();
+    const req = new sql.Request(pool);
+
+    req.input("idUser", sql.Int, idUser);
+
+    const query = `
+        SELECT IDCabang
+        FROM Pegawai
+        WHERE IDUser = @idUser
+    `
+    const res = await req.query(query);
+    return res.recordset;
+}
+
 // masukkan data member ke dalam db
 async function executeUserRegistration(userData) {
     const { nama, jenisKelamin, tanggalLahir, email, phone, noSIM, password } = userData;
@@ -87,14 +102,17 @@ router.post('/login', async (req, res) => {
         }
 
         const user = records[0];        
-        let userRole = 
-                    user.Role === false ? 'member' : 'pegawai';
+        let userRole = user.Role === false ? 'member' : 'pegawai';
 
         req.session.idUser = user.IDUser;
         req.session.role = userRole;
         req.session.nama = user.Nama
 
-        if (userRole === 'pegawai') req.session.idCabang = user.IDCabang;
+        if (userRole === 'pegawai') {
+            const res = await getIDCabangPegawai(user.IDUser);
+            
+            req.session.idCabang = res[0].IDCabang
+        }
         else req.session.idCabang = '-';
 
         return res.status(200).json({

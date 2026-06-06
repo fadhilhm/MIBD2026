@@ -129,9 +129,7 @@ productContainer.addEventListener('click', (e) => {
         const mobilTerpilih = daftarMobil.find(mobil => mobil.Nopol === nopolMobil);
 
         console.log(mobilTerpilih);
-
-        document.getElementById('popup-img').src = `/image/${mobilTerpilih.NamaMerek.toLowerCase()}_${mobilTerpilih.NamaTipe.toLowerCase()}_${mobilTerpilih.Nopol.trim()}.png`;
-        document.getElementById('popup-img').alt = `${mobilTerpilih.NamaMerek} ${mobilTerpilih.NamaTipe}`;
+        
         document.getElementById('popup-title').innerText = `${mobilTerpilih.NamaMerek}`;
         document.getElementById('popup-cabang').innerText = `${mobilTerpilih.NamaCabang}, ${mobilTerpilih.NamaJalan}`;
         document.getElementById('popup-nopol').innerText = `${mobilTerpilih.Nopol}`;

@@ -111,19 +111,18 @@ popupForm.addEventListener("submit", async (e) => {
     const kapasitasKursi = document.getElementById("kapasitas-kursi").value
     const tahunPembuatan = document.getElementById("tahun-pembuatan").value;
     const hargaSewa = document.getElementById("harga-sewa").value;
-    const fotoInput = document.getElementById("foto-mobil");
 
-    const formData = new FormData();
-    formData.append("nopol", nopol);
-    formData.append("tipe", tipe);
-    formData.append("merek", merek);
-    formData.append("kapasitas", kapasitasKursi);
-    formData.append("tahunPembuatan", tahunPembuatan);
-    formData.append("hargaSewa", hargaSewa);
-    formData.append("fotoMobil", fotoInput.files[0]);
+    const data = {
+        nopol: nopol,
+        merek: merek,
+        tipe: tipe,
+        kapasitas: kapasitasKursi,
+        tahunPembuatan: tahunPembuatan,
+        hargaSewa: hargaSewa
+    }
 
     try {
-        const result = await addDataMobil(formData);
+        const result = await addDataMobil(data);
 
         if (result.success) {
             alert(result.message);

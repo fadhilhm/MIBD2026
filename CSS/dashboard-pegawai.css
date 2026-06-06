@@ -347,15 +347,6 @@ tr{
     padding-bottom: 15px;
 }
 
-.img-car-summary{
-    width: 100%;
-}
-
-.img-car-summary img{
-    width: 100%;
-    object-fit: contain;
-}
-
 .summary-location{
     display: flex;
     gap: 10px;

@@ -1,31 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const multer = require('multer');
 const path = require('path');
 const { getPool, sql } = require('../server-config/db');
-
-// multer untuk upload foto mobil
-const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        cb(null, 'public/image/');
-    },
-    filename: function(req, file, cb) {
-        const merekRaw = req.body.merek;
-        const tipeRaw = req.body.tipe;
-        const nopolRaw = req.body.nopol;
-
-        const merekClean = merekRaw.toLowerCase().trim();
-        const tipeClean = tipeRaw.toLowerCase().trim();
-        const nopolClean = nopolRaw.trim();
-
-        const extension = path.extname(file.originalname).toLowerCase();
-
-        const namaFile = `${merekClean}_${tipeClean}_${nopolClean}${extension}`;
-
-        cb(null, namaFile);
-    }
-});
-const upload = multer({ storage: storage });
 
 // cek apakah pegawai
 const cekPegawai = (req, res, next) => {
@@ -67,29 +43,18 @@ router.get('/get-data-mobil', async (req, res) => {
 });
 
 // menambahkan data mobil yang baru
-router.post('/add-data-mobil', cekPegawai, upload.single('fotoMobil'), async (req, res) => {
+router.post('/add-data-mobil', cekPegawai, async (req, res) => {
     let { nopol, tipe, merek, kapasitas, tahunPembuatan, hargaSewa } = req.body;
-    
+
     const idCabangPegawai = req.session.idCabang;
-
+    console.log(idCabangPegawai);
+    
     if (idCabangPegawai === '-') {
-        if (req.file && fs.existsSync(req.file.path)) {
-            fs.unlinkSync(req.file.path);
-        }
-
         return res.status(403).json({
             success: false,
             message: 'Anda tidak memiliki hak akses pegawai untuk menambahkan data mobil.'
         });
     }
-
-    nopol = nopol.trim();
-    tipe = tipe.trim();
-    merek = merek.trim();
-    
-    const hargaSewaClean = parseFloat(hargaSewa.replace(/\./g, '').trim());
-    const kapasitasClean = parseInt(kapasitas.trim());
-    const tahunClean = parseInt(tahunPembuatan.trim());
 
     const pool = getPool();
     const transaction = new sql.Transaction(pool);
@@ -103,7 +68,7 @@ router.post('/add-data-mobil', cekPegawai, upload.single('fotoMobil'), async (re
         request.input('Tipe', sql.VarChar, tipe);
         request.input('Kapasitas', sql.Int, parseInt(kapasitas));
         request.input('TahunPembuatan', sql.Int, tahunPembuatan);
-        request.input('HargaSewa', sql.Decimal(12, 2), hargaSewaClean);
+        request.input('HargaSewa', sql.Decimal(12, 2), hargaSewa);
         request.input('IDCabang', sql.Int, idCabangPegawai);
 
         const queryDataMobil = `
@@ -157,7 +122,6 @@ router.post('/add-data-mobil', cekPegawai, upload.single('fotoMobil'), async (re
     }
 });
 
-// Author : Steven
 // Booking
 router.post('/booking', async (req, res) => {
     const { startDate, endDate } = req.body;

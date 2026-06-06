@@ -14,11 +14,14 @@ export async function getDaftarMobil() {
 }
 
 // mengirim data mobil beserta file gambar ke db
-export async function addDataMobil(formData) {
+export async function addDataMobil(data) {
     try {
         const response = await fetch('/api/mobil/add-data-mobil', {
             method: "POST",
-            body: formData
+            headers:{
+                "Content-Type" : "application/json"
+            },
+            body: JSON.stringify(data)
         });
 
         if (!response.ok) {

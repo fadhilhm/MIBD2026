@@ -199,24 +199,6 @@ button{
     font-weight: 700;
 }
 
-.img-item-container{
-    width: 100%;
-    height: 200px;
-
-    margin-top: 12px;
-
-    padding: 0 18px;
-}
-
-.img-item-container img{
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    border-radius: 18px;
-}
-
 .info{
     display: flex;
     flex-direction: column;
