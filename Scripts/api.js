@@ -89,7 +89,7 @@ export function formatToTanggalID(date) {
 
 export async function logoutUser() {
     try {
-        const response = await fetch('/api/auth/logout', {
+        const response = await fetch('/api/logout', {
             method: 'POST'
         });
 

@@ -13,19 +13,35 @@ dashboardButton.addEventListener('click', () => {
     window.location.href = '/dashboard-member';
 })
 
+exitButton.type = 'button';
 exitButton.addEventListener('click', async (e) => {
     e.preventDefault();
+    e.stopPropagation();
+
     const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
+    if (!confirmLogout) return; // If cancel, abort
 
-    if (confirmLogout) {
-        try {
-            await logoutUser();
-        } catch (error) {
-            console.error("Gagal menghapus session di server: ", error);
-        }
+    // Prevent double events
+    if (exitButton.getAttribute('data-loading') === 'true') return;
+    // Mark proses sedang berjalan
+    exitButton.setAttribute('data-loading', 'true');
+    const originalHTML = exitButton.innerHTML;
+    exitButton.innerText = "Keluar..."
 
+    try {
+        const res = await logoutUser();
+        if (res.ok) {
+            window.location.href = '/login';
+        } else {
+            alert("Gagal keluar dari server. Silahkan coba kembali.");
+            exitButton.removeAttribute('data-loading');
+            exitButton.innerHTML = originalHTML;
+        };
+    } catch (error) {
+        console.error("Detail Error Jaringan: ", error);
         window.location.href = '/login';
     }
+
 })
 
 const tableRiwayat = document.querySelector('.riwayat-transaksi table tbody');

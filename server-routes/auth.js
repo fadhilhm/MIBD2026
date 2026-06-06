@@ -9,7 +9,7 @@ async function verifyUserLogin(emailInput, passwordInput) {
     const request = new sql.Request(pool);
 
     request.input('EmailParam', sql.VarChar, emailInput);
-    request.input('PasswordParam', sql. VarChar, passwordInput);
+    request.input('PasswordParam', sql.VarChar, passwordInput);
 
     const queryText = `
         SELECT IDUser, Nama, AlamatEmail, UserPassword, [Role]
@@ -22,7 +22,7 @@ async function verifyUserLogin(emailInput, passwordInput) {
     return result.recordset;
 }
 
-async function getIDCabangPegawai(idUser){
+async function getIDCabangPegawai(idUser) {
     const pool = getPool();
     const req = new sql.Request(pool);
 
@@ -72,7 +72,7 @@ async function executeUserRegistration(userData) {
         return true;
     } catch (error) {
         await transaction.rollback();
-        throw error; 
+        throw error;
     }
 }
 
@@ -92,7 +92,7 @@ router.post('/login', async (req, res) => {
     const { emailInput, passwordInput } = req.body;
 
     if (!emailInput || !passwordInput) {
-        return res.status(400).json({ success: false, message: 'Emal atau password kosong.' });
+        return res.status(400).json({ success: false, message: 'Email atau password kosong.' });
     }
 
     try {
@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
             return res.status(401).json({ success: false, message: 'Email atau password salah.' });
         }
 
-        const user = records[0];        
+        const user = records[0];
         let userRole = user.Role === false ? 'member' : 'pegawai';
 
         req.session.idUser = user.IDUser;
@@ -110,10 +110,17 @@ router.post('/login', async (req, res) => {
 
         if (userRole === 'pegawai') {
             const res = await getIDCabangPegawai(user.IDUser);
-            
+
             req.session.idCabang = res[0].IDCabang
         }
         else req.session.idCabang = '-';
+
+        req.session.save((err) => {
+            if (err) {
+                console.error("Gagal mengunci session di RAM:", err);
+                return res.status(500).json({ success: false, message: 'Gagal menginisialisasi sesi login.' });
+            }
+        })
 
         return res.status(200).json({
             success: true,
@@ -127,4 +134,35 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// logout
+router.post('/logout', (req, res) => {
+
+    console.log("=== PROSES LOGOUT ===");
+    console.log("Isi req.session saat ini:", req.session);
+
+    // FIX 1: Validasi ketat untuk memastikan objek session benar-benar ada di RAM server
+    if (req.session !== undefined && typeof req.session.destroy === 'function') {
+        req.session.destroy((err) => {
+            if (err) console.error("Gagal menghancurkan session di RAM server:", err);
+            return res.status(500).json({
+                success: false, message: "Error internal server."
+            });
+
+            res.clearCookie('connect.sid', { path: '/' });
+            console.log("Sesi berhasil dihancurkan & cookie dibersihkan.");
+            return res.status(200).json({
+                success: true,
+                message: "Logout berhasil"
+            });
+        });
+    } else {
+        console.log("Sesi memang sudah tidak aktif dari awal.");
+        res.clearCookie('connect.sid', { path: '/' });
+        return res.status(200).json({
+            success: true,
+            message: "Tidak ada session aktif yang perlu dihapus."
+        });
+
+    }
+});
 module.exports = router;
