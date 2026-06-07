@@ -153,9 +153,7 @@ button {
     background-color: white;
 
     /* Scroll feature */
-    max-height: 65vh;
-    overflow-y: auto;
-    overflow-x: auto;
+    /* sudah ada di default */
     border-radius: 14px;
 }
 

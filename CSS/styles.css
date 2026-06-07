@@ -1,4 +1,77 @@
+*::-webkit-scrollbar{
+    width: 6px;
+}
+
+*::-webkit-scrollbar-thumb{
+    background-color: #cfcfcf;
+    border-radius: 10px;
+}
+
+html{
+    font-family: "Open Sans", sans-serif;
+}
+
+body{
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #e9e9e9;
+
+    height: 100vh;
+}
+
+.main-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
 .button-group{
     display: flex;
+    flex-direction: center;
+    align-items: center;
     gap: 40px;
+}
+
+#login-button{
+    width: 120px;
+    height: 42px;
+
+    border: none;
+
+    background-color: #3751FE;
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+#sign-up-button{
+    width: 120px;
+    height: 42px;
+
+    border: none;
+
+    background-color: #3751FE;
+
+    color: white;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+#login-button:hover{
+    background-color: #2642ff;
+}
+
+#sign-up-button:hover{
+    background-color: #2642ff;
 }
