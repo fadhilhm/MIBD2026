@@ -82,7 +82,7 @@ VALUES
 
 -- Dummy Data Peminjaman
 INSERT INTO PEMINJAMAN
-    (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalKembali, TanggalBatasPengembalian, TotalBiaya, PersentaseDenda)
+    (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalKembali, TanggalBatasPengembalian, TotalBiaya, TotalDenda)
 VALUES
     -- Bulan Januari 2026 (Kembali Tepat Waktu)
     (1, 'D 1234 ABC', 3, '2026-01-01', '2026-01-03', '2026-01-03', 700000.00, NULL),
@@ -146,7 +146,7 @@ USE CarRentalDB;
 GO
 
 INSERT INTO PEMINJAMAN
-    (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalKembali, TanggalBatasPengembalian, TotalBiaya, PersentaseDenda)
+    (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalKembali, TanggalBatasPengembalian, TotalBiaya, TotalDenda)
 VALUES
     -- 1. TEST STATUS: Menunggu Verifikasi (Booking dari Web)
     -- Ciri-ciri: TanggalKembali NULL, diikat ke Akun SISTEM AUTOMATION (ID Pegawai = 5)
