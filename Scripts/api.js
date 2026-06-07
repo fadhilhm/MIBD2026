@@ -66,6 +66,28 @@ export async function deleteMobilAPI(nopol, version){
     }
 }
 
+export async function addBooking(data) {
+    try {
+        const req = await fetch('/api/peminjaman/booking', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        });
+
+        const res = await req.json();
+
+        if (res.success === true) {
+            alert(res.message);
+        } else {
+            alert("tidak berhasil");
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export function formatToRupiah(money) {
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',

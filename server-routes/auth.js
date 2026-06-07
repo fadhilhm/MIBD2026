@@ -165,4 +165,21 @@ router.post('/logout', (req, res) => {
 
     }
 });
+
+router.post('/instance', async (req, res) => {
+    try {
+        const idUser = req.session.idUser
+
+        return res.json({
+            success: true,
+            idUser: idUser
+        });
+    } catch (error) {
+        console.log(error);
+        return res.json({
+            success: false
+        });    
+    }
+});
+
 module.exports = router;

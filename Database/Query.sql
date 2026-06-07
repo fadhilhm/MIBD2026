@@ -12,7 +12,7 @@ GO
 -- Cari ID Cabang Pegawai yg login
 SELECT IDCabang
         FROM PEGAWAI
-        WHERE IDUser = @IDPegawaiParam
+        WHERE IDUser = 1
 
 -- Cari Data untuk dashboard Pegawai di Cabangnya 
 SELECT [USER].Nama,
@@ -29,6 +29,6 @@ SELECT [USER].Nama,
             JOIN [USER] ON [USER].IDUser = MEMBER.IDUser -- Cari Nama User
             JOIN MOBIL ON PEMINJAMAN.Nopol = MOBIL.NOPOL -- Cari idMobiil utk Nama Merek
             JOIN MEREK_MOBIL ON MOBIL.IDMerek = MEREK_MOBIL.IDMerek -- Cari Nama Merek
-        WHERE PEGAWAI.IDCabang = @IDCabangParam -- Mobil yang satu cabang dengan pegawai itu.
+        WHERE IDPegawai = 5 -- Mobil yang satu cabang dengan pegawai itu.
 
 

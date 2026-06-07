@@ -162,20 +162,6 @@ router.post('/add-data-mobil', cekPegawai, async (req, res) => {
     }
 });
 
-// Booking
-router.post('/booking', async (req, res) => {
-    const { startDate, endDate } = req.body;
-    try {
-        return res.status(200).json({
-            success: true,
-            message: "Berhasil di booking"
-        });
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({ message: "Booking gagal" });
-    }
-});
-
 // delete mobil
 router.delete("/delete-mobil/:nopol", async (req, res) => {
     const nopol = req.params.nopol;

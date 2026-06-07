@@ -1,4 +1,4 @@
-import { getDaftarMobil, formatToRupiah } from "./api.js";
+import { addBooking, getDaftarMobil, formatToRupiah } from "./api.js";
 
 // =================================================================
 // 1. SELECTOR
@@ -55,7 +55,7 @@ exitButton.addEventListener('click', () => {
 // =================================================================
 
 // Display card
-let daftarMobil = await getDaftarMobil();
+let daftarMobil;
 
 async function initPage() {
     try {
@@ -68,7 +68,7 @@ async function initPage() {
     }
 }
 
-async function renderKatalogMobil() {
+function renderKatalogMobil() {
     console.log(daftarMobil);
 
     try {
@@ -185,34 +185,14 @@ document.querySelector(".popup-form").addEventListener("submit", async (e) => {
     // get the input from user
     const startDate = document.getElementById("tanggal-mulai").value;
     const endDate = document.getElementById("tanggal-kembali").value;
+    const totalHarga = document.getElementById("total-harga").value;
 
-    // get id user
     // get id mobil
-    // get id pegawai
+    const nopolMobil = document.getElementById("popup-nopol").innerText; 
 
-    const data = { startDate, endDate };
+    const data = { startDate, endDate, nopolMobil, totalHarga };
 
-    // send a request to api
-    try {
-        const req = await fetch('/api/booking', {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(data)
-        });
-
-        const res = await req.json();
-
-        if (res.success === true) {
-            alert(res.message);
-        } else {
-            alert("tidak berhasil");
-        }
-
-    } catch (error) {
-        console.log(error);
-    }
+    addBooking(data);
 });
 
 /**

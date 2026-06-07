@@ -170,4 +170,47 @@ router.get('/get-riwayat-rental', async (req, res) => {
     }
 });
 
+// Booking
+router.post('/booking', async (req, res) => {
+    const { startDate, endDate, nopolMobil, totalHarga } = req.body;
+    
+    console.log(req.body);
+
+    const cleanTotalHarga = totalHarga.replace(/[^0-9]/g, '');
+    const pool = getPool();
+    const transaction = new sql.Transaction(pool);
+
+    try {
+        await transaction.begin();
+        const request = new sql.Request(transaction);
+
+        request.input("IDMember", sql.Int, req.session.idUser);
+        request.input("Nopol", sql.VarChar, nopolMobil);
+        request.input("IDPegawai", sql.Int, Number(5));
+        request.input("TanggalPeminjaman", sql.Date, startDate);
+        request.input("TanggalDeadline", sql.Date, endDate);
+        request.input("TotalBiaya", sql.Decimal(12, 2), Number(cleanTotalHarga));
+        request.input("PersentaseDenda", sql.Decimal(5,2), Number(10));
+
+        const queryBooking = `
+            INSERT INTO PEMINJAMAN (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalKembali, TanggalBatasPengembalian, TotalBiaya, PersentaseDenda)
+            VALUES (@IDMember, @Nopol, @IDPegawai, @TanggalPeminjaman, NULL, @TanggalDeadline, @TotalBiaya, @PersentaseDenda);
+        `;
+
+        await request.query(queryBooking);
+
+        await transaction.commit();
+
+        return res.status(200).json({
+            success: true,
+            message: "Berhasil di booking"
+        });
+    } catch (error) {
+        await transaction.rollback()
+        
+        console.log(error);
+        return res.status(500).json({ message: "Booking gagal" });
+    }
+});
+
 module.exports = router;
