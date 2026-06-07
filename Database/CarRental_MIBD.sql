@@ -101,8 +101,7 @@ CREATE TABLE PEMINJAMAN
     TanggalKembali DATE NULL,
     TanggalBatasPengembalian DATE NOT NULL,
     TotalBiaya DECIMAL(12, 2) NOT NULL,
-    PersentaseDenda DECIMAL(5, 2) NOT NULL,
-    -- e.g., 10.50 for 10.5%
+    TotalDenda DECIMAL(12, 2), -- (akhir - awal) * 10% harga sewa
     PRIMARY KEY (IDMember, Nopol, IDPegawai, TanggalPeminjaman),
     FOREIGN KEY (IDMember) REFERENCES MEMBER(IDUser),
     FOREIGN KEY (Nopol) REFERENCES MOBIL(Nopol),

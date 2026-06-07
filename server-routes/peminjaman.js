@@ -190,11 +190,10 @@ router.post('/booking', async (req, res) => {
         request.input("TanggalPeminjaman", sql.Date, startDate);
         request.input("TanggalDeadline", sql.Date, endDate);
         request.input("TotalBiaya", sql.Decimal(12, 2), Number(cleanTotalHarga));
-        request.input("PersentaseDenda", sql.Decimal(5,2), Number(10));
 
         const queryBooking = `
-            INSERT INTO PEMINJAMAN (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalKembali, TanggalBatasPengembalian, TotalBiaya, PersentaseDenda)
-            VALUES (@IDMember, @Nopol, @IDPegawai, @TanggalPeminjaman, NULL, @TanggalDeadline, @TotalBiaya, @PersentaseDenda);
+            INSERT INTO PEMINJAMAN (IDMember, Nopol, IDPegawai, TanggalPeminjaman, TanggalKembali, TanggalBatasPengembalian, TotalBiaya, TotalDenda)
+            VALUES (@IDMember, @Nopol, @IDPegawai, @TanggalPeminjaman, NULL, @TanggalDeadline, @TotalBiaya, NULL);
         `;
 
         await request.query(queryBooking);
