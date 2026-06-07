@@ -70,48 +70,77 @@ router.post('/add-data-mobil', cekPegawai, async (req, res) => {
 
     try {
         await transaction.begin();
+
+        // cari id merek dulu
+        const reqIDMerek = new sql.Request(pool);
+        reqIDMerek.input("NamaMerek", sql.VarChar, merek);
+        const resIDMerek = await reqIDMerek.query(`
+            SELECT IDMerek 
+            FROM Merek_Mobil
+            WHERE NamaMerek = @NamaMerek
+            `);
+
+        let idMerekFinal;
+        if(resIDMerek.recordset.length === 0){
+            // kalo gk ada tinggal tambah saja
+            const insIDMerek = new sql.Request(pool);
+            insIDMerek.input("NamaMerek", sql.VarChar, merek);
+
+            const resInsIDMerek = await insIDMerek.query(`
+                INSERT INTO Merek_Mobil(NamaMerek)
+                OUTPUT INSERTED.IDMerek
+                VALUES (@NamaMerek)
+                `);
+            idMerekFinal = resInsIDMerek.recordset[0].IDMerek;
+        } else{
+            // jika ada, maka pakai id itu
+            idMerekFinal = resIDMerek.recordset[0].IDMerek;
+        }
+
+        // cari id tipe dulu
+        const reqIDTipe = new sql.Request(pool);
+        reqIDTipe.input("NamaTipe", sql.VarChar, tipe);
+        reqIDTipe.input("Kapasitas", sql.VarChar, kapasitas);
+
+        const resIDTipe = await reqIDTipe.query(`
+            SELECT IDTipe
+            FROM Tipe_Mobil
+            WHERE NamaTIpe = @NamaTipe AND Kapasitas = @Kapasitas
+            `);
+
+        let idTipeFinal;
+        if(resIDTipe.recordset.length === 0){
+            // insert
+            const insTipe = new sql.Request(pool);
+            insTipe.input("NamaTipe", sql.VarChar, tipe);
+
+            const resInsTipe = await insTipe.query(`
+                INSERT INTO Tipe_Mobil(NamaTipe, Kapasitas)
+                OUTPUT INSERTED.IDTipe
+                VALUES(@NamaTipe, @Kapasitas)
+                `);
+
+            idTipeFinal = resInsTipe.recordset[0].IDTipe;
+        } else{
+            idTipeFinal = resIDTipe.recordset[0].IDTipe;
+        }
+
         const request = new sql.Request(transaction);
 
         const hargaSewaClean = String(hargaSewa).replace(/\./g, '');
 
         request.input('Nopol', sql.VarChar, nopol);
-        request.input('Merek', sql.VarChar, merek);
-        request.input('Tipe', sql.VarChar, tipe);
+        request.input('IDMerek', sql.Int, idMerekFinal);
+        request.input('IDTipe', sql.Int, idTipeFinal);
         request.input('Kapasitas', sql.Int, parseInt(kapasitas));
         request.input('TahunPembuatan', sql.Int, tahunPembuatan);
         request.input('HargaSewa', sql.Decimal(12, 2), parseFloat(hargaSewaClean));
         request.input('IDCabang', sql.Int, idCabangPegawai);
 
         const queryDataMobil = `
-            -- Cari atau buat ID Merek
-            DECLARE @RealIDMerek INT;
-
-            SELECT @RealIDMerek = IDMerek 
-            FROM MEREK_MOBIL
-            WHERE NamaMerek = @Merek;
-
-            IF @RealIDMerek IS NULL
-            BEGIN
-                INSERT INTO MEREK_MOBIL(NamaMerek) VALUES (@Merek)
-                SET @RealIDMerek = SCOPE_IDENTITY();
-            END
-
-            -- Cari atau buat ID Tipe
-            DECLARE @RealIDTipe INT;
-
-            SELECT @RealIDTipe = IDTipe
-            FROM TIPE_MOBIL
-            WHERE NamaTipe = @Tipe AND Kapasitas = @Kapasitas;
-
-            IF @RealIDTipe IS NULL
-            BEGIN
-                INSERT INTO TIPE_MOBIL(NamaTipe, Kapasitas) VALUES (@Tipe, @Kapasitas)
-                SET @RealIDTipe = SCOPE_IDENTITY();
-            END
-
             -- Masukkan data mobil
             INSERT INTO MOBIL (Nopol, IDTipe, IDMerek, HargaSewaMobil, TahunPembuatan, IDCabang)
-            VALUES (@Nopol, @RealIDTipe, @RealIDMerek, @HargaSewa, @TahunPembuatan, @IDCabang);
+            VALUES (@Nopol, @IDTipe, @IDMerek, @HargaSewa, @TahunPembuatan, @IDCabang);
         `;
 
         await request.query(queryDataMobil);
