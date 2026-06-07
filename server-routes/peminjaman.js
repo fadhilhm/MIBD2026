@@ -23,8 +23,10 @@ function formatDataDashboard(data) {
             if (tanggalKembali > tanggalBatas) {
                 // Selisih dalam ms, ubah ke hari. 
                 // (1000 ms/s, 60 s/min, 60 min/h, 24 h/day) 
-                const denda = biayaSewa * sewa.PersentaseDenda / 100.0 * Math.ceil((tanggalKembali - tanggalBatas) / (1000 * 60 * 60 * 24));
+                const denda = biayaSewa * 10 / 100.0 * Math.ceil((tanggalKembali - tanggalBatas) / (1000 * 60 * 60 * 24));
+                // tambahkan ke total denda
                 totalBiayaFinal = biayaSewa + denda;
+                // insert ke dalam tabel
             }
         } else if (sewa.IDPegawai === 5) {
             statusPeminjaman = "Menunggu Verifikasi";
@@ -53,6 +55,21 @@ function formatDataDashboard(data) {
             namaTipe: sewa.NamaTipe
         };
     });
+}
+
+async function updateDenda(idPeminjaman, denda) {
+    const pool = getPool();
+    const req = new sql.Request(pool);
+    req.input("IDPeminjaman", sql.Int, idPeminjaman);
+    req.input("TotalDenda", sql.Decimal, denda);
+
+    const res = await req.query(`
+        UPDATE Peminjaman
+        SET
+            TotalDenda = @TotalDenda
+        WHERE IDPeminjaman = @IDPeminjaman
+    `);
+    
 }
 
 // Data dashboard Pegawai
@@ -89,7 +106,6 @@ async function queryDataDashboardPegawai(idPegawai) {
             PEMINJAMAN.TanggalBatasPengembalian,
             PEMINJAMAN.TanggalKembali,
             PEMINJAMAN.TotalBiaya,
-            PEMINJAMAN.PersentaseDenda,
             PEMINJAMAN.IDPegawai,
 
             -- Data Untuk PopUp

@@ -113,6 +113,7 @@ router.post('/add-data-mobil', cekPegawai, async (req, res) => {
             // insert
             const insTipe = new sql.Request(pool);
             insTipe.input("NamaTipe", sql.VarChar, tipe);
+            insTipe.input("Kapasitas", sql.Int, kapasitas);
 
             const resInsTipe = await insTipe.query(`
                 INSERT INTO Tipe_Mobil(NamaTipe, Kapasitas)
@@ -132,7 +133,6 @@ router.post('/add-data-mobil', cekPegawai, async (req, res) => {
         request.input('Nopol', sql.VarChar, nopol);
         request.input('IDMerek', sql.Int, idMerekFinal);
         request.input('IDTipe', sql.Int, idTipeFinal);
-        request.input('Kapasitas', sql.Int, parseInt(kapasitas));
         request.input('TahunPembuatan', sql.Int, tahunPembuatan);
         request.input('HargaSewa', sql.Decimal(12, 2), parseFloat(hargaSewaClean));
         request.input('IDCabang', sql.Int, idCabangPegawai);
