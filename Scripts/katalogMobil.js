@@ -23,6 +23,8 @@ const popupForm = document.querySelector(".popup-form");
 // -> Display Card
 const productContainer = document.getElementById('productContainer');
 
+const cabangSelection = document.getElementById('id-cabang-selection');
+
 // =================================================================
 // 2. NAVIGATION
 // =================================================================
@@ -53,22 +55,35 @@ exitButton.addEventListener('click', () => {
 // =================================================================
 
 // Display card
-let daftarMobil = [];
+let daftarMobil = await getDaftarMobil();
 
+async function initPage() {
+    try {
+        daftarMobil = await getDaftarMobil(); 
+        
+        renderKatalogMobil(); 
+    } catch (error) {
+        console.error("Gagal memuat katalog: ", error);
+        productContainer.innerHTML = `<p>Gagal memuat katalog mobil. Hubungi admin atau coba lagi nanti.</p>`;
+    }
+}
 
 async function renderKatalogMobil() {
-    try {
-        daftarMobil = await getDaftarMobil();
+    console.log(daftarMobil);
 
+    try {
         productContainer.innerHTML = '';
 
-        if (daftarMobil.length == 0) {
+        const cabangTerpilih = cabangSelection.value;
+        const mobilCabang = daftarMobil.filter(mobil => mobil.NamaCabang === cabangTerpilih);
+
+        if (mobilCabang.length == 0) {
             productContainer.innerHTML =
                 `<p class="empty-message">Saat ini tidak ada mobil yang tersedia untuk disewa.</p>`;
             return;
         }
 
-        daftarMobil.forEach(mobil => {
+        mobilCabang.forEach(mobil => {
             const hargaFormat = formatToRupiah(mobil.HargaSewaMobil);
 
             const cardMobil = `
@@ -116,7 +131,8 @@ async function renderKatalogMobil() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', renderKatalogMobil);
+document.addEventListener('DOMContentLoaded', initPage);
+cabangSelection.addEventListener('change', renderKatalogMobil);
 
 // Pop up enable
 
