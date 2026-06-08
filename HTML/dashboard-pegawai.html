@@ -283,6 +283,135 @@
             </div>
 
         </div>
+
+        <!-- detail -->
+        <div class="popup-overlay" id="popupOverlayDetail">
+
+            <div class="popup-container">
+
+                <div class="popup-header">
+                    <h2>Detail Peminjaman</h2>
+                    <button id="closePopupDetail">&times;</button>
+                </div>
+
+                <form class="popup-form">
+                    <div class="summary-container">
+                        <h2 id="popup-title">Toyota Avanza</h2>
+
+                        <p id="popup-nopol">B 1234 ABC</p>
+
+                        <div class="summary-location">
+                            <img src="/image/location.png" alt="">
+                            <p id="popup-cabang">Cabang: Jl Diponegoro No 22, Citarum</p>
+                        </div>
+
+                        <p id="popup-harga-sewa">Harga / Hari: Rp750.000</p>
+
+                        <div class="summary-car-detail">
+                            <div class="summary-car-spec">
+                                <img src="/image/person.png" alt="">
+                                <p id="popup-kapasitas">7 Kursi</p>
+                            </div>
+
+                            <div class="summary-car-spec">
+                                <img src="/image/calender.png" alt="">
+                                <p id="popup-tahun-keluaran">2022</p>
+                            </div>
+
+                            <div class="summary-car-spec">
+                                <img src="/image/car.png" alt="">
+                                <p id="popup-tipe">2022</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="input-group">
+                        <label>Nama Peminjam</label>
+                        <input type="text" id="nama-penyewa" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Tanggal Peminjaman</label>
+                        <input type="date" id="tanggal-sewa" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Tanggal Kembali</label>
+                        <input type="date" id="tanggal-kembali" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Jumlah Hari Terlambat</label>
+                        <input type="text" id="jumlah-terlambat" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Total Denda</label>
+                        <input type="text" id="total-denda" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Total Biaya</label>
+                        <input type="text" id="total-biaya" readonly>
+                    </div>
+
+                    <h3>Foto Sebelum</h3>
+
+                    <div class="input-group">
+                        <label>Foto Depan</label>
+                        <input type="url" id="detail-foto-depan-sebelum" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Foto Belakang</label>
+                        <input type="url" id="detail-foto-belakang-sebelum" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Foto Kanan</label>
+                        <input type="url" id="detail-foto-kanan-sebelum" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Foto Kiri</label>
+                        <input type="url" id="detail-foto-kiri-sebelum" readonly>
+                    </div>
+
+                    <h3>Foto Sesudah</h3>
+
+                    <div class="input-group">
+                        <label>Foto Depan</label>
+                        <input type="url" id="detail-foto-depan-sesudah" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Foto Belakang</label>
+                        <input type="url" id="detail-foto-belakang-sesudah" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Foto Kanan</label>
+                        <input type="url" id="detail-foto-kanan-sesudah" readonly>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Foto Kiri</label>
+                        <input type="url" id="detail-foto-kiri-sesudah" readonly>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="button" class="btn-cancel" id="cancelPopupDetail">
+                            Tutup
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
     </main>
     <script type="module" src="/Scripts/dashboardPegawai.js"></script>
 </body>

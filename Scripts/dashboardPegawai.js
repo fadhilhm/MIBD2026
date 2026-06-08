@@ -212,7 +212,6 @@ function initPopupTriggers() {
             const idx = e.currentTarget.getAttribute('data-index');
             const dataSewa = listRecordsDashboardGlobal[idx];
 
-            // Panggil fungsi pop-up read-only Anda
             openPopUpDetailSelesai(dataSewa);
         });
     })
@@ -360,54 +359,47 @@ export function openPopUpTindakan(data) {
  * Prefill data di Pop Up Selesai (Read Only)
  * AuthorL Pearce Nathaniel N.
  */
+
+// POPUP DETAIL MENDING BIKIN BARU
+const popupOverlayDetail = document.getElementById("popupOverlayDetail");
+
+const closePopupDetail = document.getElementById("closePopupDetail");
+
+const cancelPopupDetail = document.getElementById("cancelPopupDetail");
+
+closePopupDetail.addEventListener("click", () => {
+    popupOverlayDetail.classList.remove("active");
+});
+
+cancelPopupDetail.addEventListener("click", () => {
+    popupOverlayDetail.classList.remove("active");
+});
+
 export function openPopUpDetailSelesai(data) {
-    if (!popupOverlay) return;
+    popupOverlay.querySelector('#popup-nopol').innerText = "";
+    popupOverlay.querySelector('#popup-cabang').innerText = "";
+    popupOverlay.querySelector('#popup-harga-sewa').innerText = "";
 
-    // Prefill data kendaraan dan cabang
-    popupOverlay.querySelector('#popup-title').innerText = data.merek;
-    popupOverlay.querySelector('#popup-nopol').innerText = `Plat no: ${data.nopol}`;
-    popupOverlay.querySelector('#popup-cabang').innerText = `Cabang: ${data.namaCabang}, ${data.namaJalan}`;
-    popupOverlay.querySelector('#popup-harga-sewa').innerText = `Harga / Hari: ${formatToRupiah(data.hargaSewaPerHari)}`;
-    popupOverlay.querySelector('#popup-kapasitas').innerText = `${data.kapasitas} Kursi`;
-    popupOverlay.querySelector('#popup-tahun-keluaran').innerText = data.tahunMobil;
-    popupOverlay.querySelector('#popup-tipe').innerText = data.namaTipe;
+    popupOverlay.querySelector('#popup-kapasitas').innerText = "";
+    popupOverlay.querySelector('#popup-tahun-keluaran').innerText = "";
+    popupOverlay.querySelector('#popup-tipe').innerText = "";
 
-    // Data Pelanggan
-    popupOverlay.querySelector('#nama-penyewa').value = data.nama;
-    popupOverlay.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
-    popupOverlay.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglKembali);
+    popupOverlay.querySelector('#nama-penyewa').value = "";
+    popupOverlay.querySelector('#tanggal-sewa').value = "";
+    popupOverlay.querySelector('#tanggal-kembali').value = "";
+    popupOverlay.querySelector('#jumlah-terlambat').value = "";
+    popupOverlay.querySelector('#total-denda').value = "";
 
-
-    let totalDenda = data.totalDenda ? parseFloat(data.totalDenda) : 0;
-    let hariTerlambat = 0;
-
-    // Hitung balik hari keterlambatan berdasarkan selisih TanggalKembali asli dan TanggalBatas asli di DB
-    if (data.tglKembali && data.tglBatas) {
-        const tglKembaliObj = new Date(data.tglKembali);
-        tglKembaliObj.setHours(0, 0, 0, 0);
-
-        const tglDeadlineObj = new Date(data.tglBatas);
-        tglDeadlineObj.setHours(0, 0, 0, 0);
-
-        const selisihWaktu = tglKembaliObj - tglDeadlineObj;
-        const selisihHari = Math.ceil(selisihWaktu / (1000 * 60 * 60 * 24));
-
-        hariTerlambat = selisihHari > 0 ? selisihHari : 0;
-    }
-
-    // Suntik nilai paten database ke dalam input form pop-up
-    popupOverlay.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
-    popupOverlay.querySelector('#total-denda').value = formatToRupiah(totalDenda);
-
-    popupOverlay.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
-    popupOverlay.querySelector('#total-denda').value = formatToRupiah(totalDenda);
-
-    // Karena ini read-only, kita tidak mau pegawai bisa mengedit atau menekan tombol simpan ulang
-    const btnSubmit = popupOverlay.querySelector('#btn-submit-tindakan');
-    if (btnSubmit) btnSubmit.style.display = "none";
-
-    // Tampilkan popup ke layar
-    popupOverlay.classList.add("active");
+    // foto
+    popupOverlayDetail.querySelector("#detail-foto-depan-sebelum").value = data.fotoDepanSebelum || "";
+    popupOverlayDetail.querySelector("#detail-foto-belakang-sebelum").value = data.fotoBelakangSebelum || ""
+    popupOverlayDetail.querySelector("#detail-foto-kanan-sebelum").value = data.fotoKananSebelum || "";
+    popupOverlayDetail.querySelector("#detail-foto-kiri-sebelum").value = data.fotoKiriSebelum || "";
+    popupOverlayDetail.querySelector("#detail-foto-depan-sesudah").value = data.fotoDepanSesudah || "";
+    popupOverlayDetail.querySelector("#detail-foto-belakang-sesudah").value = data.fotoBelakangSesudah || "";
+    popupOverlayDetail.querySelector("#detail-foto-kanan-sesudah").value = data.fotoKananSesudah || "";
+    popupOverlayDetail.querySelector("#detail-foto-kiri-sesudah").value = data.fotoKiriSesudah || "";
+    popupOverlayDetail.classList.add("active");
 }
 
 /**
