@@ -382,3 +382,9 @@ tr {
     align-items: center;
     gap: 10px;
 }
+
+#tanggal-sewa,#tanggal-kembali {
+    font-family: monospace, system-ui !important;
+    font-size: 14px; 
+    letter-spacing: 0.5px; 
+}
