@@ -1,4 +1,4 @@
-import { fetchDataDashboardPegawai, formatToRupiah, formatToTanggalID, formatToInputDate } from './api.js';
+import { submitKonfirmasiPeminjaman, submitTindakanPengembalian, fetchDataDashboardPegawai, formatToRupiah, formatToTanggalID, formatToInputDate } from './api.js';
 
 // Kelola Mobil
 const kelolaMobilButton = document.getElementById("kelola-mobil-btn");
@@ -108,7 +108,7 @@ async function loadDataDashboard() {
         }
 
         // Loop to grab each data
-        records.forEach(sewa => {
+        records.forEach((sewa, index) => {
             const row = document.createElement("tr");
 
             let statusHTML = "";
@@ -124,7 +124,7 @@ async function loadDataDashboard() {
             } else if (sewa.status == "Selesai") {
                 statusHTML = `<p id="returned-status">Dikembalikan</p>`;
                 // Placeholder
-                actionHTML = `<span style="color: #4caf50; font-weight: bold; padding-left: 10px;">✓ Selesai</span>`;
+                actionHTML = `<span class="btn-detail-selesai" data-index="${index}" style="color: #4caf50; font-weight: bold; padding-left: 10px; cursor: pointer;">✓ Selesai (Detail)</span>`;
             }
 
             // Suntik ke html sesuai format
@@ -182,7 +182,7 @@ function initPopupTriggers() {
 
     // Ikat click tombol Tindakan
     const btnTindakanList = document.querySelectorAll('[id="action-button"]');
-    console.log(`Jumlah tombol konfirmasi yang ditemukan di tabel: ${btnTindakanList.length}`);
+    console.log(`Jumlah tombol tindakan yang ditemukan di tabel: ${btnTindakanList.length}`);
     btnTindakanList.forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
@@ -205,6 +205,17 @@ function initPopupTriggers() {
             }
         })
     });
+
+    document.querySelectorAll('.btn-detail-selesai').forEach(span => {
+        span.addEventListener('click', (e) => {
+
+            const idx = e.currentTarget.getAttribute('data-index');
+            const dataSewa = listRecordsDashboardGlobal[idx];
+
+            // Panggil fungsi pop-up read-only Anda
+            openPopUpDetailSelesai(dataSewa);
+        });
+    })
 
 }
 
@@ -241,6 +252,14 @@ export function openPopUpKonfirmasi(data) {
     overlayKonfirmasi.querySelector('#foto-kiri-sebelum').value = "";
 
     overlayKonfirmasi.classList.add("active");
+
+    const btnSubmit = document.getElementById("submitPopupKonfirmasi");
+    btnSubmit.onclick = async function (e) {
+        e.preventDefault();
+
+        console.log("Tombol Setujui diklik! Memulai pemanggilan fungsi submitKonfirmasi...");
+        await submitKonfirmasi(data);
+    };
 }
 
 // Pop Up Konfirmasi unable
@@ -294,28 +313,181 @@ export function openPopUpTindakan(data) {
     // Denda
     const tanggalHariIni = new Date();
     tanggalHariIni.setHours(0, 0, 0, 0);
+
     const tanggalDeadline = new Date(data.tglBatas);
     tanggalDeadline.setHours(0, 0, 0, 0);
 
-    const selisihHari = Math.ceil((tanggalHariIni - tanggalDeadline) / (100 * 60 * 60 * 24));
+    const selisihWaktuMs = tanggalHariIni - tanggalDeadline;
+    const selisihHari = Math.ceil(selisihWaktuMs / (1000 * 60 * 60 * 24));
 
     let hariTerlambat = 0;
-    let totalDenda = 0;
+    let hitungTotalDenda = 0;
 
+    // Cek apakah telat atau tidak
     if (selisihHari > 0) {
         hariTerlambat = selisihHari;
-        totalDenda = hariTerlambat * (data.persentaseDenda / 100.0) * (data.hargaSewaPerHari);
+        hitungTotalDenda = hariTerlambat * (data.hargaSewaPerHari || 0);
     }
     popupOverlay.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
-    popupOverlay.querySelector('#total-denda').value = formatToRupiah(totalDenda);
+    popupOverlay.querySelector('#total-denda').value = formatToRupiah(hitungTotalDenda);
 
+
+    const btnSubmit = popupOverlay.querySelector('#btn-submit-tindakan');
+    if (btnSubmit) {
+        btnSubmit.style.display = "block"; // Munculkan tombol karena butuh submit data
+        btnSubmit.setAttribute("data-total-denda", hitungTotalDenda);
+    }
 
     // Link Foto
     popupOverlay.querySelector('#foto-depan-sesudah').value = "";
     popupOverlay.querySelector('#foto-belakang-sesudah').value = "";
     popupOverlay.querySelector('#foto-kanan-sesudah').value = "";
     popupOverlay.querySelector('#foto-kiri-sesudah').value = "";
-
+    
+    
+    const btnSubmitTindakan = document.getElementById("btn-submit-tindakan");
+    btnSubmitTindakan.onclick = async function (e) {
+        e.preventDefault();
+        
+        console.log("Tombol Setujui diklik! Memulai pemanggilan fungsi submitTindakan...");
+        await submitTindakan(data);
+    };
+    
     popupOverlay.classList.add("active");
+}
 
+/**
+ * Prefill data di Pop Up Selesai (Read Only)
+ * AuthorL Pearce Nathaniel N.
+ */
+export function openPopUpDetailSelesai(data) {
+    if (!popupOverlay) return;
+
+    // Prefill data kendaraan dan cabang
+    popupOverlay.querySelector('#popup-title').innerText = data.merek;
+    popupOverlay.querySelector('#popup-nopol').innerText = `Plat no: ${data.nopol}`;
+    popupOverlay.querySelector('#popup-cabang').innerText = `Cabang: ${data.namaCabang}, ${data.namaJalan}`;
+    popupOverlay.querySelector('#popup-harga-sewa').innerText = `Harga / Hari: ${formatToRupiah(data.hargaSewaPerHari)}`;
+    popupOverlay.querySelector('#popup-kapasitas').innerText = `${data.kapasitas} Kursi`;
+    popupOverlay.querySelector('#popup-tahun-keluaran').innerText = data.tahunMobil;
+    popupOverlay.querySelector('#popup-tipe').innerText = data.namaTipe;
+
+    // Data Pelanggan
+    popupOverlay.querySelector('#nama-penyewa').value = data.nama;
+    popupOverlay.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
+    popupOverlay.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglKembali);
+
+
+    let totalDenda = data.totalDenda ? parseFloat(data.totalDenda) : 0;
+    let hariTerlambat = 0;
+
+    // Hitung balik hari keterlambatan berdasarkan selisih TanggalKembali asli dan TanggalBatas asli di DB
+    if (data.tglKembali && data.tglBatas) {
+        const tglKembaliObj = new Date(data.tglKembali);
+        tglKembaliObj.setHours(0, 0, 0, 0);
+
+        const tglDeadlineObj = new Date(data.tglBatas);
+        tglDeadlineObj.setHours(0, 0, 0, 0);
+
+        const selisihWaktu = tglKembaliObj - tglDeadlineObj;
+        const selisihHari = Math.ceil(selisihWaktu / (1000 * 60 * 60 * 24));
+
+        hariTerlambat = selisihHari > 0 ? selisihHari : 0;
+    }
+
+    // Suntik nilai paten database ke dalam input form pop-up
+    popupOverlay.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
+    popupOverlay.querySelector('#total-denda').value = formatToRupiah(totalDenda);
+
+    popupOverlay.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
+    popupOverlay.querySelector('#total-denda').value = formatToRupiah(totalDenda);
+
+    // Karena ini read-only, kita tidak mau pegawai bisa mengedit atau menekan tombol simpan ulang
+    const btnSubmit = popupOverlay.querySelector('#btn-submit-tindakan');
+    if (btnSubmit) btnSubmit.style.display = "none";
+
+    // Tampilkan popup ke layar
+    popupOverlay.classList.add("active");
+}
+
+/**
+ * Submit Form Pegawai (Konfirmasi, Tindakan) 
+ * Author: Pearce Nathaniel N.
+ */
+
+// Submit Konfirmasi
+async function submitKonfirmasi(dataPeminjaman) {
+    const btnSubmit = document.getElementById("btn-submit");
+    const popupKonfirmasi = document.getElementById("popupOverlayKonfirmasi");
+
+    const dataPayload = {
+        nopol: dataPeminjaman.nopol,
+        idMember: parseInt(dataPeminjaman.idMember),
+        tglPeminjaman: dataPeminjaman.tglPeminjaman,
+
+        fotoDepan: popupKonfirmasi.querySelector('#foto-depan-sebelum').value,
+        fotoBelakang: popupKonfirmasi.querySelector('#foto-belakang-sebelum').value,
+        fotoKanan: popupKonfirmasi.querySelector('#foto-kanan-sebelum').value,
+        fotoKiri: popupKonfirmasi.querySelector('#foto-kiri-sebelum').value
+    };
+
+
+    if (btnSubmit) btnSubmit.disabled = true;
+
+    try {
+        const result = await submitKonfirmasiPeminjaman(dataPayload);
+
+        if (result.success) {
+            alert("Peminjaman berhasil dikonfirmasi! Status berubah menjadi 'Dipinjam' (Ongoing).");
+
+            popupKonfirmasi.classList.remove("active");
+
+            // Reload Page
+            await loadDataDashboard();
+        } else {
+            alert(`Gagal konfirmasi: ${result.message}`);
+        }
+    } catch (error) {
+        console.error("Error pada proses submit konfirmasi:", error);
+        alert("Terjadi kesalahan koneksi atau internal server.");
+    } finally {
+        if (btnSubmit) btnSubmit.disabled = false;
+    }
+}
+
+// Submit Tindakan Pengembalian Mobil
+
+async function submitTindakan(dataSewa) {
+    const btnSubmit = document.getElementById("btn-submit-tindakan");
+    const popupTindakan = document.getElementById("popupOverlay");
+
+    const data = {
+        nopol: dataSewa.nopol,
+        idMember: parseInt(dataSewa.idMember),
+        tglPeminjaman: dataSewa.tglPeminjaman,
+        totalDenda: parseFloat(document.getElementById('btn-submit-tindakan').getAttribute('data-total-denda')) || 0,
+        fotoDepan: document.getElementById('foto-depan-sesudah').value,
+        fotoBelakang: document.getElementById('foto-belakang-sesudah').value,
+        fotoKanan: document.getElementById('foto-kanan-sesudah').value,
+        fotoKiri: document.getElementById('foto-kiri-sesudah').value
+    };
+
+    if (btnSubmit) btnSubmit.disabled = true;
+
+    try {
+        const result = await submitTindakanPengembalian(data);
+        if (result.success) {
+            alert("Mobil berhasil dikembalikan! Status transaksi bergeser ke Selesai.");
+            popupTindakan.classList.remove("active");
+
+            popupTindakan.classList.remove("active");
+            await loadDataDashboard(); // Reload layout dashboard
+        } else {
+            alert(`Gagal konfirmasi: ${result.message}`);
+        }
+    } catch (err) {
+        alert("Gagal memproses pengembalian di sistem.");
+    } finally {
+        if (btnSubmit) btnSubmit.disabled = false;
+    }
 }

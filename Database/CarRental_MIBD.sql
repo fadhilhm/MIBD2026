@@ -109,4 +109,8 @@ CREATE TABLE PEMINJAMAN
 );
 GO
 
+ALTER TABLE Peminjaman
+ALTER COLUMN PersentaseDenda DECIMAL(12,2);
+GO
 
+EXEC sp_rename 'Peminjaman.PersentaseDenda', 'TotalDenda', 'COLUMN';

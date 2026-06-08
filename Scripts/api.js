@@ -50,11 +50,11 @@ export async function getDataRiwayatRental() {
     }
 }
 
-export async function deleteMobilAPI(nopol, version){
+export async function deleteMobilAPI(nopol, version) {
     try {
         // clean
         const url = `/api/mobil/delete-mobil/${encodeURIComponent(nopol)}?version=${version}`;
-        
+
         const response = await fetch(url, {
             method: "DELETE"
         });
@@ -134,7 +134,7 @@ export async function logoutUser() {
 export async function fetchDataDashboardPegawai() {
     try {
 
-        const response = await   fetch('/api/peminjaman/peminjaman', {
+        const response = await fetch('/api/peminjaman/peminjaman', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         });
@@ -175,12 +175,66 @@ export async function updateDataMobil(data) {
 export function formatToInputDate(date) {
     if (!date) return "";
     const d = new Date(date);
-    
+
     // Ambil komponen tahun, bulan, dan tanggal
     const year = d.getFullYear();
     //getMonth() dimulai dari 0 (Januari = 0), maka harus ditambah 1. padStart memastikan selalu 2 digit (01, 02, dst)
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day}`; // Menghasilkan format tepat: YYYY-MM-DD
+}
+
+/**
+ * Update Database saat Konfirmasi Pegawai
+ * Author: Pearce Nathaniel N.
+ */
+
+export async function submitKonfirmasiPeminjaman(data) {
+    try {
+        const response = await fetch('/api/peminjaman/konfirmasi', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal Konfirmasi Peminjaman. Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (submit Konfirmasi): ", error);
+        throw error;
+    }
+}
+
+/**
+ * Update Database saat Tindakan (Pengembalian Mobil) Pegawai
+ * Author: Pearce Nathaniel N.
+ */
+
+export async function submitTindakanPengembalian(data) {
+    try {
+        const response = await fetch('/api/peminjaman/tindakan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal Pengembalian Mobil. Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (submit Tindakan): ", error);
+        throw error;
+    }
 }
