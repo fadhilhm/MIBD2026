@@ -1,4 +1,4 @@
-import { submitKonfirmasiPeminjaman, submitTindakanPengembalian, fetchDataDashboardPegawai, formatToRupiah, formatToTanggalID, formatToInputDate } from './api.js';
+import { submitKonfirmasiPeminjaman, submitTindakanPengembalian, fetchDataDashboardPegawai, formatToRupiah, formatToTanggalID, formatToInputDate, getDetailFotoPeminjaman } from './api.js';
 
 // Kelola Mobil
 const kelolaMobilButton = document.getElementById("kelola-mobil-btn");
@@ -371,26 +371,11 @@ cancelPopupDetail.addEventListener("click", () => {
     popupOverlayDetail.classList.remove("active");
 });
 
-export function openPopUpDetailSelesai(data) {
-    popupOverlayDetail.querySelector('#popup-nopol').innerText = "";
-    popupOverlayDetail.querySelector('#popup-cabang').innerText = "";
-    popupOverlayDetail.querySelector('#popup-harga-sewa').innerText = "";
+export async function openPopUpDetailSelesai(data) {
+     // Open popup first so user sees it immediately
+    popupOverlayDetail.classList.add("active");
 
-    popupOverlayDetail.querySelector('#popup-kapasitas').innerText = "";
-    popupOverlayDetail.querySelector('#popup-tahun-keluaran').innerText = "";
-    popupOverlayDetail.querySelector('#popup-tipe').innerText = "";
-
-    popupOverlayDetail.querySelector('#nama-penyewa').value = "";
-    popupOverlayDetail.querySelector('#tanggal-sewa').value = "";
-    popupOverlayDetail.querySelector('#tanggal-kembali').value = "";
-    popupOverlayDetail.querySelector('#jumlah-terlambat').value = "";
-    popupOverlayDetail.querySelector('#total-denda').value = "";
-
-
-    const elTotalBiaya = popupOverlayDetail.querySelector('#total-biaya');
-    if (elTotalBiaya) elTotalBiaya.value = "";
-
-    // Data Peminjaman
+    // Fill in all non-foto fields immediately (these come from dashboard data which is fine)
     popupOverlayDetail.querySelector('#popup-nopol').innerText = `Plat no: ${data.nopol}`;
     popupOverlayDetail.querySelector('#popup-cabang').innerText = `Cabang: ${data.namaCabang}`;
     popupOverlayDetail.querySelector('#popup-harga-sewa').innerText = `Harga / Hari: ${formatToRupiah(data.hargaSewaPerHari)}`;
@@ -400,42 +385,65 @@ export function openPopUpDetailSelesai(data) {
     popupOverlayDetail.querySelector('#nama-penyewa').value = data.nama;
     popupOverlayDetail.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
     popupOverlayDetail.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglKembali);
-   
+
+    // Denda calculation
     let hariTerlambat = 0;
     if (data.tglKembali && data.tglBatas) {
-      const stringKembali = new Date(data.tglKembali).toISOString().split('T')[0];
+        const stringKembali = new Date(data.tglKembali).toISOString().split('T')[0];
         const stringBatas = new Date(data.tglBatas).toISOString().split('T')[0];
-
-        const dateKembaliKaku = new Date(stringKembali);
-        const dateBatasKaku = new Date(stringBatas);
-        
-        const selisihMs = dateKembaliKaku - dateBatasKaku;
-
-        // const selisihMs = tglKembaliObj - tglBatasObj;
+        const selisihMs = new Date(stringKembali) - new Date(stringBatas);
         if (selisihMs > 0) {
             hariTerlambat = Math.round(selisihMs / (1000 * 60 * 60 * 24));
         }
     }
-
     popupOverlayDetail.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
     popupOverlayDetail.querySelector('#total-denda').value = formatToRupiah(data.totalDenda || 0);
 
-    if (elTotalBiaya) {
-        elTotalBiaya.value = formatToRupiah(data.totalBiaya || 0);
+    const elTotalBiaya = popupOverlayDetail.querySelector('#total-biaya');
+    if (elTotalBiaya) elTotalBiaya.value = formatToRupiah(data.totalBiaya || 0);
+
+    // Clear foto fields while loading
+    const fotoIds = [
+        '#detail-foto-depan-sebelum', '#detail-foto-belakang-sebelum',
+        '#detail-foto-kanan-sebelum', '#detail-foto-kiri-sebelum',
+        '#detail-foto-depan-sesudah', '#detail-foto-belakang-sesudah',
+        '#detail-foto-kanan-sesudah', '#detail-foto-kiri-sesudah'
+    ];
+    fotoIds.forEach(id => {
+        popupOverlayDetail.querySelector(id).value = "Memuat foto...";
+    });
+
+    // Fetch fresh foto data from the dedicated API
+    try {
+        const result = await getDetailFotoPeminjaman(data.nopol, data.idMember);
+
+        // result.data is an array of { Gambar, Kondisi, Deskripsi }
+        // Kondisi 0 = Sebelum, Kondisi 1 = Sesudah
+        const fotoSebelum = result.data.filter(f => f.Kondisi === 0 || f.Kondisi === false);
+        const fotoSesudah = result.data.filter(f => f.Kondisi === 1 || f.Kondisi === true);
+
+        // Helper: find foto by keyword in Deskripsi
+        const cari = (arr, keyword) => {
+            const found = arr.find(f => f.Deskripsi && f.Deskripsi.toLowerCase().includes(keyword));
+            return found ? found.Gambar : "Tidak ada dokumentasi.";
+        };
+
+        popupOverlayDetail.querySelector('#detail-foto-depan-sebelum').value   = cari(fotoSebelum, 'depan');
+        popupOverlayDetail.querySelector('#detail-foto-belakang-sebelum').value = cari(fotoSebelum, 'belakang');
+        popupOverlayDetail.querySelector('#detail-foto-kanan-sebelum').value   = cari(fotoSebelum, 'kanan');
+        popupOverlayDetail.querySelector('#detail-foto-kiri-sebelum').value    = cari(fotoSebelum, 'kiri');
+
+        popupOverlayDetail.querySelector('#detail-foto-depan-sesudah').value   = cari(fotoSesudah, 'depan');
+        popupOverlayDetail.querySelector('#detail-foto-belakang-sesudah').value = cari(fotoSesudah, 'belakang');
+        popupOverlayDetail.querySelector('#detail-foto-kanan-sesudah').value   = cari(fotoSesudah, 'kanan');
+        popupOverlayDetail.querySelector('#detail-foto-kiri-sesudah').value    = cari(fotoSesudah, 'kiri');
+
+    } catch (error) {
+        console.error("Gagal memuat foto detail:", error);
+        fotoIds.forEach(id => {
+            popupOverlayDetail.querySelector(id).value = "Gagal memuat foto.";
+        });
     }
-
-    // foto
-    popupOverlayDetail.querySelector("#detail-foto-depan-sebelum").value = data.fotoDepanSebelum || "Tidak ada dokumentasi.";
-    popupOverlayDetail.querySelector("#detail-foto-belakang-sebelum").value = data.fotoBelakangSebelum || "Tidak ada dokumentasi.";
-    popupOverlayDetail.querySelector("#detail-foto-kanan-sebelum").value = data.fotoKananSebelum || "Tidak ada dokumentasi.";
-    popupOverlayDetail.querySelector("#detail-foto-kiri-sebelum").value = data.fotoKiriSebelum || "Tidak ada dokumentasi.";
-
-    popupOverlayDetail.querySelector("#detail-foto-depan-sesudah").value = data.fotoDepanSesudah || "Tidak ada dokumentasi.";
-    popupOverlayDetail.querySelector("#detail-foto-belakang-sesudah").value = data.fotoBelakangSesudah || "Tidak ada dokumentasi.";
-    popupOverlayDetail.querySelector("#detail-foto-kanan-sesudah").value = data.fotoKananSesudah || "Tidak ada dokumentasi.";
-    popupOverlayDetail.querySelector("#detail-foto-kiri-sesudah").value = data.fotoKiriSesudah || "Tidak ada dokumentasi.";
-
-    popupOverlayDetail.classList.add("active");
 }
 
 /**

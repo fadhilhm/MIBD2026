@@ -37,6 +37,7 @@ function formatDataDashboard(data) {
             tglKembali: sewa.TanggalKembali,
             status: statusPeminjaman,
             totalBiaya: totalBiayaFinal,
+            totalDenda: hitungTotalDenda,
 
             // Data Pop Up Konfirmasi
             idMember: sewa.IDMember,
@@ -260,7 +261,7 @@ router.post('/booking', async (req, res) => {
  * Query Pop Up Pegawai (Konfirmasi, Tindakan)
  * Author: Pearce Nathaniel N.
  */
-async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminjaman, totalDenda, fotoDepan, fotoBelakang, fotoKanan, fotoKiri) {
+async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminjaman, fotoDepan, fotoBelakang, fotoKanan, fotoKiri) {
     const pool = await getPool();
     const transaction = new sql.Transaction(pool);
 
@@ -274,7 +275,6 @@ async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminja
         request.input('nopol', sql.VarChar, nopol)
         request.input('idMember', sql.Int, idMember)
         request.input('tglPeminjaman', sql.Date, cleanDate);
-        request.input("totalDenda", sql.Decimal(18, 2), totalDenda);
 
         const queryUpdate = `
             UPDATE PEMINJAMAN
@@ -285,13 +285,6 @@ async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminja
             `;
         await request.query(queryUpdate);
 
-        // Update status mobil
-        const queryUpdateMobil = `
-            UPDATE MOBIL
-            SET StatusKetersediaan = 'Tidak Tersedia'
-            WHERE Nopol = @nopol;
-        `;
-        await request.query(queryUpdateMobil);
         // Input Link Foto dari Param
         const fotoArray = [
             { url: fotoDepan, desc: 'Foto Depan Sebelum Sewa' },
@@ -303,7 +296,7 @@ async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminja
 
         for (let i = 0; i < fotoArray.length; i++) {
             if (fotoArray[i].url) {
-                // console.log(`-> Mengeksekusi INSERT FOTO ke-${i}: ${fotoArray[i].desc}`);
+
                 const imgRequest = new sql.Request(transaction);
                 imgRequest.input('idMember', sql.Int, idMember);
                 imgRequest.input('idPegawai', sql.Int, idPegawaiAktif);
