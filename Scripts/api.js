@@ -238,3 +238,29 @@ export async function submitTindakanPengembalian(data) {
         throw error;
     }
 }
+
+/**
+ * API call fetch gambar sebelum & sesudah untuk Pop Up detail peminjaman
+ * Author: Pearce Nathaniel N.
+ */
+
+export async function getDetailFotoPeminjaman(nopol, idMember) {
+    try {
+        // Aliran data menggunakan query string murni (?nopol=...&idMember=...)
+        const response = await fetch(`/api/peminjaman/detail-foto?nopol=${encodeURIComponent(nopol)}&idMember=${idMember}`, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Gagal mengambil detail foto. Status: ${response.status}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error pada Scripts/api.js (getDetailFotoPeminjaman): ", error);
+        throw error;
+    }
+}

@@ -156,7 +156,7 @@ async function loadDataDashboard() {
 function initPopupTriggers() {
     // Ikat click tombol Konfirmasi
     const btnKonfirmasiList = document.querySelectorAll('[id="action-button-konfirmasi"]');
-    console.log(`Jumlah tombol konfirmasi yang ditemukan di tabel: ${btnKonfirmasiList.length}`);
+    // console.log(`Jumlah tombol konfirmasi yang ditemukan di tabel: ${btnKonfirmasiList.length}`);
     btnKonfirmasiList.forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
@@ -171,7 +171,7 @@ function initPopupTriggers() {
             );
 
             if (dataSewaLengkap) {
-                console.log("Data ditemukan! Mengisi form dan membuka pop-up konfirmasi.");
+                // console.log("Data ditemukan! Mengisi form dan membuka pop-up konfirmasi.");
                 openPopUpKonfirmasi(dataSewaLengkap);
             } else {
                 console.error("Gagal mencocokkan data transaksi berdasarkan Kunci Komposit.");
@@ -182,7 +182,7 @@ function initPopupTriggers() {
 
     // Ikat click tombol Tindakan
     const btnTindakanList = document.querySelectorAll('[id="action-button"]');
-    console.log(`Jumlah tombol tindakan yang ditemukan di tabel: ${btnTindakanList.length}`);
+    // console.log(`Jumlah tombol tindakan yang ditemukan di tabel: ${btnTindakanList.length}`);
     btnTindakanList.forEach(btn => {
         btn.addEventListener("click", (e) => {
             e.preventDefault();
@@ -197,7 +197,7 @@ function initPopupTriggers() {
             );
 
             if (dataSewaLengkap) {
-                console.log("Data ditemukan! Mengisi form dan membuka pop-up konfirmasi.");
+                // console.log("Data ditemukan! Mengisi form dan membuka pop-up konfirmasi.");
                 openPopUpTindakan(dataSewaLengkap);
             } else {
                 console.error("Gagal mencocokkan data transaksi berdasarkan Kunci Komposit.");
@@ -310,22 +310,18 @@ export function openPopUpTindakan(data) {
     popupOverlay.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglBatas);
 
     // Denda
-    const tanggalHariIni = new Date();
-    tanggalHariIni.setHours(0, 0, 0, 0);
-
-    const tanggalDeadline = new Date(data.tglBatas);
-    tanggalDeadline.setHours(0, 0, 0, 0);
-
-    const selisihWaktuMs = tanggalHariIni - tanggalDeadline;
-    const selisihHari = Math.ceil(selisihWaktuMs / (1000 * 60 * 60 * 24));
-
-    let hariTerlambat = 0;
+    const tanggalBatas = new Date(data.tglBatas);
+    const tanggalKembali = new Date();
+    let totalBiayaFinal = 0;
     let hitungTotalDenda = 0;
+    let hariTerlambat = 0;
 
-    // Cek apakah telat atau tidak
-    if (selisihHari > 0) {
-        hariTerlambat = selisihHari;
-        hitungTotalDenda = hariTerlambat * (data.hargaSewaPerHari || 0);
+    if (tanggalKembali > tanggalBatas) {
+        // Selisih dalam ms, ubah ke hari. 
+        // (1000 ms/s, 60 s/min, 60 min/h, 24 h/day) 
+        // Denda 10% / hari 
+        hariTerlambat = Math.ceil((tanggalKembali - tanggalBatas) / (1000 * 60 * 60 * 24));
+        hitungTotalDenda = (data.hargaSewaPerHari * 10 / 100.0) * hariTerlambat;
     }
     popupOverlay.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
     popupOverlay.querySelector('#total-denda').value = formatToRupiah(hitungTotalDenda);
@@ -342,16 +338,16 @@ export function openPopUpTindakan(data) {
     popupOverlay.querySelector('#foto-belakang-sesudah').value = "";
     popupOverlay.querySelector('#foto-kanan-sesudah').value = "";
     popupOverlay.querySelector('#foto-kiri-sesudah').value = "";
-    
-    
+
+
     const btnSubmitTindakan = document.getElementById("btn-submit-tindakan");
     btnSubmitTindakan.onclick = async function (e) {
         e.preventDefault();
-        
+
         console.log("Tombol Setujui diklik! Memulai pemanggilan fungsi submitTindakan...");
         await submitTindakan(data);
     };
-    
+
     popupOverlay.classList.add("active");
 }
 
@@ -376,29 +372,69 @@ cancelPopupDetail.addEventListener("click", () => {
 });
 
 export function openPopUpDetailSelesai(data) {
-    popupOverlay.querySelector('#popup-nopol').innerText = "";
-    popupOverlay.querySelector('#popup-cabang').innerText = "";
-    popupOverlay.querySelector('#popup-harga-sewa').innerText = "";
+    popupOverlayDetail.querySelector('#popup-nopol').innerText = "";
+    popupOverlayDetail.querySelector('#popup-cabang').innerText = "";
+    popupOverlayDetail.querySelector('#popup-harga-sewa').innerText = "";
 
-    popupOverlay.querySelector('#popup-kapasitas').innerText = "";
-    popupOverlay.querySelector('#popup-tahun-keluaran').innerText = "";
-    popupOverlay.querySelector('#popup-tipe').innerText = "";
+    popupOverlayDetail.querySelector('#popup-kapasitas').innerText = "";
+    popupOverlayDetail.querySelector('#popup-tahun-keluaran').innerText = "";
+    popupOverlayDetail.querySelector('#popup-tipe').innerText = "";
 
-    popupOverlay.querySelector('#nama-penyewa').value = "";
-    popupOverlay.querySelector('#tanggal-sewa').value = "";
-    popupOverlay.querySelector('#tanggal-kembali').value = "";
-    popupOverlay.querySelector('#jumlah-terlambat').value = "";
-    popupOverlay.querySelector('#total-denda').value = "";
+    popupOverlayDetail.querySelector('#nama-penyewa').value = "";
+    popupOverlayDetail.querySelector('#tanggal-sewa').value = "";
+    popupOverlayDetail.querySelector('#tanggal-kembali').value = "";
+    popupOverlayDetail.querySelector('#jumlah-terlambat').value = "";
+    popupOverlayDetail.querySelector('#total-denda').value = "";
+
+
+    const elTotalBiaya = popupOverlayDetail.querySelector('#total-biaya');
+    if (elTotalBiaya) elTotalBiaya.value = "";
+
+    // Data Peminjaman
+    popupOverlayDetail.querySelector('#popup-nopol').innerText = `Plat no: ${data.nopol}`;
+    popupOverlayDetail.querySelector('#popup-cabang').innerText = `Cabang: ${data.namaCabang}`;
+    popupOverlayDetail.querySelector('#popup-harga-sewa').innerText = `Harga / Hari: ${formatToRupiah(data.hargaSewaPerHari)}`;
+    popupOverlayDetail.querySelector('#popup-kapasitas').innerText = `${data.kapasitas} Kursi`;
+    popupOverlayDetail.querySelector('#popup-tahun-keluaran').innerText = data.tahunMobil;
+    popupOverlayDetail.querySelector('#popup-tipe').innerText = data.namaTipe;
+    popupOverlayDetail.querySelector('#nama-penyewa').value = data.nama;
+    popupOverlayDetail.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
+    popupOverlayDetail.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglKembali);
+   
+    let hariTerlambat = 0;
+    if (data.tglKembali && data.tglBatas) {
+      const stringKembali = new Date(data.tglKembali).toISOString().split('T')[0];
+        const stringBatas = new Date(data.tglBatas).toISOString().split('T')[0];
+
+        const dateKembaliKaku = new Date(stringKembali);
+        const dateBatasKaku = new Date(stringBatas);
+        
+        const selisihMs = dateKembaliKaku - dateBatasKaku;
+
+        // const selisihMs = tglKembaliObj - tglBatasObj;
+        if (selisihMs > 0) {
+            hariTerlambat = Math.round(selisihMs / (1000 * 60 * 60 * 24));
+        }
+    }
+
+    popupOverlayDetail.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
+    popupOverlayDetail.querySelector('#total-denda').value = formatToRupiah(data.totalDenda || 0);
+
+    if (elTotalBiaya) {
+        elTotalBiaya.value = formatToRupiah(data.totalBiaya || 0);
+    }
 
     // foto
-    popupOverlayDetail.querySelector("#detail-foto-depan-sebelum").value = data.fotoDepanSebelum || "";
-    popupOverlayDetail.querySelector("#detail-foto-belakang-sebelum").value = data.fotoBelakangSebelum || ""
-    popupOverlayDetail.querySelector("#detail-foto-kanan-sebelum").value = data.fotoKananSebelum || "";
-    popupOverlayDetail.querySelector("#detail-foto-kiri-sebelum").value = data.fotoKiriSebelum || "";
-    popupOverlayDetail.querySelector("#detail-foto-depan-sesudah").value = data.fotoDepanSesudah || "";
-    popupOverlayDetail.querySelector("#detail-foto-belakang-sesudah").value = data.fotoBelakangSesudah || "";
-    popupOverlayDetail.querySelector("#detail-foto-kanan-sesudah").value = data.fotoKananSesudah || "";
-    popupOverlayDetail.querySelector("#detail-foto-kiri-sesudah").value = data.fotoKiriSesudah || "";
+    popupOverlayDetail.querySelector("#detail-foto-depan-sebelum").value = data.fotoDepanSebelum || "Tidak ada dokumentasi.";
+    popupOverlayDetail.querySelector("#detail-foto-belakang-sebelum").value = data.fotoBelakangSebelum || "Tidak ada dokumentasi.";
+    popupOverlayDetail.querySelector("#detail-foto-kanan-sebelum").value = data.fotoKananSebelum || "Tidak ada dokumentasi.";
+    popupOverlayDetail.querySelector("#detail-foto-kiri-sebelum").value = data.fotoKiriSebelum || "Tidak ada dokumentasi.";
+
+    popupOverlayDetail.querySelector("#detail-foto-depan-sesudah").value = data.fotoDepanSesudah || "Tidak ada dokumentasi.";
+    popupOverlayDetail.querySelector("#detail-foto-belakang-sesudah").value = data.fotoBelakangSesudah || "Tidak ada dokumentasi.";
+    popupOverlayDetail.querySelector("#detail-foto-kanan-sesudah").value = data.fotoKananSesudah || "Tidak ada dokumentasi.";
+    popupOverlayDetail.querySelector("#detail-foto-kiri-sesudah").value = data.fotoKiriSesudah || "Tidak ada dokumentasi.";
+
     popupOverlayDetail.classList.add("active");
 }
 
@@ -472,7 +508,6 @@ async function submitTindakan(dataSewa) {
             alert("Mobil berhasil dikembalikan! Status transaksi bergeser ke Selesai.");
             popupTindakan.classList.remove("active");
 
-            popupTindakan.classList.remove("active");
             await loadDataDashboard(); // Reload layout dashboard
         } else {
             alert(`Gagal konfirmasi: ${result.message}`);

@@ -13,23 +13,16 @@ function formatDataDashboard(data) {
         let biayaSewa = parseInt(sewa.TotalBiaya);
         let totalBiayaFinal = biayaSewa;
         let statusPeminjaman = "";
+        let hitungTotalDenda = parseInt(sewa.TotalDenda) || 0;
 
         if (sewa.TanggalKembali !== null) {
             statusPeminjaman = "Selesai";
 
-            // Hitung Denda
-            const tanggalBatas = new Date(sewa.TanggalBatasPengembalian);
-            const tanggalKembali = new Date(sewa.TanggalKembali);
-            if (tanggalKembali > tanggalBatas) {
-                // Selisih dalam ms, ubah ke hari. 
-                // (1000 ms/s, 60 s/min, 60 min/h, 24 h/day) 
-                const denda = biayaSewa * 10 / 100.0 * Math.ceil((tanggalKembali - tanggalBatas) / (1000 * 60 * 60 * 24));
-                // tambahkan ke total denda
-                totalBiayaFinal = biayaSewa + denda;
-                // insert ke dalam tabel
-            }
+            // Hitung total biaya Denda
+            totalBiayaFinal = biayaSewa + hitungTotalDenda;
         } else if (sewa.IDPegawai === 5) {
             statusPeminjaman = "Menunggu Verifikasi";
+            hitungTotalDenda = 0;
         } else {
             statusPeminjaman = "Ongoing";
         }
@@ -52,7 +45,19 @@ function formatDataDashboard(data) {
             hargaSewaPerHari: sewa.HargaSewaMobil,
             namaCabang: sewa.NamaCabang,
             namaJalan: sewa.NamaJalan,
-            namaTipe: sewa.NamaTipe
+            namaTipe: sewa.NamaTipe,
+
+            // Foto
+            fotoDepanSebelum: sewa.FotoDepanSebelum,
+            fotoBelakangSebelum: sewa.FotoBelakangSebelum,
+            fotoKananSebelum: sewa.FotoKananSebelum,
+            fotoKiriSebelum: sewa.FotoKiriSebelum,
+
+            fotoDepanSesudah: sewa.FotoDepanSesudah,
+            fotoBelakangSesudah: sewa.FotoBelakangSesudah,
+            fotoKananSesudah: sewa.FotoKananSesudah,
+            fotoKiriSesudah: sewa.FotoKiriSesudah
+
         };
     });
 }
@@ -69,7 +74,7 @@ async function updateDenda(idPeminjaman, denda) {
             TotalDenda = @TotalDenda
         WHERE IDPeminjaman = @IDPeminjaman
     `);
-    
+
 }
 
 // Data dashboard Pegawai
@@ -106,6 +111,7 @@ async function queryDataDashboardPegawai(idPegawai) {
             PEMINJAMAN.TanggalBatasPengembalian,
             PEMINJAMAN.TanggalKembali,
             PEMINJAMAN.TotalBiaya,
+            PEMINJAMAN.TotalDenda, 
             PEMINJAMAN.IDPegawai,
 
             -- Data Untuk PopUp
@@ -114,17 +120,41 @@ async function queryDataDashboardPegawai(idPegawai) {
             MOBIL.HargaSewaMobil,
             CABANG.NamaCabang,
             CABANG.NamaJalan,
-            TIPE_MOBIL.NamaTipe
+            TIPE_MOBIL.NamaTipe,
+
+            -- SUBQUERY UTK AMBIL 4 FOTO SEBELUM SEWA (Kondisi = 0)
+            (SELECT TOP 1 F.Gambar FROM FOTO F WHERE F.Nopol = PEMINJAMAN.Nopol AND F.IDMember = PEMINJAMAN.IDMember AND F.Kondisi = 0 AND F.Deskripsi LIKE '%Depan%') AS FotoDepanSebelum,
+            (SELECT TOP 1 F.Gambar FROM FOTO F WHERE F.Nopol = PEMINJAMAN.Nopol AND F.IDMember = PEMINJAMAN.IDMember AND F.Kondisi = 0 AND F.Deskripsi LIKE '%Belakang%') AS FotoBelakangSebelum,
+            (SELECT TOP 1 F.Gambar FROM FOTO F WHERE F.Nopol = PEMINJAMAN.Nopol AND F.IDMember = PEMINJAMAN.IDMember AND F.Kondisi = 0 AND F.Deskripsi LIKE '%Kanan%') AS FotoKananSebelum,
+            (SELECT TOP 1 F.Gambar FROM FOTO F WHERE F.Nopol = PEMINJAMAN.Nopol AND F.IDMember = PEMINJAMAN.IDMember AND F.Kondisi = 0 AND F.Deskripsi LIKE '%Kiri%') AS FotoKiriSebelum,
+
+            -- SUBQUERY UTK AMBIL 4 FOTO SESUDAH SEWA (Kondisi = 1)
+            (SELECT TOP 1 F.Gambar FROM FOTO F WHERE F.Nopol = PEMINJAMAN.Nopol AND F.IDMember = PEMINJAMAN.IDMember AND F.Kondisi = 1 AND F.Deskripsi LIKE '%Depan%') AS FotoDepanSesudah,
+            (SELECT TOP 1 F.Gambar FROM FOTO F WHERE F.Nopol = PEMINJAMAN.Nopol AND F.IDMember = PEMINJAMAN.IDMember AND F.Kondisi = 1 AND F.Deskripsi LIKE '%Belakang%') AS FotoBelakangSesudah,
+            (SELECT TOP 1 F.Gambar FROM FOTO F WHERE F.Nopol = PEMINJAMAN.Nopol AND F.IDMember = PEMINJAMAN.IDMember AND F.Kondisi = 1 AND F.Deskripsi LIKE '%Kanan%') AS FotoKananSesudah,
+            (SELECT TOP 1 F.Gambar FROM FOTO F WHERE F.Nopol = PEMINJAMAN.Nopol AND F.IDMember = PEMINJAMAN.IDMember AND F.Kondisi = 1 AND F.Deskripsi LIKE '%Kiri%') AS FotoKiriSesudah
 
         FROM PEMINJAMAN
-            JOIN MEMBER ON PEMINJAMAN.IDMember = MEMBER.IDUser -- Cari idMember utk Nama
-            JOIN [USER] ON [USER].IDUser = MEMBER.IDUser -- Cari Nama User
-            JOIN MOBIL ON PEMINJAMAN.Nopol = MOBIL.NOPOL -- Cari idMobiil utk Nama Merek
-            JOIN MEREK_MOBIL ON MOBIL.IDMerek = MEREK_MOBIL.IDMerek -- Cari Nama Merek
+            JOIN MEMBER ON PEMINJAMAN.IDMember = MEMBER.IDUser 
+            JOIN [USER] ON [USER].IDUser = MEMBER.IDUser 
+            JOIN MOBIL ON PEMINJAMAN.Nopol = MOBIL.NOPOL 
+            JOIN MEREK_MOBIL ON MOBIL.IDMerek = MEREK_MOBIL.IDMerek 
             JOIN CABANG ON MOBIL.IDCabang = CABANG.IDCabang
             JOIN TIPE_MOBIL ON MOBIL.IDTipe = TIPE_MOBIL.IDTipe 
-        WHERE MOBIL.IDCabang = @IDCabangParam -- Mobil yang satu cabang dengan pegawai itu.
-    `;
+        WHERE MOBIL.IDCabang = @IDCabangParam 
+        ORDER BY 
+            CASE 
+                -- 1. Menunggu Verifikasi
+                WHEN PEMINJAMAN.IDPegawai IS NULL THEN 1
+                
+                -- 2. Dipinjam / Ongoing 
+                WHEN PEMINJAMAN.IDPegawai IS NOT NULL AND PEMINJAMAN.TanggalKembali IS NULL THEN 2
+                
+                -- 3. Selesai
+                ELSE 3
+            END ASC,
+            PEMINJAMAN.TanggalPeminjaman DESC;
+        `;
 
     const resultDataDashboard = await request2.query(queryDataDashcboard);
     return resultDataDashboard.recordset;
@@ -187,7 +217,7 @@ router.get('/get-riwayat-rental', async (req, res) => {
 // Booking
 router.post('/booking', async (req, res) => {
     const { startDate, endDate, nopolMobil, totalHarga } = req.body;
-    
+
     console.log(req.body);
 
     const cleanTotalHarga = totalHarga.replace(/[^0-9]/g, '');
@@ -220,7 +250,7 @@ router.post('/booking', async (req, res) => {
         });
     } catch (error) {
         await transaction.rollback()
-        
+
         console.log(error);
         return res.status(500).json({ message: "Booking gagal" });
     }
@@ -230,7 +260,7 @@ router.post('/booking', async (req, res) => {
  * Query Pop Up Pegawai (Konfirmasi, Tindakan)
  * Author: Pearce Nathaniel N.
  */
-async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminjaman, fotoDepan, fotoBelakang, fotoKanan, fotoKiri) {
+async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminjaman, totalDenda, fotoDepan, fotoBelakang, fotoKanan, fotoKiri) {
     const pool = await getPool();
     const transaction = new sql.Transaction(pool);
 
@@ -244,6 +274,7 @@ async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminja
         request.input('nopol', sql.VarChar, nopol)
         request.input('idMember', sql.Int, idMember)
         request.input('tglPeminjaman', sql.Date, cleanDate);
+        request.input("totalDenda", sql.Decimal(18, 2), totalDenda);
 
         const queryUpdate = `
             UPDATE PEMINJAMAN
@@ -253,6 +284,14 @@ async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminja
             AND TanggalPeminjaman = @tglPeminjaman;
             `;
         await request.query(queryUpdate);
+
+        // Update status mobil
+        const queryUpdateMobil = `
+            UPDATE MOBIL
+            SET StatusKetersediaan = 'Tidak Tersedia'
+            WHERE Nopol = @nopol;
+        `;
+        await request.query(queryUpdateMobil);
         // Input Link Foto dari Param
         const fotoArray = [
             { url: fotoDepan, desc: 'Foto Depan Sebelum Sewa' },
@@ -271,7 +310,7 @@ async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminja
                 imgRequest.input('nopol', sql.VarChar, nopol);
                 imgRequest.input('gambar', sql.VarChar(2048), fotoArray[i].url);
                 imgRequest.input('kondisi', sql.Bit, 0); // 0 = Sebelum
-                imgRequest.input('deskripsi', sql.Text, fotoArray[i].desc);
+                imgRequest.input('deskripsi', sql.VarChar, fotoArray[i].desc);
 
                 const queryInsertFoto = `
                     INSERT INTO FOTO (IDMember, IDPegawai, Nopol, Gambar, Kondisi, Deskripsi)
@@ -280,7 +319,7 @@ async function querySubmitKonfirmasi(idPegawaiAktif, nopol, idMember, tglPeminja
                 await imgRequest.query(queryInsertFoto);
             }
             // } else {
-                // console.log(`-> Foto indeks ke-${i} dilewati karena kosong/undefined.`);
+            // console.log(`-> Foto indeks ke-${i} dilewati karena kosong/undefined.`);
         }
 
         await transaction.commit();
@@ -437,7 +476,7 @@ router.post('/tindakan', async (req, res) => {
 
         // console.log("=== [DEBUG SQL RESULT] ROWS AFFECTED ===");
         // console.log(result.rowsAffected);
-        
+
         return res.status(200).json({
             success: true,
             message: "Mobil berhasil dikembalikan dan denda dicatat!"
@@ -447,4 +486,69 @@ router.post('/tindakan', async (req, res) => {
         return res.status(500).json({ success: false, message: "Gagal menyimpan data pengembalian ke SQL Server." });
     }
 });
+
+/**
+ * Query Foto Sebelum & Sesudah di pop up peminjaman (Status = "Selesai")
+ * Author: Pearce Nathaniel N.
+ */
+
+// Query
+async function queryGetDetailFoto(nopol, idMember) {
+    const pool = await getPool();
+    try {
+        const request = new sql.Request(pool);
+
+        request.input('nopol', sql.VarChar(20), nopol);
+        request.input('idMember', sql.Int, idMember);
+
+        // Menarik Gambar dan Kondisi, diurutkan agar data Sebelum (0) keluar duluan baru data Sesudah (1)
+        const querySelect = `
+            SELECT Gambar, Kondisi, Deskripsi 
+            FROM FOTO
+            WHERE Nopol = @nopol AND IDMember = @idMember
+            ORDER BY Kondisi ASC, IDFoto ASC;
+        `;
+
+        const result = await request.query(querySelect);
+        return result.recordset;
+    } catch (error) {
+        throw error;
+    }
+}
+
+// Router
+router.get('/detail-foto', async (req, res) => {
+    // Tangkap parameter nopol dan idMember yang di-pass dari URL Frontend (req.query)
+    const { nopol, idMember } = req.query;
+    const idPegawaiAktif = req.session.idUser;
+
+    // Proteksi Session Keamanan Pegawai
+    if (!idPegawaiAktif) {
+        return res.status(401).json({ success: false, message: "Sesi habis, silakan login kembali." });
+    }
+
+    // Validasi Kelengkapan Parameter Query URL
+    if (!nopol || !idMember) {
+        return res.status(400).json({ success: false, message: "Parameter query (nopol/idMember) tidak lengkap." });
+    }
+
+    try {
+        // Query data ke database
+        const daftarFoto = await queryGetDetailFoto(nopol, parseInt(idMember));
+
+        return res.status(200).json({
+            success: true,
+            data: daftarFoto
+        });
+
+    } catch (error) {
+        // console.error di catch block dipertahankan untuk memantau jika koneksi mssql bermasalah
+        console.error("SQL Server Error [Get Detail Foto]:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Gagal menarik data dokumentasi foto dari database SQL Server."
+        });
+    }
+});
+
 module.exports = router;
