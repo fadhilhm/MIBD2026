@@ -306,31 +306,37 @@ export function openPopUpTindakan(data) {
     popupOverlay.querySelector('#popup-tipe').innerText = data.namaTipe;
 
     popupOverlay.querySelector('#nama-penyewa').value = data.nama;
-    // popupOverlay.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
-    const tglPinjamFormatted = formatKeTanggalLokal(data.tglPeminjaman);
-    const tglBatasFormatted = formatKeTanggalLokal(data.tglBatas);
-    popupOverlay.querySelector('#tanggal-sewa').value = `(${tglPinjamFormatted}) - (${tglBatasFormatted})`;
+    popupOverlay.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
+    popupOverlay.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglBatas);
 
-    popupOverlay.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglKembali);
 
-    
 
-    // Denda
-    const tanggalBatas = new Date(data.tglBatas);
-    const tanggalKembali = new Date();
-    let totalBiayaFinal = 0;
-    let hitungTotalDenda = 0;
+    // Denda calculation
     let hariTerlambat = 0;
+    if (data.tglBatas) {
+       // Tanggal kembali rill adalah hari ini (Waktu live serah terima mobil)
+        const dateKembali = new Date();
+        const dateBatas = new Date(data.tglBatas);
+        
+        // Ekstrak string murni YYYY-MM-DD langsung dari objek Date asli
+        const stringKembali = dateKembali.toISOString().split('T')[0];
+        const stringBatas = dateBatas.toISOString().split('T')[0];
 
-    if (tanggalKembali > tanggalBatas) {
-        // Selisih dalam ms, ubah ke hari. 
-        // (1000 ms/s, 60 s/min, 60 min/h, 24 h/day) 
-        // Denda 10% / hari 
-        hariTerlambat = Math.ceil((tanggalKembali - tanggalBatas) / (1000 * 60 * 60 * 24));
-        hitungTotalDenda = (data.hargaSewaPerHari * 10 / 100.0) * hariTerlambat;
+        const selisihMs = new Date(stringKembali) - new Date(stringBatas);
+        if (selisihMs > 0) {
+            hariTerlambat = Math.round(selisihMs / (1000 * 60 * 60 * 24));
+        }
     }
+
+    let hitungTotalDenda = (data.hargaSewaPerHari * 10 / 100.0) * hariTerlambat;
+    const biayaSewaPokok = parseFloat(data.totalBiaya) || 0;
+    let totalBiayaFinal = biayaSewaPokok + hitungTotalDenda;
+
     popupOverlay.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
-    popupOverlay.querySelector('#total-denda').value = formatToRupiah(hitungTotalDenda);
+    popupOverlay.querySelector('#total-denda').value = formatToRupiah(hitungTotalDenda || 0);
+
+    // popupOverlay.querySelector('#jumlah-terlambat').value = `${hariTerlambat} Hari`;
+    // popupOverlay.querySelector('#total-denda').value = formatToRupiah(hitungTotalDenda);
 
 
     const btnSubmit = popupOverlay.querySelector('#btn-submit-tindakan');
@@ -386,7 +392,7 @@ cancelPopupDetail.addEventListener("click", () => {
 });
 
 export async function openPopUpDetailSelesai(data) {
-     // Open popup first so user sees it immediately
+    // Open popup first so user sees it immediately
     popupOverlayDetail.classList.add("active");
 
     // Fill in all non-foto fields immediately (these come from dashboard data which is fine)
@@ -410,6 +416,7 @@ export async function openPopUpDetailSelesai(data) {
     if (data.tglKembali && data.tglBatas) {
         const stringKembali = new Date(data.tglKembali).toISOString().split('T')[0];
         const stringBatas = new Date(data.tglBatas).toISOString().split('T')[0];
+        
         const selisihMs = new Date(stringKembali) - new Date(stringBatas);
         if (selisihMs > 0) {
             hariTerlambat = Math.round(selisihMs / (1000 * 60 * 60 * 24));
@@ -447,15 +454,15 @@ export async function openPopUpDetailSelesai(data) {
             return found ? found.Gambar : "Tidak ada dokumentasi.";
         };
 
-        popupOverlayDetail.querySelector('#detail-foto-depan-sebelum').value   = cari(fotoSebelum, 'depan');
+        popupOverlayDetail.querySelector('#detail-foto-depan-sebelum').value = cari(fotoSebelum, 'depan');
         popupOverlayDetail.querySelector('#detail-foto-belakang-sebelum').value = cari(fotoSebelum, 'belakang');
-        popupOverlayDetail.querySelector('#detail-foto-kanan-sebelum').value   = cari(fotoSebelum, 'kanan');
-        popupOverlayDetail.querySelector('#detail-foto-kiri-sebelum').value    = cari(fotoSebelum, 'kiri');
+        popupOverlayDetail.querySelector('#detail-foto-kanan-sebelum').value = cari(fotoSebelum, 'kanan');
+        popupOverlayDetail.querySelector('#detail-foto-kiri-sebelum').value = cari(fotoSebelum, 'kiri');
 
-        popupOverlayDetail.querySelector('#detail-foto-depan-sesudah').value   = cari(fotoSesudah, 'depan');
+        popupOverlayDetail.querySelector('#detail-foto-depan-sesudah').value = cari(fotoSesudah, 'depan');
         popupOverlayDetail.querySelector('#detail-foto-belakang-sesudah').value = cari(fotoSesudah, 'belakang');
-        popupOverlayDetail.querySelector('#detail-foto-kanan-sesudah').value   = cari(fotoSesudah, 'kanan');
-        popupOverlayDetail.querySelector('#detail-foto-kiri-sesudah').value    = cari(fotoSesudah, 'kiri');
+        popupOverlayDetail.querySelector('#detail-foto-kanan-sesudah').value = cari(fotoSesudah, 'kanan');
+        popupOverlayDetail.querySelector('#detail-foto-kiri-sesudah').value = cari(fotoSesudah, 'kiri');
 
     } catch (error) {
         console.error("Gagal memuat foto detail:", error);
