@@ -345,7 +345,7 @@ export function openPopUpTindakan(data) {
         e.preventDefault();
 
         console.log("Tombol Setujui diklik! Memulai pemanggilan fungsi submitTindakan...");
-        await submitTindakan(data);
+        await submitTindakan(data, hitungTotalDenda);
     };
 
     popupOverlay.classList.add("active");
@@ -493,7 +493,7 @@ async function submitKonfirmasi(dataPeminjaman) {
 
 // Submit Tindakan Pengembalian Mobil
 
-async function submitTindakan(dataSewa) {
+async function submitTindakan(dataSewa, totalDenda = 0) {
     const btnSubmit = document.getElementById("btn-submit-tindakan");
     const popupTindakan = document.getElementById("popupOverlay");
 
@@ -501,7 +501,7 @@ async function submitTindakan(dataSewa) {
         nopol: dataSewa.nopol,
         idMember: parseInt(dataSewa.idMember),
         tglPeminjaman: dataSewa.tglPeminjaman,
-        totalDenda: parseFloat(document.getElementById('btn-submit-tindakan').getAttribute('data-total-denda')) || 0,
+        totalDenda: totalDenda,
         fotoDepan: document.getElementById('foto-depan-sesudah').value,
         fotoBelakang: document.getElementById('foto-belakang-sesudah').value,
         fotoKanan: document.getElementById('foto-kanan-sesudah').value,

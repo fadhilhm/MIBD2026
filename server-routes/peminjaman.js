@@ -463,7 +463,7 @@ router.post('/tindakan', async (req, res) => {
     try {
 
         // console.log("=== [DEBUG BACKEND RECEIVED] DATA MASUK ===");
-        // console.log(req.body);
+        console.log(req.body);
 
         const result = await querySubmitTindakan(nopol, parseInt(idMember), tglPeminjaman, parseFloat(totalDenda) || 0, idPegawaiAktif, fotoDepan, fotoBelakang, fotoKanan, fotoKiri);
 
