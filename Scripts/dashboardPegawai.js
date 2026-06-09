@@ -306,8 +306,14 @@ export function openPopUpTindakan(data) {
     popupOverlay.querySelector('#popup-tipe').innerText = data.namaTipe;
 
     popupOverlay.querySelector('#nama-penyewa').value = data.nama;
-    popupOverlay.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
-    popupOverlay.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglBatas);
+    // popupOverlay.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
+    const tglPinjamFormatted = formatKeTanggalLokal(data.tglPeminjaman);
+    const tglBatasFormatted = formatKeTanggalLokal(data.tglBatas);
+    popupOverlay.querySelector('#tanggal-sewa').value = `(${tglPinjamFormatted}) - (${tglBatasFormatted})`;
+
+    popupOverlay.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglKembali);
+
+    
 
     // Denda
     const tanggalBatas = new Date(data.tglBatas);
@@ -351,6 +357,14 @@ export function openPopUpTindakan(data) {
     popupOverlay.classList.add("active");
 }
 
+function formatKeTanggalLokal(dateString) {
+    if (!dateString) return "-";
+    // Bersihkan jika ada komponen jam (T00:00:00.000Z)
+    const cleanDate = dateString.split('T')[0];
+    const [year, month, day] = cleanDate.split('-');
+    return `${day}/${month}/${year}`;
+}
+
 /**
  * Prefill data di Pop Up Selesai (Read Only)
  * AuthorL Pearce Nathaniel N.
@@ -383,7 +397,12 @@ export async function openPopUpDetailSelesai(data) {
     popupOverlayDetail.querySelector('#popup-tahun-keluaran').innerText = data.tahunMobil;
     popupOverlayDetail.querySelector('#popup-tipe').innerText = data.namaTipe;
     popupOverlayDetail.querySelector('#nama-penyewa').value = data.nama;
-    popupOverlayDetail.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
+    // popupOverlayDetail.querySelector('#tanggal-sewa').value = formatToInputDate(data.tglPeminjaman);
+
+    const tglPinjamFormatted = formatKeTanggalLokal(data.tglPeminjaman);
+    const tglBatasFormatted = formatKeTanggalLokal(data.tglBatas);
+    popupOverlayDetail.querySelector('#tanggal-sewa').value = `(${tglPinjamFormatted}) - (${tglBatasFormatted})`;
+
     popupOverlayDetail.querySelector('#tanggal-kembali').value = formatToInputDate(data.tglKembali);
 
     // Denda calculation
